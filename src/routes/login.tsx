@@ -67,11 +67,16 @@ function LoginPage() {
             />
             Remember me
           </label>
-          <a href="#" className="font-medium text-primary hover:underline">Forgot password?</a>
+          <a href="#" className="font-medium text-primary hover:underline">
+            Forgot password?
+          </a>
         </div>
 
         {error && (
-          <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+          <div
+            role="alert"
+            className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
+          >
             {error}
           </div>
         )}
@@ -85,11 +90,14 @@ function LoginPage() {
 
         <p className="text-center text-sm text-muted-foreground">
           New to NexaRise?{" "}
-          <Link to="/register" className="font-semibold text-primary hover:underline">Create an account</Link>
+          <Link to="/register" className="font-semibold text-primary hover:underline">
+            Create an account
+          </Link>
         </p>
 
         <p className="rounded-lg bg-accent px-3 py-2 text-center text-xs text-secondary">
-          Demo: use <code className="font-mono font-semibold">demo@nexarise.sl</code> with any password.
+          Demo: use <code className="font-mono font-semibold">demo@nexarise.sl</code> with any
+          password.
         </p>
       </form>
     </AuthShell>

@@ -85,7 +85,9 @@ function ChoosePathPage() {
               key={p.title}
               className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card p-8 shadow-card transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-elegant"
             >
-              <div className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br ${p.accent} text-3xl shadow-glow`}>
+              <div
+                className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br ${p.accent} text-3xl shadow-glow`}
+              >
                 {p.icon}
               </div>
               <h2 className="mt-6 font-display text-xl font-bold text-secondary">{p.title}</h2>

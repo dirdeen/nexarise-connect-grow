@@ -14,7 +14,8 @@ const roleMeta: Record<string, { title: string; tagline: string; accent: string 
   },
   workforce: {
     title: "Verified Workforce",
-    tagline: "Bookings, verification status and earnings for drivers, keke riders, cleaners and office assistants.",
+    tagline:
+      "Bookings, verification status and earnings for drivers, keke riders, cleaners and office assistants.",
     accent: "from-secondary to-primary",
   },
   employer: {
@@ -42,14 +43,19 @@ function PlaceholderDashboard() {
       <header className="border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Logo />
-          <Link to="/choose-path" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+          <Link
+            to="/choose-path"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
             ← Change path
           </Link>
         </div>
       </header>
 
       <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-4xl flex-col items-center justify-center px-4 py-16 text-center sm:px-6">
-        <div className={`grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br ${meta.accent} text-4xl shadow-glow`}>
+        <div
+          className={`grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br ${meta.accent} text-4xl shadow-glow`}
+        >
           🚀
         </div>
         <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-muted-foreground">
@@ -62,8 +68,13 @@ function PlaceholderDashboard() {
 
         <div className="mt-10 grid w-full gap-4 sm:grid-cols-3">
           {["Overview", "Activity", "Settings"].map((n) => (
-            <div key={n} className="rounded-2xl border border-dashed border-border bg-card/60 p-6 text-left shadow-card">
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{n}</div>
+            <div
+              key={n}
+              className="rounded-2xl border border-dashed border-border bg-card/60 p-6 text-left shadow-card"
+            >
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {n}
+              </div>
               <div className="mt-2 h-2 w-3/4 rounded-full bg-muted" />
               <div className="mt-2 h-2 w-1/2 rounded-full bg-muted" />
             </div>

@@ -1,7 +1,16 @@
 import { createFileRoute, Link, useNavigate, notFound } from "@tanstack/react-router";
 import { AppShell, CompanyLogo } from "@/components/AppShell";
 import { findJob } from "@/lib/jobs";
-import { ArrowLeft, Bookmark, Share2, MapPin, Clock, Wallet, CalendarDays, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Bookmark,
+  Share2,
+  MapPin,
+  Clock,
+  Wallet,
+  CalendarDays,
+  CheckCircle2,
+} from "lucide-react";
 
 export const Route = createFileRoute("/jobs/$jobId")({
   head: () => ({ meta: [{ title: "Job Details — NexaRise" }] }),
@@ -19,8 +28,13 @@ function JobNotFound() {
     <AppShell>
       <div className="mx-auto max-w-3xl px-6 py-20 text-center">
         <h1 className="font-display text-3xl font-bold text-secondary">Job not found</h1>
-        <p className="mt-2 text-muted-foreground">This posting may have closed. Browse other open roles.</p>
-        <Link to="/jobs" className="mt-6 inline-flex rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow">
+        <p className="mt-2 text-muted-foreground">
+          This posting may have closed. Browse other open roles.
+        </p>
+        <Link
+          to="/jobs"
+          className="mt-6 inline-flex rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow"
+        >
           Back to jobs
         </Link>
       </div>
@@ -50,17 +64,32 @@ function JobDetailsPage() {
           }}
         >
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-            <div className="grid h-16 w-16 place-items-center rounded-2xl bg-white/90 font-display text-lg font-bold" style={{ color: job.logoColor }}>
+            <div
+              className="grid h-16 w-16 place-items-center rounded-2xl bg-white/90 font-display text-lg font-bold"
+              style={{ color: job.logoColor }}
+            >
               {job.companyShort}
             </div>
             <div className="flex-1">
               <div className="text-sm font-semibold text-white/85">{job.company}</div>
               <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">{job.title}</h1>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/90">
-                <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4" />{job.location}</span>
-                <span className="inline-flex items-center gap-1.5"><Wallet className="h-4 w-4" />{job.salary}</span>
-                <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" />{job.type}</span>
-                <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />Deadline {job.deadline}</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-4 w-4" />
+                  {job.location}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Wallet className="h-4 w-4" />
+                  {job.salary}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="h-4 w-4" />
+                  {job.type}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <CalendarDays className="h-4 w-4" />
+                  Deadline {job.deadline}
+                </span>
               </div>
             </div>
           </div>
@@ -68,15 +97,25 @@ function JobDetailsPage() {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
           <div className="space-y-8">
-            <Section title="Job Description"><p className="text-sm leading-relaxed text-foreground/85">{job.description}</p></Section>
-            <Section title="Responsibilities"><BulletList items={job.responsibilities} /></Section>
-            <Section title="Requirements"><BulletList items={job.requirements} /></Section>
-            <Section title="Benefits"><BulletList items={job.benefits} /></Section>
+            <Section title="Job Description">
+              <p className="text-sm leading-relaxed text-foreground/85">{job.description}</p>
+            </Section>
+            <Section title="Responsibilities">
+              <BulletList items={job.responsibilities} />
+            </Section>
+            <Section title="Requirements">
+              <BulletList items={job.requirements} />
+            </Section>
+            <Section title="Benefits">
+              <BulletList items={job.benefits} />
+            </Section>
             <Section title="About the company">
               <div className="flex items-start gap-4">
                 <CompanyLogo name={job.company} color={job.logoColor} size={56} />
                 <div>
-                  <h4 className="font-display text-base font-semibold text-secondary">{job.company}</h4>
+                  <h4 className="font-display text-base font-semibold text-secondary">
+                    {job.company}
+                  </h4>
                   <p className="mt-1 text-sm text-muted-foreground">{job.about}</p>
                 </div>
               </div>
@@ -84,9 +123,12 @@ function JobDetailsPage() {
           </div>
 
           <aside className="h-fit rounded-2xl border border-border bg-card p-6 shadow-card lg:sticky lg:top-24">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ready to apply?</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Ready to apply?
+            </div>
             <p className="mt-2 text-sm text-muted-foreground">
-              Applications close on <span className="font-semibold text-foreground">{job.deadline}</span>.
+              Applications close on{" "}
+              <span className="font-semibold text-foreground">{job.deadline}</span>.
             </p>
             <button
               onClick={() => navigate({ to: "/jobs/$jobId/apply", params: { jobId: job.id } })}
@@ -103,9 +145,18 @@ function JobDetailsPage() {
               </button>
             </div>
             <div className="mt-6 space-y-2 text-xs text-muted-foreground">
-              <div className="flex items-center justify-between"><span>Experience</span><span className="font-semibold text-foreground">{job.experience}</span></div>
-              <div className="flex items-center justify-between"><span>Category</span><span className="font-semibold text-foreground">{job.category}</span></div>
-              <div className="flex items-center justify-between"><span>Posted</span><span className="font-semibold text-foreground">{job.postedDays}d ago</span></div>
+              <div className="flex items-center justify-between">
+                <span>Experience</span>
+                <span className="font-semibold text-foreground">{job.experience}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Category</span>
+                <span className="font-semibold text-foreground">{job.category}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Posted</span>
+                <span className="font-semibold text-foreground">{job.postedDays}d ago</span>
+              </div>
             </div>
           </aside>
         </div>

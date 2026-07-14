@@ -10,7 +10,19 @@ export const Route = createFileRoute("/jobs")({
 });
 
 const LOCATIONS = ["All locations", "Freetown", "Bo", "Makeni", "Lunsar", "Kenema"];
-const CATEGORIES = ["All categories", "Engineering", "Finance", "Marketing", "Operations", "Product", "Retail", "Data & Analytics", "Public Sector", "Development", "Health & Safety"];
+const CATEGORIES = [
+  "All categories",
+  "Engineering",
+  "Finance",
+  "Marketing",
+  "Operations",
+  "Product",
+  "Retail",
+  "Data & Analytics",
+  "Public Sector",
+  "Development",
+  "Health & Safety",
+];
 const TYPES = ["All types", "Full-time", "Part-time", "Contract", "Internship"];
 const EXPERIENCE = ["Any experience", "2+ years", "3+ years", "4+ years", "5+ years"];
 const SALARY = [
@@ -32,7 +44,8 @@ function JobSearchPage() {
   const results = useMemo(() => {
     const salMin = SALARY.find((s) => s.label === sal)?.min ?? 0;
     return JOBS.filter((j) => {
-      if (query && !`${j.title} ${j.company}`.toLowerCase().includes(query.toLowerCase())) return false;
+      if (query && !`${j.title} ${j.company}`.toLowerCase().includes(query.toLowerCase()))
+        return false;
       if (loc !== LOCATIONS[0] && j.location !== loc) return false;
       if (cat !== CATEGORIES[0] && j.category !== cat) return false;
       if (type !== TYPES[0] && j.type !== type) return false;
@@ -46,7 +59,9 @@ function JobSearchPage() {
     <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-gradient-hero p-8 text-white shadow-elegant">
-          <h1 className="font-display text-3xl font-bold sm:text-4xl">Find your next role in Sierra Leone</h1>
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">
+            Find your next role in Sierra Leone
+          </h1>
           <p className="mt-2 max-w-xl text-white/80">
             {JOBS.length}+ live openings from Sierra Leone's leading employers.
           </p>
@@ -72,7 +87,12 @@ function JobSearchPage() {
             </div>
             <Filter label="Location" value={loc} onChange={setLoc} options={LOCATIONS} />
             <Filter label="Job Category" value={cat} onChange={setCat} options={CATEGORIES} />
-            <Filter label="Salary Range" value={sal} onChange={setSal} options={SALARY.map((s) => s.label)} />
+            <Filter
+              label="Salary Range"
+              value={sal}
+              onChange={setSal}
+              options={SALARY.map((s) => s.label)}
+            />
             <Filter label="Experience" value={exp} onChange={setExp} options={EXPERIENCE} />
             <Filter label="Employment Type" value={type} onChange={setType} options={TYPES} />
           </aside>
@@ -102,9 +122,18 @@ function JobSearchPage() {
                     </h3>
                     <p className="text-sm text-muted-foreground">{job.company}</p>
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{job.location}</span>
-                      <span className="inline-flex items-center gap-1"><Wallet className="h-3.5 w-3.5" />{job.salary}</span>
-                      <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{job.type}</span>
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {job.location}
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <Wallet className="h-3.5 w-3.5" />
+                        {job.salary}
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5" />
+                        {job.type}
+                      </span>
                       <span>Posted {job.postedDays}d ago</span>
                     </div>
                   </div>
@@ -130,7 +159,9 @@ function JobSearchPage() {
               ))}
               {results.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
-                  <p className="text-sm text-muted-foreground">No jobs match your filters. Try adjusting them.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No jobs match your filters. Try adjusting them.
+                  </p>
                 </div>
               )}
             </div>
@@ -154,7 +185,9 @@ function Filter({
 }) {
   return (
     <div className="mt-5">
-      <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</label>
+      <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}

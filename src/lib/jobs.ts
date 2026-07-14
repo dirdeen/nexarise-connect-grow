@@ -48,7 +48,12 @@ export const JOBS: Job[] = [
       "Hands-on with Huawei / Ericsson RAN",
       "CCNP or equivalent certification preferred",
     ],
-    benefits: ["Medical cover for family", "Performance bonus", "Learning budget", "Company transport"],
+    benefits: [
+      "Medical cover for family",
+      "Performance bonus",
+      "Learning budget",
+      "Company transport",
+    ],
     about:
       "Orange Sierra Leone is the country's leading telecom operator, serving over 3 million subscribers with mobile, fibre and Orange Money services.",
   },
@@ -140,8 +145,7 @@ export const JOBS: Job[] = [
       "Strong leadership and integrity",
     ],
     benefits: ["Housing allowance", "Fuel allowance", "Medical cover"],
-    about:
-      "NP Sierra Leone is the country's largest indigenous downstream petroleum company.",
+    about: "NP Sierra Leone is the country's largest indigenous downstream petroleum company.",
   },
   {
     id: "sl-mining-geologist",
@@ -332,8 +336,7 @@ export const JOBS: Job[] = [
     experience: "3+ years",
     postedDays: 9,
     deadline: "August 19, 2026",
-    description:
-      "Own the customer experience across Africell's Northern Region retail stores.",
+    description: "Own the customer experience across Africell's Northern Region retail stores.",
     responsibilities: [
       "Coach store managers on service standards",
       "Roll out visual merchandising updates",

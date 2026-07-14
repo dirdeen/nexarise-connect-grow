@@ -85,8 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "NexaRise — Connecting Talent with Opportunity" },
       {
         property: "og:description",
-        content:
-          "Workforce, employment, mentorship and career development for Sierra Leone.",
+        content: "Workforce, employment, mentorship and career development for Sierra Leone.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

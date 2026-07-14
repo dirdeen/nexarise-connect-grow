@@ -16,7 +16,10 @@ export const Route = createFileRoute("/jobs/$jobId/apply")({
     <AppShell>
       <div className="mx-auto max-w-3xl px-6 py-20 text-center">
         <h1 className="font-display text-3xl font-bold text-secondary">Application unavailable</h1>
-        <Link to="/jobs" className="mt-6 inline-flex rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow">
+        <Link
+          to="/jobs"
+          className="mt-6 inline-flex rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow"
+        >
           Back to jobs
         </Link>
       </div>
@@ -68,7 +71,9 @@ function JobApplicationPage() {
           <div>
             <div className="text-sm text-muted-foreground">Applying for</div>
             <h1 className="font-display text-2xl font-bold text-secondary">{job.title}</h1>
-            <div className="text-sm text-muted-foreground">{job.company} · {job.location}</div>
+            <div className="text-sm text-muted-foreground">
+              {job.company} · {job.location}
+            </div>
           </div>
         </div>
 
@@ -156,7 +161,9 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
       <input
         type={type}
         defaultValue={defaultValue}
@@ -181,11 +188,17 @@ function FileUpload({
   const done = progress === 100;
   return (
     <div className="mt-4 first:mt-0">
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </div>
       <div className="mt-1.5 rounded-xl border border-dashed border-border bg-background p-4">
         <div className="flex items-center gap-3">
           <div className="grid h-11 w-11 place-items-center rounded-xl bg-accent text-secondary">
-            {done ? <CheckCircle2 className="h-5 w-5 text-primary" /> : <FileText className="h-5 w-5" />}
+            {done ? (
+              <CheckCircle2 className="h-5 w-5 text-primary" />
+            ) : (
+              <FileText className="h-5 w-5" />
+            )}
           </div>
           <div className="flex-1">
             <div className="text-sm font-semibold text-foreground">
@@ -204,7 +217,10 @@ function FileUpload({
         </div>
         {progress > 0 && (
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-gradient-primary transition-all" style={{ width: `${progress}%` }} />
+            <div
+              className="h-full rounded-full bg-gradient-primary transition-all"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         )}
       </div>

@@ -43,7 +43,10 @@ function RegisterPage() {
   }
 
   return (
-    <AuthShell title="Create your account" subtitle="Join NexaRise and choose your path in minutes.">
+    <AuthShell
+      title="Create your account"
+      subtitle="Join NexaRise and choose your path in minutes."
+    >
       <form onSubmit={onSubmit} className="space-y-4">
         <Field label="Full name">
           <input
@@ -108,7 +111,9 @@ function RegisterPage() {
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link to="/login" className="font-semibold text-primary hover:underline">Sign in</Link>
+          <Link to="/login" className="font-semibold text-primary hover:underline">
+            Sign in
+          </Link>
         </p>
       </form>
     </AuthShell>

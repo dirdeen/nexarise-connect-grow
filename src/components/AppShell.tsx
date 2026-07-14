@@ -62,7 +62,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-export function CompanyLogo({ name, color, size = 48 }: { name: string; color: string; size?: number }) {
+export function CompanyLogo({
+  name,
+  color,
+  size = 48,
+}: {
+  name: string;
+  color: string;
+  size?: number;
+}) {
   const initials = name
     .split(" ")
     .slice(0, 2)

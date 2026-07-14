@@ -7,13 +7,36 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
         <nav className="hidden items-center gap-8 md:flex">
-          <a href="/#features" className="text-sm font-medium text-muted-foreground hover:text-foreground">Platform</a>
-          <a href="/#stats" className="text-sm font-medium text-muted-foreground hover:text-foreground">Impact</a>
-          <a href="/#stories" className="text-sm font-medium text-muted-foreground hover:text-foreground">Stories</a>
-          <a href="/#partners" className="text-sm font-medium text-muted-foreground hover:text-foreground">Partners</a>
+          <a
+            href="/#features"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            Platform
+          </a>
+          <a
+            href="/#stats"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            Impact
+          </a>
+          <a
+            href="/#stories"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            Stories
+          </a>
+          <a
+            href="/#partners"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            Partners
+          </a>
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/login" className="hidden rounded-lg px-4 py-2 text-sm font-semibold text-secondary hover:bg-accent sm:inline-flex">
+          <Link
+            to="/login"
+            className="hidden rounded-lg px-4 py-2 text-sm font-semibold text-secondary hover:bg-accent sm:inline-flex"
+          >
             Sign in
           </Link>
           <Link
@@ -39,7 +62,10 @@ export function SiteFooter() {
               Sierra Leone's platform for workforce, employment, mentorship and career growth.
             </p>
           </div>
-          <FooterCol title="Platform" links={["Find Jobs", "Hire Talent", "Workforce Program", "Mentorship"]} />
+          <FooterCol
+            title="Platform"
+            links={["Find Jobs", "Hire Talent", "Workforce Program", "Mentorship"]}
+          />
           <FooterCol title="Company" links={["About", "Careers", "Press", "Contact"]} />
           <FooterCol title="Resources" links={["Help Center", "Community", "Privacy", "Terms"]} />
         </div>
@@ -59,7 +85,9 @@ function FooterCol({ title, links }: { title: string; links: string[] }) {
       <ul className="mt-4 space-y-2">
         {links.map((l) => (
           <li key={l}>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary">{l}</a>
+            <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+              {l}
+            </a>
           </li>
         ))}
       </ul>

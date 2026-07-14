@@ -26,7 +26,8 @@ function ApplicationSubmittedPage() {
           Congratulations!
         </h1>
         <p className="mt-3 max-w-xl text-muted-foreground">
-          Your application has been submitted successfully. The employer will review your profile and get back to you through the messages tab or by email.
+          Your application has been submitted successfully. The employer will review your profile
+          and get back to you through the messages tab or by email.
         </p>
 
         <div className="mt-10 grid w-full max-w-2xl gap-3 sm:grid-cols-3">
