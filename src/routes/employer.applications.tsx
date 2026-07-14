@@ -77,6 +77,8 @@ function ApplicantCard({
   onReject: () => void;
   onInterview: () => void;
 }) {
+  const [downloaded, setDownloaded] = useState(false);
+
   return (
     <article className="rounded-2xl border border-border bg-card p-5 shadow-card">
       <div className="grid gap-5 lg:grid-cols-[1fr_280px]">
@@ -124,10 +126,12 @@ function ApplicantCard({
           </a>
           <button
             type="button"
+            onClick={() => setDownloaded(true)}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
+            aria-live="polite"
           >
             <Download className="h-4 w-4" />
-            Download CV
+            {downloaded ? "CV ready (demo)" : "Download CV"}
           </button>
           <button
             type="button"

@@ -26,7 +26,7 @@ function VerificationManagementPage() {
             Verification Management
           </span>
           <h1 className="mt-4 font-display text-3xl font-bold sm:text-4xl">
-            Approve trusted platform participants
+            Review platform participant documents
           </h1>
           <p className="mt-2 max-w-2xl text-white/80">
             Verify employers, workforce members and mentors, then approve or reject submitted

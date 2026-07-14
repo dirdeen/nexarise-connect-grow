@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Bell, Briefcase, Home, LogOut, Search, Settings, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
+import { DemoDataNotice } from "@/components/DemoDataNotice";
 
 const navItems = [
   { label: "Dashboard", to: "/job-seeker/dashboard" as const, icon: Home, exact: true },
@@ -79,6 +80,7 @@ function DesktopSidebar() {
         <div className="mt-2 font-display text-lg font-semibold text-secondary">Ibrahim Kamara</div>
         <div className="mt-1 text-xs text-muted-foreground">Job Seeker · Freetown</div>
       </div>
+      <DemoDataNotice compact className="mt-4" />
       <nav className="mt-4 space-y-1" aria-label="Job seeker navigation">
         {navItems.map((item) => (
           <Link

@@ -50,8 +50,8 @@ export const ADMIN_USERS: AdminUser[] = [
   },
   {
     id: "user-orange-sl",
-    name: "Orange Sierra Leone",
-    email: "talent@orange.sl",
+    name: "Demo Telecom SL",
+    email: "talent@demo-employer.example",
     role: "Employer",
     status: "Active",
     location: "Freetown",
@@ -103,7 +103,7 @@ export const ADMIN_USERS: AdminUser[] = [
 export const VERIFICATIONS: VerificationItem[] = [
   {
     id: "verify-orange",
-    name: "Orange Sierra Leone",
+    name: "Demo Telecom SL",
     type: "Employer",
     document: "Business registration certificate",
     submitted: "Today",
@@ -127,7 +127,7 @@ export const VERIFICATIONS: VerificationItem[] = [
   },
   {
     id: "verify-rokel",
-    name: "Rokel Commercial Bank",
+    name: "Demo Commercial Bank",
     type: "Employer",
     document: "Tax clearance and HR contact letter",
     submitted: "10 Jul 2026",
@@ -140,7 +140,7 @@ export const AUDIT_LOGS: AuditLog[] = [
     id: "audit-001",
     actor: "Aminata Admin",
     action: "Approved employer verification",
-    target: "Rokel Commercial Bank",
+    target: "Demo Commercial Bank",
     time: "Today, 9:12 AM",
     severity: "Info",
   },
@@ -171,39 +171,43 @@ export const AUDIT_LOGS: AuditLog[] = [
 ];
 
 export const ADMIN_ANALYTICS = [
-  { label: "Jobs posted", value: JOBS.length + EMPLOYER_JOBS.length, change: "+18%" },
-  { label: "Applications", value: CANDIDATES.length * 14, change: "+24%" },
-  { label: "Hiring rate", value: 62, change: "+8%" },
-  { label: "Workforce requests", value: ASSIGNMENTS.length * 11, change: "+31%" },
-  { label: "Mentorship sessions", value: SESSIONS.length * 9, change: "+12%" },
+  { label: "Jobs posted", value: JOBS.length + EMPLOYER_JOBS.length, change: "Demo data" },
+  { label: "Applications", value: CANDIDATES.length, change: "Demo data" },
+  { label: "Hiring rate", value: 2, change: "Demo data" },
+  { label: "Workforce requests", value: ASSIGNMENTS.length, change: "Demo data" },
+  { label: "Mentorship sessions", value: SESSIONS.length, change: "Demo data" },
 ];
 
 export const REVENUE_SERIES = [
-  { label: "Jan", value: 42000 },
-  { label: "Feb", value: 51000 },
-  { label: "Mar", value: 59000 },
-  { label: "Apr", value: 72000 },
-  { label: "May", value: 86000 },
-  { label: "Jun", value: 104000 },
+  { label: "Jan", value: 1200 },
+  { label: "Feb", value: 1500 },
+  { label: "Mar", value: 1800 },
+  { label: "Apr", value: 2100 },
+  { label: "May", value: 2600 },
+  { label: "Jun", value: 3000 },
 ];
 
 export const HIRING_SERIES = [
-  { label: "Jobs", value: 74 },
-  { label: "Applications", value: 312 },
-  { label: "Shortlisted", value: 88 },
-  { label: "Hired", value: 39 },
+  { label: "Jobs", value: JOBS.length + EMPLOYER_JOBS.length },
+  { label: "Applications", value: CANDIDATES.length },
+  {
+    label: "Shortlisted",
+    value: CANDIDATES.filter((candidate) => candidate.status === "Shortlisted").length,
+  },
+  { label: "Hired", value: 0 },
 ];
 
 export const PLATFORM_STATS = {
-  totalUsers: ADMIN_USERS.length + 820,
-  activeEmployers: 64,
-  jobSeekers: 536,
-  workforceMembers:
-    WORKERS.length + WORKFORCE_CATEGORIES.reduce((sum, item) => sum + item.activeWorkers, 0),
-  mentors: MENTORS.length + 42,
+  totalUsers: ADMIN_USERS.length,
+  activeEmployers: ADMIN_USERS.filter(
+    (user) => user.role === "Employer" && user.status === "Active",
+  ).length,
+  jobSeekers: ADMIN_USERS.filter((user) => user.role === "Job Seeker").length,
+  workforceMembers: WORKERS.length,
+  mentors: MENTORS.length,
   activeJobs: EMPLOYER_JOBS.filter((job) => job.status === "Active").length + JOBS.length,
-  applications: CANDIDATES.length * 14,
-  revenue: "NLe 104,000",
+  applications: CANDIDATES.length,
+  revenue: "NLe 3,000 demo",
 };
 
 export const WORKFORCE_ADMIN_SUMMARY: Array<{

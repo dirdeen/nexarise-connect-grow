@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Bookmark, Clock, MapPin, Wallet } from "lucide-react";
-import type { MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 
 import { CompanyLogo } from "@/components/AppShell";
 import type { Job } from "@/lib/jobs";
@@ -98,14 +98,24 @@ function JobMeta({ job, compact }: { job: Job; compact: boolean }) {
 }
 
 function SaveButton() {
+  const [saved, setSaved] = useState(false);
+
   return (
     <button
       type="button"
-      onClick={(e) => e.stopPropagation()}
-      className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-      aria-label="Save job"
+      onClick={(e) => {
+        e.stopPropagation();
+        setSaved((current) => !current);
+      }}
+      className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+        saved
+          ? "border-primary bg-primary/10 text-primary"
+          : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+      }`}
+      aria-label={saved ? "Remove saved job" : "Save job"}
+      aria-pressed={saved}
     >
-      <Bookmark className="h-4 w-4" />
+      <Bookmark className={`h-4 w-4 ${saved ? "fill-primary" : ""}`} />
     </button>
   );
 }

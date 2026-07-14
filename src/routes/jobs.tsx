@@ -88,7 +88,7 @@ function JobSearchPage() {
             Find your next role in Sierra Leone
           </h1>
           <p className="mt-2 max-w-xl text-white/80">
-            {JOBS.length}+ live openings from Sierra Leone's leading employers.
+            {JOBS.length}+ live openings from Sierra Leone's sample employers.
           </p>
           <label className="mt-6 flex items-center gap-2 rounded-2xl bg-white p-2 shadow-glow">
             <span className="sr-only">Search jobs</span>

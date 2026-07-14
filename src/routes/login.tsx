@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
+import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { login } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
@@ -67,9 +68,14 @@ function LoginPage() {
             />
             Remember me
           </label>
-          <a href="#" className="font-medium text-primary hover:underline">
+          <button
+            type="button"
+            className="font-medium text-primary hover:underline"
+            aria-label="Password reset coming soon"
+            title="Password reset coming soon"
+          >
             Forgot password?
-          </a>
+          </button>
         </div>
 
         {error && (
@@ -124,14 +130,14 @@ export function AuthShell({
         </div>
         <div className="relative">
           <p className="font-display text-3xl font-bold leading-tight text-white">
-            "NexaRise gave me my first job and a mentor who still checks on me."
+            "Demo career journeys, mentorship activity and platform metrics are shown for review."
           </p>
-          <p className="mt-4 text-sm text-white/70">Aminata K. · Junior Developer, Orange SL</p>
+          <p className="mt-4 text-sm text-white/70">Demo user story · Not a verified claim</p>
         </div>
         <div className="relative flex gap-6 text-white/80">
-          <Stat n="12.4k+" l="Job Seekers" />
-          <Stat n="520+" l="Employers" />
-          <Stat n="180+" l="Mentors" />
+          <Stat n="Demo" l="Job Seekers" />
+          <Stat n="Demo" l="Employers" />
+          <Stat n="Demo" l="Mentors" />
         </div>
       </div>
 
@@ -143,6 +149,7 @@ export function AuthShell({
           </div>
           <h1 className="font-display text-3xl font-bold text-secondary">{title}</h1>
           <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
+          <DemoDataNotice compact className="mt-4" />
           <div className="mt-8">{children}</div>
         </div>
       </div>

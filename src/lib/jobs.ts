@@ -24,7 +24,7 @@ export const JOBS: Job[] = [
   {
     id: "orange-network-eng",
     title: "Senior Network Engineer",
-    company: "Orange Sierra Leone",
+    company: "Demo Telecom SL",
     companyShort: "OSL",
     logoColor: "#FF7900",
     location: "Freetown",
@@ -36,7 +36,7 @@ export const JOBS: Job[] = [
     postedDays: 2,
     deadline: "August 20, 2026",
     description:
-      "Orange Sierra Leone is expanding its 4G/5G footprint across the Western Area and provincial capitals. We are hiring a Senior Network Engineer to design, deploy and optimise our core and access networks.",
+      "Demo Telecom SL is expanding its 4G/5G footprint across the Western Area and provincial capitals. We are hiring a Senior Network Engineer to design, deploy and optimise our core and access networks.",
     responsibilities: [
       "Design and maintain RAN and transport network architecture",
       "Lead 4G/5G rollout across Freetown, Bo and Kenema",
@@ -57,12 +57,12 @@ export const JOBS: Job[] = [
       "Company transport",
     ],
     about:
-      "Orange Sierra Leone is the country's leading telecom operator, serving over 3 million subscribers with mobile, fibre and Orange Money services.",
+      "Demo Telecom SL is a demo telecom employer profile for mobile, fibre and Demo Mobile Money services.",
   },
   {
     id: "africell-brand-mgr",
     title: "Brand Marketing Manager",
-    company: "Africell",
+    company: "Demo Mobile SL",
     companyShort: "AF",
     logoColor: "#7A1FA2",
     location: "Freetown",
@@ -74,7 +74,7 @@ export const JOBS: Job[] = [
     postedDays: 4,
     deadline: "August 15, 2026",
     description:
-      "Drive Africell's brand strategy across Sierra Leone, leading integrated campaigns for data, Afrimoney and lifestyle products.",
+      "Drive Demo Mobile SL's brand strategy across Sierra Leone, demo integrated campaigns for data, Demo Wallet and lifestyle products.",
     responsibilities: [
       "Own the annual brand and ATL/BTL calendar",
       "Manage creative and media agency partners",
@@ -89,12 +89,12 @@ export const JOBS: Job[] = [
     skills: ["Brand Strategy", "Campaign Planning", "Agency Management", "Market Research"],
     benefits: ["Airtime & data package", "Health insurance", "Annual bonus", "Hybrid schedule"],
     about:
-      "Africell is a pan-African mobile operator known for youth culture, affordable data and Afrimoney financial services.",
+      "Demo Mobile SL is a demo mobile employer profile for youth culture, affordable data and Demo Wallet financial services.",
   },
   {
     id: "rokel-credit-analyst",
     title: "Credit Risk Analyst",
-    company: "Rokel Commercial Bank",
+    company: "Demo Commercial Bank",
     companyShort: "RCB",
     logoColor: "#0D5EAF",
     location: "Freetown",
@@ -106,7 +106,7 @@ export const JOBS: Job[] = [
     postedDays: 1,
     deadline: "August 5, 2026",
     description:
-      "Support Rokel's SME and corporate lending desk by assessing credit applications and monitoring the performance of the loan book.",
+      "Support Demo Bank's SME and corporate lending desk by assessing credit applications and monitoring the performance of the loan book.",
     responsibilities: [
       "Analyse financial statements and collateral",
       "Prepare credit memos for the risk committee",
@@ -119,13 +119,12 @@ export const JOBS: Job[] = [
     ],
     skills: ["Credit Analysis", "Financial Statements", "Risk Reporting", "SME Lending"],
     benefits: ["Staff loan facility", "Pension top-up", "Medical cover"],
-    about:
-      "Rokel Commercial Bank is one of Sierra Leone's oldest commercial banks, with 27 branches nationwide.",
+    about: "Demo Commercial Bank is a demo commercial banking employer profile.",
   },
   {
     id: "np-station-mgr",
     title: "Station Operations Manager",
-    company: "NP Sierra Leone",
+    company: "Demo Energy SL",
     companyShort: "NP",
     logoColor: "#0A7B3E",
     location: "Bo",
@@ -137,7 +136,7 @@ export const JOBS: Job[] = [
     postedDays: 6,
     deadline: "August 12, 2026",
     description:
-      "Lead day-to-day operations of NP's flagship service station in Bo, managing fuel stock, staff and customer experience.",
+      "Lead day-to-day operations of Demo Energy SL's flagship service station in Bo, managing fuel stock, staff and customer experience.",
     responsibilities: [
       "Supervise pump attendants, cashiers and shop staff",
       "Reconcile daily fuel dips and cash lodgements",
@@ -150,12 +149,12 @@ export const JOBS: Job[] = [
     ],
     skills: ["Operations Management", "Stock Control", "Cash Reconciliation", "HSE Standards"],
     benefits: ["Housing allowance", "Fuel allowance", "Medical cover"],
-    about: "NP Sierra Leone is the country's largest indigenous downstream petroleum company.",
+    about: "Demo Energy SL is the demo downstream energy employer profile.",
   },
   {
     id: "sl-mining-geologist",
     title: "Exploration Geologist",
-    company: "SL Mining",
+    company: "Demo Mining SL",
     companyShort: "SLM",
     logoColor: "#5A4A2E",
     location: "Lunsar",
@@ -180,14 +179,13 @@ export const JOBS: Job[] = [
     ],
     skills: ["Core Logging", "Resource Modelling", "Drilling Supervision", "Surpac"],
     benefits: ["Site accommodation", "Rotation flights", "Life insurance"],
-    about:
-      "SL Mining operates the Marampa iron ore mine, one of Sierra Leone's largest export operations.",
+    about: "Demo Mining SL is a demo mining employer profile for operations and export roles.",
   },
   {
     id: "uba-relationship-officer",
     title: "Relationship Officer, SME",
-    company: "United Bank for Africa",
-    companyShort: "UBA",
+    company: "Demo Pan-African Bank",
+    companyShort: "DPA",
     logoColor: "#D71E28",
     location: "Freetown",
     type: "Full-time",
@@ -198,7 +196,7 @@ export const JOBS: Job[] = [
     postedDays: 3,
     deadline: "August 18, 2026",
     description:
-      "Grow UBA's SME portfolio in the Western Area by acquiring new business customers and deepening existing relationships.",
+      "Grow DPA's SME portfolio in the Western Area by acquiring new business customers and deepening existing relationships.",
     responsibilities: [
       "Prospect and onboard SME clients",
       "Cross-sell trade, FX and digital products",
@@ -210,13 +208,12 @@ export const JOBS: Job[] = [
     ],
     skills: ["Relationship Management", "Portfolio Quality", "Sales Pipeline", "Trade Products"],
     benefits: ["Sales commission", "Health insurance", "Career mobility across Africa"],
-    about:
-      "UBA is a pan-African bank present in 20 African countries, with a strong SME focus in Sierra Leone.",
+    about: "DPA is a demo banking employer profile focused on SME services.",
   },
   {
     id: "statsl-data-analyst",
     title: "Data Analyst, National Surveys",
-    company: "Statistics Sierra Leone",
+    company: "Demo Statistics Agency",
     companyShort: "SSL",
     logoColor: "#1E5AA8",
     location: "Freetown",
@@ -240,13 +237,12 @@ export const JOBS: Job[] = [
     ],
     skills: ["Survey Analysis", "Stata", "R/Python", "Data Cleaning"],
     benefits: ["Training in international methodologies", "Travel per diems"],
-    about:
-      "Statistics Sierra Leone is the national statistical office, producing official data used by Government and partners.",
+    about: "Demo Statistics Agency is the demo public data employer profile for analytics roles.",
   },
   {
     id: "mol-policy-officer",
     title: "Labour Policy Officer",
-    company: "Ministry of Labour",
+    company: "Demo Labour Agency",
     companyShort: "MoL",
     logoColor: "#0B6E4F",
     location: "Freetown",
@@ -261,7 +257,7 @@ export const JOBS: Job[] = [
       "Contribute to the development and monitoring of national employment and labour market policies.",
     responsibilities: [
       "Draft policy briefs and cabinet memos",
-      "Coordinate with ILO and development partners",
+      "Coordinate with Demo Labour Partner and development partners",
       "Support labour inspections and reporting",
     ],
     requirements: [
@@ -271,12 +267,12 @@ export const JOBS: Job[] = [
     skills: ["Policy Writing", "Stakeholder Coordination", "Research", "Labour Standards"],
     benefits: ["Government pension", "Training abroad", "Job security"],
     about:
-      "The Ministry of Labour and Social Security is responsible for employment policy, labour standards and workforce development.",
+      "The Demo Labour Agency and Social Security is a demo public-sector employer profile for labour policy roles.",
   },
   {
     id: "undp-programme-associate",
     title: "Programme Associate, Youth Employment",
-    company: "UNDP Sierra Leone",
+    company: "Demo Development Agency",
     companyShort: "UN",
     logoColor: "#009EDB",
     location: "Freetown",
@@ -288,7 +284,7 @@ export const JOBS: Job[] = [
     postedDays: 7,
     deadline: "August 25, 2026",
     description:
-      "Support UNDP's Youth Employment and Entrepreneurship programme, coordinating grants, partners and reporting.",
+      "Support Demo Development Agency's Youth Employment and Entrepreneurship programme, coordinating grants, partners and reporting.",
     responsibilities: [
       "Manage sub-grants to youth-serving organisations",
       "Track results against the programme results framework",
@@ -302,12 +298,12 @@ export const JOBS: Job[] = [
     skills: ["Grant Management", "Results Tracking", "Donor Reporting", "Youth Employment"],
     benefits: ["UN medical plan", "Pension", "Learning stipend"],
     about:
-      "UNDP Sierra Leone supports the Government to accelerate the SDGs, including decent work and youth empowerment.",
+      "Demo Development Agency is a demo development employer profile for youth employment roles.",
   },
   {
     id: "orange-money-product",
-    title: "Product Manager, Orange Money",
-    company: "Orange Sierra Leone",
+    title: "Product Manager, Demo Mobile Money",
+    company: "Demo Telecom SL",
     companyShort: "OSL",
     logoColor: "#FF7900",
     location: "Freetown",
@@ -319,7 +315,7 @@ export const JOBS: Job[] = [
     postedDays: 3,
     deadline: "August 24, 2026",
     description:
-      "Own the Orange Money merchant proposition, from onboarding to acceptance across Sierra Leone.",
+      "Own the Demo Mobile Money merchant proposition, from onboarding to acceptance across Sierra Leone.",
     responsibilities: [
       "Define the merchant product roadmap",
       "Partner with engineering, ops and compliance",
@@ -331,12 +327,12 @@ export const JOBS: Job[] = [
     ],
     skills: ["Product Roadmaps", "Fintech", "Merchant Growth", "Payments"],
     benefits: ["Stock in innovation projects", "Hybrid work", "Family health cover"],
-    about: "Orange Money is the largest mobile money service in Sierra Leone.",
+    about: "Demo Mobile Money is the demo mobile money product in Sierra Leone.",
   },
   {
     id: "africell-retail-lead",
     title: "Retail Experience Lead",
-    company: "Africell",
+    company: "Demo Mobile SL",
     companyShort: "AF",
     logoColor: "#7A1FA2",
     location: "Makeni",
@@ -347,7 +343,8 @@ export const JOBS: Job[] = [
     experience: "3+ years",
     postedDays: 9,
     deadline: "August 19, 2026",
-    description: "Own the customer experience across Africell's Northern Region retail stores.",
+    description:
+      "Own the customer experience across Demo Mobile SL's Northern Region retail stores.",
     responsibilities: [
       "Coach store managers on service standards",
       "Roll out visual merchandising updates",
@@ -356,12 +353,12 @@ export const JOBS: Job[] = [
     requirements: ["Degree preferred", "3+ years multi-store retail leadership"],
     skills: ["Retail Coaching", "Customer Experience", "NPS", "Visual Merchandising"],
     benefits: ["Store bonus", "Travel allowance", "Medical cover"],
-    about: "Africell operates the largest retail footprint of any operator in Sierra Leone.",
+    about: "Demo Mobile SL operates the demo retail footprint in Sierra Leone.",
   },
   {
     id: "sl-mining-safety",
     title: "Health & Safety Officer",
-    company: "SL Mining",
+    company: "Demo Mining SL",
     companyShort: "SLM",
     logoColor: "#5A4A2E",
     location: "Lunsar",
@@ -381,7 +378,7 @@ export const JOBS: Job[] = [
     requirements: ["NEBOSH IGC or equivalent", "3+ years in mining or heavy industry"],
     skills: ["Incident Investigation", "Safety Training", "ISO 45001", "Risk Assessment"],
     benefits: ["Rotation schedule", "Site accommodation", "Life insurance"],
-    about: "SL Mining is committed to zero-harm operations at the Marampa mine.",
+    about: "Demo Mining SL is a demo mining employer profile focused on safe operations.",
   },
 ];
 

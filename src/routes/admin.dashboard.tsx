@@ -58,19 +58,19 @@ function AdminDashboard() {
           <AdminStat
             label="Total users"
             value={`${PLATFORM_STATS.totalUsers}`}
-            helper="+42 this week"
+            helper="demo record set"
           />
           <AdminStat
             label="Active employers"
             value={`${PLATFORM_STATS.activeEmployers}`}
-            helper="verified partners"
+            helper="demo employer records"
           />
           <AdminStat
             label="Job seekers"
             value={`${PLATFORM_STATS.jobSeekers}`}
             helper="career profiles"
           />
-          <AdminStat label="Revenue" value={PLATFORM_STATS.revenue} helper="+21% monthly" />
+          <AdminStat label="Revenue" value={PLATFORM_STATS.revenue} helper="demo only" />
           <AdminStat
             label="Workforce members"
             value={`${PLATFORM_STATS.workforceMembers}`}

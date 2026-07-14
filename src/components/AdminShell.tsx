@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
 
 const adminNav = [
@@ -84,6 +85,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </div>
+          <DemoDataNotice compact className="mt-4" />
           <nav className="mt-4 space-y-1" aria-label="Admin navigation">
             {adminNav.map((item) => (
               <Link

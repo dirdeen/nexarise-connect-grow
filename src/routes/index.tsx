@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
+import { DemoDataNotice } from "@/components/DemoDataNotice";
 import heroImg from "@/assets/hero-illustration.jpg";
 
 export const Route = createFileRoute("/")({
@@ -7,51 +8,51 @@ export const Route = createFileRoute("/")({
 });
 
 const stats = [
-  { label: "Job Seekers", value: "12,400+" },
-  { label: "Verified Workforce", value: "3,800+" },
-  { label: "Partner Employers", value: "520+" },
-  { label: "Mentors Onboarded", value: "180+" },
+  { label: "Job Seeker Demo", value: "Demo" },
+  { label: "Workforce Demo", value: "Demo" },
+  { label: "Employer Demo", value: "Demo" },
+  { label: "Mentor Demo", value: "Demo" },
 ];
 
 const companies = [
-  "Orange SL",
-  "Africell",
-  "Rokel Bank",
-  "Sierra Rutile",
-  "Bluecrest",
-  "IPAM",
-  "UNDP",
-  "Splash",
+  "Strategic Partnership Opportunities",
+  "Become a NexaRise Partner",
+  "Coming Soon",
+  "Workforce Partners",
+  "Training Partners",
+  "Employer Partners",
+  "Mentor Network",
+  "Community Partners",
 ];
 
 const stories = [
   {
-    name: "Aminata K.",
-    role: "Junior Developer at Orange SL",
+    name: "Demo Job Seeker",
+    role: "Career pathway example",
     quote:
-      "NexaRise matched me with a mentor and a job in three weeks. I finally have a career path.",
+      "This example shows how a job seeker could discover roles, receive mentorship and track applications.",
   },
   {
-    name: "Mohamed S.",
-    role: "Verified Keke Rider, Freetown",
+    name: "Demo Workforce Member",
+    role: "Workforce pathway example",
     quote:
-      "The Workforce Program verified my ID and now I get steady bookings through trusted employers.",
+      "This example shows how workforce members could manage verification, availability and assignments.",
   },
   {
-    name: "Fatmata B.",
-    role: "HR Lead, Bluecrest",
+    name: "Demo Employer",
+    role: "Employer workflow example",
     quote:
-      "We hired four cleaners and two office assistants — all pre-vetted. It saved us weeks of screening.",
+      "This example shows how employers could post jobs, review applicants and request workforce support.",
   },
 ];
 
 const partners = [
-  "IPAM",
-  "Limkokwing SL",
-  "Fourah Bay College",
-  "Freetown Polytechnic",
-  "GIZ",
-  "British Council",
+  "Strategic Partnership Opportunities",
+  "Become a NexaRise Partner",
+  "Coming Soon",
+  "Training Providers",
+  "Employer Networks",
+  "Community Organizations",
 ];
 
 function LandingPage() {
@@ -66,7 +67,7 @@ function LandingPage() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-secondary">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Sprint 1 · Now live in Sierra Leone
+              Demo build · Sierra Leone market concept
             </span>
             <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-secondary sm:text-5xl lg:text-6xl">
               Connecting <span className="text-gradient-primary">Talent</span>
@@ -77,8 +78,9 @@ function LandingPage() {
               <strong className="text-foreground">Employers</strong>,{" "}
               <strong className="text-foreground">Mentors</strong> and{" "}
               <strong className="text-foreground">Verified Workforce Members</strong> together on
-              one trusted platform — built for Sierra Leone's economy.
+              one platform concept — built for Sierra Leone's economy.
             </p>
+            <DemoDataNotice className="mt-6 max-w-xl" />
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
@@ -107,9 +109,7 @@ function LandingPage() {
                   <div key={i} className={`h-8 w-8 rounded-full border-2 border-background ${c}`} />
                 ))}
               </div>
-              <span>
-                Trusted by <strong className="text-foreground">12,400+</strong> Sierra Leoneans
-              </span>
+              <span>Demo data shown for product review and stakeholder walkthroughs</span>
             </div>
           </div>
 
@@ -173,7 +173,7 @@ function LandingPage() {
             },
             {
               t: "Mentorship & Training",
-              d: "Connect with mentors and accredited training partners.",
+              d: "Connect with mentors and upcoming training opportunities.",
               icon: "🎓",
             },
           ].map((f) => (
@@ -195,7 +195,7 @@ function LandingPage() {
       <section className="bg-surface py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Trusted by leading employers across Sierra Leone
+            Strategic Partnership Opportunities
           </p>
           <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4 lg:grid-cols-8">
             {companies.map((c) => (
@@ -214,9 +214,11 @@ function LandingPage() {
       <section id="stories" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-secondary sm:text-4xl">
-            Success stories
+            Demo journey examples
           </h2>
-          <p className="mt-4 text-muted-foreground">Real Sierra Leoneans. Real careers unlocked.</p>
+          <p className="mt-4 text-muted-foreground">
+            Illustrative flows only. These are not verified testimonials.
+          </p>
         </div>
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {stories.map((s) => (
@@ -240,15 +242,15 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Training partners */}
+      {/* Partnership opportunities */}
       <section id="partners" className="bg-surface py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="font-display text-2xl font-bold text-secondary sm:text-3xl">
-              Training partners
+              Become a NexaRise Partner
             </h2>
             <p className="mt-3 text-sm text-muted-foreground">
-              Accredited institutions powering skill-building on NexaRise.
+              Confirmed partners will be listed here only after confirmation.
             </p>
           </div>
           <div className="mt-10 flex flex-wrap justify-center gap-4">

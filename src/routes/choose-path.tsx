@@ -27,7 +27,7 @@ const paths: Path[] = [
   },
   {
     title: "Verified Workforce",
-    description: "Join the trusted network of skilled workers.",
+    description: "Join the demo network of skilled workers.",
     bullets: ["Drivers", "Keke Riders", "Office Assistants", "Professional Cleaners"],
     cta: "Join Workforce",
     to: "/workforce/dashboard",
@@ -44,9 +44,9 @@ const paths: Path[] = [
   },
   {
     title: "Mentorship & Training",
-    description: "Connect with mentors and training partners.",
+    description: "Connect with demo mentors and upcoming training opportunities.",
     cta: "Continue",
-    to: "/mentor/dashboard",
+    to: "/mentorship/dashboard",
     icon: "🎓",
     accent: "from-primary-glow to-secondary",
   },

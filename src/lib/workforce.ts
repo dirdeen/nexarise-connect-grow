@@ -39,26 +39,26 @@ export const WORKFORCE_CATEGORIES: Array<{
   {
     name: "Drivers",
     description: "Licensed vehicle drivers for logistics, staff transport and executive trips.",
-    activeWorkers: 84,
-    openAssignments: 12,
+    activeWorkers: 2,
+    openAssignments: 1,
   },
   {
     name: "Keke Riders",
     description: "Verified keke riders for local delivery, errands and commuter support.",
-    activeWorkers: 126,
-    openAssignments: 18,
+    activeWorkers: 1,
+    openAssignments: 0,
   },
   {
     name: "Office Assistants",
     description: "Administrative support, reception, records and front-office coordination.",
-    activeWorkers: 59,
-    openAssignments: 9,
+    activeWorkers: 2,
+    openAssignments: 1,
   },
   {
     name: "Professional Cleaners",
     description: "Trained cleaners for offices, guest houses, retail branches and events.",
-    activeWorkers: 73,
-    openAssignments: 14,
+    activeWorkers: 1,
+    openAssignments: 1,
   },
 ];
 
@@ -171,7 +171,7 @@ export const ASSIGNMENTS: WorkforceAssignment[] = [
   {
     id: "orange-staff-transport",
     title: "Staff transport support",
-    employer: "Orange Sierra Leone",
+    employer: "Demo Telecom SL",
     location: "Freetown",
     shift: "7:00 AM - 5:00 PM",
     duration: "3 months",
@@ -181,7 +181,7 @@ export const ASSIGNMENTS: WorkforceAssignment[] = [
   {
     id: "rokel-office-support",
     title: "Branch office assistant",
-    employer: "Rokel Commercial Bank",
+    employer: "Demo Commercial Bank",
     location: "Bo",
     shift: "8:30 AM - 4:30 PM",
     duration: "6 weeks",
@@ -191,7 +191,7 @@ export const ASSIGNMENTS: WorkforceAssignment[] = [
   {
     id: "undp-training-cleaning",
     title: "Training venue cleaning team",
-    employer: "UNDP Sierra Leone",
+    employer: "Demo Development Agency",
     location: "Kenema",
     shift: "Morning",
     duration: "10 days",

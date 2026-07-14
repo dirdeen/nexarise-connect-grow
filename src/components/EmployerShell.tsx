@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
 import { COMPANY_PROFILE } from "@/lib/employer";
 
@@ -83,6 +84,7 @@ export function EmployerShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </div>
+          <DemoDataNotice compact className="mt-4" />
           <nav className="mt-4 space-y-1" aria-label="Employer navigation">
             {employerNav.map((item) => (
               <Link

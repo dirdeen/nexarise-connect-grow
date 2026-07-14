@@ -320,6 +320,7 @@ function FileUpload({
               type="file"
               className="sr-only"
               accept=".pdf,.doc,.docx"
+              aria-label={label}
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) onChoose(file.name);

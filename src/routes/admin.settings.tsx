@@ -88,7 +88,7 @@ function SystemSettingsPage() {
             <Field label="Verification approved email">
               <textarea
                 className="field-input min-h-28"
-                defaultValue="Your NexaRise verification has been approved. You can now access trusted platform features."
+                defaultValue="Your NexaRise verification has been approved. You can now access platform features."
               />
             </Field>
           </Section>

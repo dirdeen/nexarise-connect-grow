@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
 import { NOTIFICATIONS } from "@/lib/mentorship";
 
@@ -91,6 +92,7 @@ export function MentorshipShell({ children }: { children: ReactNode }) {
             </div>
             <div className="mt-1 text-xs text-muted-foreground">Mentor · Product leadership</div>
           </div>
+          <DemoDataNotice compact className="mt-4" />
           <nav className="mt-4 space-y-1" aria-label="Mentorship navigation">
             {mentorshipNav.map((item) => (
               <Link

@@ -17,7 +17,7 @@ export function SiteHeader() {
             href="/#stats"
             className="text-sm font-medium text-muted-foreground hover:text-foreground"
           >
-            Impact
+            Demo Metrics
           </a>
           <a
             href="/#stories"
@@ -29,7 +29,7 @@ export function SiteHeader() {
             href="/#partners"
             className="text-sm font-medium text-muted-foreground hover:text-foreground"
           >
-            Partners
+            Partnership
           </a>
         </nav>
         <div className="flex items-center gap-2">
@@ -64,10 +64,31 @@ export function SiteFooter() {
           </div>
           <FooterCol
             title="Platform"
-            links={["Find Jobs", "Hire Talent", "Workforce Program", "Mentorship"]}
+            links={[
+              ["Find Jobs", "/jobs"],
+              ["Hire Talent", "/employer/dashboard"],
+              ["Workforce Program", "/workforce/dashboard"],
+              ["Mentorship", "/mentorship/dashboard"],
+            ]}
           />
-          <FooterCol title="Company" links={["About", "Careers", "Press", "Contact"]} />
-          <FooterCol title="Resources" links={["Help Center", "Community", "Privacy", "Terms"]} />
+          <FooterCol
+            title="Company"
+            links={[
+              ["About", "/#features"],
+              ["Partnership", "/#partners"],
+              ["Demo Guide", "/#stats"],
+              ["Contact", "/#partners"],
+            ]}
+          />
+          <FooterCol
+            title="Resources"
+            links={[
+              ["Help Center", "/#features"],
+              ["Community", "/#stories"],
+              ["Privacy", "/#partners"],
+              ["Terms", "/#partners"],
+            ]}
+          />
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} NexaRise. Freetown, Sierra Leone.</p>
@@ -78,15 +99,15 @@ export function SiteFooter() {
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: string[] }) {
+function FooterCol({ title, links }: { title: string; links: Array<[string, string]> }) {
   return (
     <div>
       <h4 className="text-sm font-semibold text-foreground">{title}</h4>
       <ul className="mt-4 space-y-2">
-        {links.map((l) => (
-          <li key={l}>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary">
-              {l}
+        {links.map(([label, href]) => (
+          <li key={label}>
+            <a href={href} className="text-sm text-muted-foreground hover:text-primary">
+              {label}
             </a>
           </li>
         ))}

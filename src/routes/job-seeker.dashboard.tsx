@@ -96,9 +96,13 @@ function JobSeekerDashboard() {
               >
                 <Search className="h-4 w-4" /> Search jobs
               </Link>
-              <button className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/15">
+              <Link
+                to="/jobs/$jobId/apply"
+                params={{ jobId: "orange-network-eng" }}
+                className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/15"
+              >
                 <Upload className="h-4 w-4" /> Upload CV
-              </button>
+              </Link>
             </div>
           </section>
 
@@ -138,9 +142,12 @@ function JobSeekerDashboard() {
                 </li>
               ))}
             </ul>
-            <button className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground hover:bg-gradient-primary hover:shadow-glow">
+            <Link
+              to="/register"
+              className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground hover:bg-gradient-primary hover:shadow-glow"
+            >
               Complete profile
-            </button>
+            </Link>
           </section>
         </div>
 

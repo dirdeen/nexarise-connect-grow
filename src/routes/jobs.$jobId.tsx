@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate, notFound } from "@tanstack/react-router";
+import { useState } from "react";
 import { AppShell, CompanyLogo } from "@/components/AppShell";
 import { findJob } from "@/lib/jobs";
 import {
@@ -45,6 +46,17 @@ function JobNotFound() {
 function JobDetailsPage() {
   const { job } = Route.useLoaderData();
   const navigate = useNavigate();
+  const [saved, setSaved] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  function shareJob() {
+    setShared(true);
+    const path = `/jobs/${job.id}`;
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(`${window.location.origin}${path}`).catch(() => undefined);
+    }
+    window.setTimeout(() => setShared(false), 1800);
+  }
 
   return (
     <AppShell>
@@ -171,17 +183,21 @@ function JobDetailsPage() {
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
                 type="button"
+                onClick={() => setSaved((current) => !current)}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                aria-label={`Save ${job.title}`}
+                aria-label={saved ? `Remove saved ${job.title}` : `Save ${job.title}`}
+                aria-pressed={saved}
               >
-                <Bookmark className="h-4 w-4" /> Save
+                <Bookmark className={`h-4 w-4 ${saved ? "fill-primary text-primary" : ""}`} />
+                {saved ? "Saved" : "Save"}
               </button>
               <button
                 type="button"
+                onClick={shareJob}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 aria-label={`Share ${job.title}`}
               >
-                <Share2 className="h-4 w-4" /> Share
+                <Share2 className="h-4 w-4" /> {shared ? "Copied" : "Share"}
               </button>
             </div>
             <div className="mt-6 space-y-2 text-xs text-muted-foreground">
