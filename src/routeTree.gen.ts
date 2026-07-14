@@ -32,6 +32,13 @@ import { Route as EmployerProfileRouteImport } from './routes/employer.profile'
 import { Route as EmployerJobsRouteImport } from './routes/employer.jobs'
 import { Route as EmployerDashboardRouteImport } from './routes/employer.dashboard'
 import { Route as EmployerApplicationsRouteImport } from './routes/employer.applications'
+import { Route as AdminWorkforceRouteImport } from './routes/admin.workforce'
+import { Route as AdminVerificationRouteImport } from './routes/admin.verification'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as RoleDashboardRouteImport } from './routes/$role.dashboard'
 import { Route as WorkforceWorkersWorkerIdRouteImport } from './routes/workforce.workers.$workerId'
 import { Route as MentorshipSessionsSessionIdRouteImport } from './routes/mentorship.sessions.$sessionId'
@@ -160,6 +167,41 @@ const EmployerApplicationsRoute = EmployerApplicationsRouteImport.update({
   path: '/employer/applications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminWorkforceRoute = AdminWorkforceRouteImport.update({
+  id: '/admin/workforce',
+  path: '/admin/workforce',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminVerificationRoute = AdminVerificationRouteImport.update({
+  id: '/admin/verification',
+  path: '/admin/verification',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/admin/settings',
+  path: '/admin/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuditLogsRoute = AdminAuditLogsRouteImport.update({
+  id: '/admin/audit-logs',
+  path: '/admin/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin/analytics',
+  path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoleDashboardRoute = RoleDashboardRouteImport.update({
   id: '/$role/dashboard',
   path: '/$role/dashboard',
@@ -237,6 +279,13 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/verification': typeof AdminVerificationRoute
+  '/admin/workforce': typeof AdminWorkforceRoute
   '/employer/applications': typeof EmployerApplicationsRouteWithChildren
   '/employer/dashboard': typeof EmployerDashboardRoute
   '/employer/jobs': typeof EmployerJobsRouteWithChildren
@@ -274,6 +323,13 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/verification': typeof AdminVerificationRoute
+  '/admin/workforce': typeof AdminWorkforceRoute
   '/employer/applications': typeof EmployerApplicationsRouteWithChildren
   '/employer/dashboard': typeof EmployerDashboardRoute
   '/employer/jobs': typeof EmployerJobsRouteWithChildren
@@ -312,6 +368,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/verification': typeof AdminVerificationRoute
+  '/admin/workforce': typeof AdminWorkforceRoute
   '/employer/applications': typeof EmployerApplicationsRouteWithChildren
   '/employer/dashboard': typeof EmployerDashboardRoute
   '/employer/jobs': typeof EmployerJobsRouteWithChildren
@@ -351,6 +414,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/$role/dashboard'
+    | '/admin/analytics'
+    | '/admin/audit-logs'
+    | '/admin/dashboard'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/verification'
+    | '/admin/workforce'
     | '/employer/applications'
     | '/employer/dashboard'
     | '/employer/jobs'
@@ -388,6 +458,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/$role/dashboard'
+    | '/admin/analytics'
+    | '/admin/audit-logs'
+    | '/admin/dashboard'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/verification'
+    | '/admin/workforce'
     | '/employer/applications'
     | '/employer/dashboard'
     | '/employer/jobs'
@@ -425,6 +502,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/$role/dashboard'
+    | '/admin/analytics'
+    | '/admin/audit-logs'
+    | '/admin/dashboard'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/verification'
+    | '/admin/workforce'
     | '/employer/applications'
     | '/employer/dashboard'
     | '/employer/jobs'
@@ -463,6 +547,13 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   RoleDashboardRoute: typeof RoleDashboardRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminAuditLogsRoute: typeof AdminAuditLogsRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminVerificationRoute: typeof AdminVerificationRoute
+  AdminWorkforceRoute: typeof AdminWorkforceRoute
   EmployerApplicationsRoute: typeof EmployerApplicationsRouteWithChildren
   EmployerDashboardRoute: typeof EmployerDashboardRoute
   EmployerJobsRoute: typeof EmployerJobsRouteWithChildren
@@ -648,6 +739,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployerApplicationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/workforce': {
+      id: '/admin/workforce'
+      path: '/admin/workforce'
+      fullPath: '/admin/workforce'
+      preLoaderRoute: typeof AdminWorkforceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/verification': {
+      id: '/admin/verification'
+      path: '/admin/verification'
+      fullPath: '/admin/verification'
+      preLoaderRoute: typeof AdminVerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/admin/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/audit-logs': {
+      id: '/admin/audit-logs'
+      path: '/admin/audit-logs'
+      fullPath: '/admin/audit-logs'
+      preLoaderRoute: typeof AdminAuditLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$role/dashboard': {
       id: '/$role/dashboard'
       path: '/$role/dashboard'
@@ -823,6 +963,13 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   RoleDashboardRoute: RoleDashboardRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminAuditLogsRoute: AdminAuditLogsRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminVerificationRoute: AdminVerificationRoute,
+  AdminWorkforceRoute: AdminWorkforceRoute,
   EmployerApplicationsRoute: EmployerApplicationsRouteWithChildren,
   EmployerDashboardRoute: EmployerDashboardRoute,
   EmployerJobsRoute: EmployerJobsRouteWithChildren,
