@@ -46,7 +46,7 @@ function ApplicationSubmittedPage() {
             to="/jobs"
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm font-semibold text-secondary hover:border-primary/40"
           >
-            <Search className="h-4 w-4" /> Browse More Jobs
+            <SearchIcon className="h-4 w-4" /> Browse More Jobs
           </Link>
         </div>
       </div>
