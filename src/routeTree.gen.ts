@@ -15,6 +15,10 @@ import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as ChoosePathRouteImport } from './routes/choose-path'
 import { Route as ApplicationSubmittedRouteImport } from './routes/application-submitted'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WorkforceWorkersRouteImport } from './routes/workforce.workers'
+import { Route as WorkforceRegisterRouteImport } from './routes/workforce.register'
+import { Route as WorkforceDashboardRouteImport } from './routes/workforce.dashboard'
+import { Route as WorkforceCategoriesRouteImport } from './routes/workforce.categories'
 import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
 import { Route as JobSeekerDashboardRouteImport } from './routes/job-seeker.dashboard'
 import { Route as EmployerSettingsRouteImport } from './routes/employer.settings'
@@ -23,7 +27,12 @@ import { Route as EmployerJobsRouteImport } from './routes/employer.jobs'
 import { Route as EmployerDashboardRouteImport } from './routes/employer.dashboard'
 import { Route as EmployerApplicationsRouteImport } from './routes/employer.applications'
 import { Route as RoleDashboardRouteImport } from './routes/$role.dashboard'
+import { Route as WorkforceWorkersWorkerIdRouteImport } from './routes/workforce.workers.$workerId'
 import { Route as JobsJobIdApplyRouteImport } from './routes/jobs.$jobId.apply'
+import { Route as EmployerWorkforceSuccessRouteImport } from './routes/employer.workforce.success'
+import { Route as EmployerWorkforceRequestRouteImport } from './routes/employer.workforce.request'
+import { Route as EmployerWorkforceRecommendedRouteImport } from './routes/employer.workforce.recommended'
+import { Route as EmployerWorkforceConfirmRouteImport } from './routes/employer.workforce.confirm'
 import { Route as EmployerJobsNewRouteImport } from './routes/employer.jobs.new'
 import { Route as EmployerApplicationsCandidateIdRouteImport } from './routes/employer.applications.$candidateId'
 import { Route as EmployerJobsJobIdEditRouteImport } from './routes/employer.jobs.$jobId.edit'
@@ -56,6 +65,26 @@ const ApplicationSubmittedRoute = ApplicationSubmittedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkforceWorkersRoute = WorkforceWorkersRouteImport.update({
+  id: '/workforce/workers',
+  path: '/workforce/workers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkforceRegisterRoute = WorkforceRegisterRouteImport.update({
+  id: '/workforce/register',
+  path: '/workforce/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkforceDashboardRoute = WorkforceDashboardRouteImport.update({
+  id: '/workforce/dashboard',
+  path: '/workforce/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkforceCategoriesRoute = WorkforceCategoriesRouteImport.update({
+  id: '/workforce/categories',
+  path: '/workforce/categories',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JobsJobIdRoute = JobsJobIdRouteImport.update({
@@ -98,11 +127,41 @@ const RoleDashboardRoute = RoleDashboardRouteImport.update({
   path: '/$role/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkforceWorkersWorkerIdRoute =
+  WorkforceWorkersWorkerIdRouteImport.update({
+    id: '/$workerId',
+    path: '/$workerId',
+    getParentRoute: () => WorkforceWorkersRoute,
+  } as any)
 const JobsJobIdApplyRoute = JobsJobIdApplyRouteImport.update({
   id: '/apply',
   path: '/apply',
   getParentRoute: () => JobsJobIdRoute,
 } as any)
+const EmployerWorkforceSuccessRoute =
+  EmployerWorkforceSuccessRouteImport.update({
+    id: '/employer/workforce/success',
+    path: '/employer/workforce/success',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EmployerWorkforceRequestRoute =
+  EmployerWorkforceRequestRouteImport.update({
+    id: '/employer/workforce/request',
+    path: '/employer/workforce/request',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EmployerWorkforceRecommendedRoute =
+  EmployerWorkforceRecommendedRouteImport.update({
+    id: '/employer/workforce/recommended',
+    path: '/employer/workforce/recommended',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EmployerWorkforceConfirmRoute =
+  EmployerWorkforceConfirmRouteImport.update({
+    id: '/employer/workforce/confirm',
+    path: '/employer/workforce/confirm',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const EmployerJobsNewRoute = EmployerJobsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -135,9 +194,18 @@ export interface FileRoutesByFullPath {
   '/employer/settings': typeof EmployerSettingsRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
+  '/workforce/categories': typeof WorkforceCategoriesRoute
+  '/workforce/dashboard': typeof WorkforceDashboardRoute
+  '/workforce/register': typeof WorkforceRegisterRoute
+  '/workforce/workers': typeof WorkforceWorkersRouteWithChildren
   '/employer/applications/$candidateId': typeof EmployerApplicationsCandidateIdRoute
   '/employer/jobs/new': typeof EmployerJobsNewRoute
+  '/employer/workforce/confirm': typeof EmployerWorkforceConfirmRoute
+  '/employer/workforce/recommended': typeof EmployerWorkforceRecommendedRoute
+  '/employer/workforce/request': typeof EmployerWorkforceRequestRoute
+  '/employer/workforce/success': typeof EmployerWorkforceSuccessRoute
   '/jobs/$jobId/apply': typeof JobsJobIdApplyRoute
+  '/workforce/workers/$workerId': typeof WorkforceWorkersWorkerIdRoute
   '/employer/jobs/$jobId/edit': typeof EmployerJobsJobIdEditRoute
 }
 export interface FileRoutesByTo {
@@ -155,9 +223,18 @@ export interface FileRoutesByTo {
   '/employer/settings': typeof EmployerSettingsRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
+  '/workforce/categories': typeof WorkforceCategoriesRoute
+  '/workforce/dashboard': typeof WorkforceDashboardRoute
+  '/workforce/register': typeof WorkforceRegisterRoute
+  '/workforce/workers': typeof WorkforceWorkersRouteWithChildren
   '/employer/applications/$candidateId': typeof EmployerApplicationsCandidateIdRoute
   '/employer/jobs/new': typeof EmployerJobsNewRoute
+  '/employer/workforce/confirm': typeof EmployerWorkforceConfirmRoute
+  '/employer/workforce/recommended': typeof EmployerWorkforceRecommendedRoute
+  '/employer/workforce/request': typeof EmployerWorkforceRequestRoute
+  '/employer/workforce/success': typeof EmployerWorkforceSuccessRoute
   '/jobs/$jobId/apply': typeof JobsJobIdApplyRoute
+  '/workforce/workers/$workerId': typeof WorkforceWorkersWorkerIdRoute
   '/employer/jobs/$jobId/edit': typeof EmployerJobsJobIdEditRoute
 }
 export interface FileRoutesById {
@@ -176,9 +253,18 @@ export interface FileRoutesById {
   '/employer/settings': typeof EmployerSettingsRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
+  '/workforce/categories': typeof WorkforceCategoriesRoute
+  '/workforce/dashboard': typeof WorkforceDashboardRoute
+  '/workforce/register': typeof WorkforceRegisterRoute
+  '/workforce/workers': typeof WorkforceWorkersRouteWithChildren
   '/employer/applications/$candidateId': typeof EmployerApplicationsCandidateIdRoute
   '/employer/jobs/new': typeof EmployerJobsNewRoute
+  '/employer/workforce/confirm': typeof EmployerWorkforceConfirmRoute
+  '/employer/workforce/recommended': typeof EmployerWorkforceRecommendedRoute
+  '/employer/workforce/request': typeof EmployerWorkforceRequestRoute
+  '/employer/workforce/success': typeof EmployerWorkforceSuccessRoute
   '/jobs/$jobId/apply': typeof JobsJobIdApplyRoute
+  '/workforce/workers/$workerId': typeof WorkforceWorkersWorkerIdRoute
   '/employer/jobs/$jobId/edit': typeof EmployerJobsJobIdEditRoute
 }
 export interface FileRouteTypes {
@@ -198,9 +284,18 @@ export interface FileRouteTypes {
     | '/employer/settings'
     | '/job-seeker/dashboard'
     | '/jobs/$jobId'
+    | '/workforce/categories'
+    | '/workforce/dashboard'
+    | '/workforce/register'
+    | '/workforce/workers'
     | '/employer/applications/$candidateId'
     | '/employer/jobs/new'
+    | '/employer/workforce/confirm'
+    | '/employer/workforce/recommended'
+    | '/employer/workforce/request'
+    | '/employer/workforce/success'
     | '/jobs/$jobId/apply'
+    | '/workforce/workers/$workerId'
     | '/employer/jobs/$jobId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -218,9 +313,18 @@ export interface FileRouteTypes {
     | '/employer/settings'
     | '/job-seeker/dashboard'
     | '/jobs/$jobId'
+    | '/workforce/categories'
+    | '/workforce/dashboard'
+    | '/workforce/register'
+    | '/workforce/workers'
     | '/employer/applications/$candidateId'
     | '/employer/jobs/new'
+    | '/employer/workforce/confirm'
+    | '/employer/workforce/recommended'
+    | '/employer/workforce/request'
+    | '/employer/workforce/success'
     | '/jobs/$jobId/apply'
+    | '/workforce/workers/$workerId'
     | '/employer/jobs/$jobId/edit'
   id:
     | '__root__'
@@ -238,9 +342,18 @@ export interface FileRouteTypes {
     | '/employer/settings'
     | '/job-seeker/dashboard'
     | '/jobs/$jobId'
+    | '/workforce/categories'
+    | '/workforce/dashboard'
+    | '/workforce/register'
+    | '/workforce/workers'
     | '/employer/applications/$candidateId'
     | '/employer/jobs/new'
+    | '/employer/workforce/confirm'
+    | '/employer/workforce/recommended'
+    | '/employer/workforce/request'
+    | '/employer/workforce/success'
     | '/jobs/$jobId/apply'
+    | '/workforce/workers/$workerId'
     | '/employer/jobs/$jobId/edit'
   fileRoutesById: FileRoutesById
 }
@@ -258,6 +371,14 @@ export interface RootRouteChildren {
   EmployerProfileRoute: typeof EmployerProfileRoute
   EmployerSettingsRoute: typeof EmployerSettingsRoute
   JobSeekerDashboardRoute: typeof JobSeekerDashboardRoute
+  WorkforceCategoriesRoute: typeof WorkforceCategoriesRoute
+  WorkforceDashboardRoute: typeof WorkforceDashboardRoute
+  WorkforceRegisterRoute: typeof WorkforceRegisterRoute
+  WorkforceWorkersRoute: typeof WorkforceWorkersRouteWithChildren
+  EmployerWorkforceConfirmRoute: typeof EmployerWorkforceConfirmRoute
+  EmployerWorkforceRecommendedRoute: typeof EmployerWorkforceRecommendedRoute
+  EmployerWorkforceRequestRoute: typeof EmployerWorkforceRequestRoute
+  EmployerWorkforceSuccessRoute: typeof EmployerWorkforceSuccessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -302,6 +423,34 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workforce/workers': {
+      id: '/workforce/workers'
+      path: '/workforce/workers'
+      fullPath: '/workforce/workers'
+      preLoaderRoute: typeof WorkforceWorkersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workforce/register': {
+      id: '/workforce/register'
+      path: '/workforce/register'
+      fullPath: '/workforce/register'
+      preLoaderRoute: typeof WorkforceRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workforce/dashboard': {
+      id: '/workforce/dashboard'
+      path: '/workforce/dashboard'
+      fullPath: '/workforce/dashboard'
+      preLoaderRoute: typeof WorkforceDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workforce/categories': {
+      id: '/workforce/categories'
+      path: '/workforce/categories'
+      fullPath: '/workforce/categories'
+      preLoaderRoute: typeof WorkforceCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jobs/$jobId': {
@@ -360,12 +509,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoleDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workforce/workers/$workerId': {
+      id: '/workforce/workers/$workerId'
+      path: '/$workerId'
+      fullPath: '/workforce/workers/$workerId'
+      preLoaderRoute: typeof WorkforceWorkersWorkerIdRouteImport
+      parentRoute: typeof WorkforceWorkersRoute
+    }
     '/jobs/$jobId/apply': {
       id: '/jobs/$jobId/apply'
       path: '/apply'
       fullPath: '/jobs/$jobId/apply'
       preLoaderRoute: typeof JobsJobIdApplyRouteImport
       parentRoute: typeof JobsJobIdRoute
+    }
+    '/employer/workforce/success': {
+      id: '/employer/workforce/success'
+      path: '/employer/workforce/success'
+      fullPath: '/employer/workforce/success'
+      preLoaderRoute: typeof EmployerWorkforceSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employer/workforce/request': {
+      id: '/employer/workforce/request'
+      path: '/employer/workforce/request'
+      fullPath: '/employer/workforce/request'
+      preLoaderRoute: typeof EmployerWorkforceRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employer/workforce/recommended': {
+      id: '/employer/workforce/recommended'
+      path: '/employer/workforce/recommended'
+      fullPath: '/employer/workforce/recommended'
+      preLoaderRoute: typeof EmployerWorkforceRecommendedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employer/workforce/confirm': {
+      id: '/employer/workforce/confirm'
+      path: '/employer/workforce/confirm'
+      fullPath: '/employer/workforce/confirm'
+      preLoaderRoute: typeof EmployerWorkforceConfirmRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/employer/jobs/new': {
       id: '/employer/jobs/new'
@@ -438,6 +622,17 @@ const EmployerJobsRouteWithChildren = EmployerJobsRoute._addFileChildren(
   EmployerJobsRouteChildren,
 )
 
+interface WorkforceWorkersRouteChildren {
+  WorkforceWorkersWorkerIdRoute: typeof WorkforceWorkersWorkerIdRoute
+}
+
+const WorkforceWorkersRouteChildren: WorkforceWorkersRouteChildren = {
+  WorkforceWorkersWorkerIdRoute: WorkforceWorkersWorkerIdRoute,
+}
+
+const WorkforceWorkersRouteWithChildren =
+  WorkforceWorkersRoute._addFileChildren(WorkforceWorkersRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApplicationSubmittedRoute: ApplicationSubmittedRoute,
@@ -452,6 +647,14 @@ const rootRouteChildren: RootRouteChildren = {
   EmployerProfileRoute: EmployerProfileRoute,
   EmployerSettingsRoute: EmployerSettingsRoute,
   JobSeekerDashboardRoute: JobSeekerDashboardRoute,
+  WorkforceCategoriesRoute: WorkforceCategoriesRoute,
+  WorkforceDashboardRoute: WorkforceDashboardRoute,
+  WorkforceRegisterRoute: WorkforceRegisterRoute,
+  WorkforceWorkersRoute: WorkforceWorkersRouteWithChildren,
+  EmployerWorkforceConfirmRoute: EmployerWorkforceConfirmRoute,
+  EmployerWorkforceRecommendedRoute: EmployerWorkforceRecommendedRoute,
+  EmployerWorkforceRequestRoute: EmployerWorkforceRequestRoute,
+  EmployerWorkforceSuccessRoute: EmployerWorkforceSuccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
