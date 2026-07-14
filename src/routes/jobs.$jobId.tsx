@@ -106,17 +106,49 @@ function JobDetailsPage() {
             <Section title="Requirements">
               <BulletList items={job.requirements} />
             </Section>
+            <Section title="Skills">
+              <div className="flex flex-wrap gap-2">
+                {job.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-secondary"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </Section>
             <Section title="Benefits">
               <BulletList items={job.benefits} />
             </Section>
             <Section title="About the company">
-              <div className="flex items-start gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                 <CompanyLogo name={job.company} color={job.logoColor} size={56} />
                 <div>
                   <h4 className="font-display text-base font-semibold text-secondary">
                     {job.company}
                   </h4>
                   <p className="mt-1 text-sm text-muted-foreground">{job.about}</p>
+                  <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+                    <div className="rounded-xl bg-accent p-3">
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Sector
+                      </dt>
+                      <dd className="mt-1 font-semibold text-secondary">{job.category}</dd>
+                    </div>
+                    <div className="rounded-xl bg-accent p-3">
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Location
+                      </dt>
+                      <dd className="mt-1 font-semibold text-secondary">{job.location}</dd>
+                    </div>
+                    <div className="rounded-xl bg-accent p-3">
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Hiring
+                      </dt>
+                      <dd className="mt-1 font-semibold text-secondary">{job.type}</dd>
+                    </div>
+                  </dl>
                 </div>
               </div>
             </Section>
@@ -137,10 +169,18 @@ function JobDetailsPage() {
               Apply Now
             </button>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                aria-label={`Save ${job.title}`}
+              >
                 <Bookmark className="h-4 w-4" /> Save
               </button>
-              <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                aria-label={`Share ${job.title}`}
+              >
                 <Share2 className="h-4 w-4" /> Share
               </button>
             </div>

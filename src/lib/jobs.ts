@@ -15,6 +15,7 @@ export type Job = {
   description: string;
   responsibilities: string[];
   requirements: string[];
+  skills: string[];
   benefits: string[];
   about: string;
 };
@@ -48,6 +49,7 @@ export const JOBS: Job[] = [
       "Hands-on with Huawei / Ericsson RAN",
       "CCNP or equivalent certification preferred",
     ],
+    skills: ["Network Design", "4G/5G RAN", "Vendor Coordination", "Capacity Planning"],
     benefits: [
       "Medical cover for family",
       "Performance bonus",
@@ -84,6 +86,7 @@ export const JOBS: Job[] = [
       "4+ years brand management, ideally FMCG or telecom",
       "Strong storytelling and agency briefing skills",
     ],
+    skills: ["Brand Strategy", "Campaign Planning", "Agency Management", "Market Research"],
     benefits: ["Airtime & data package", "Health insurance", "Annual bonus", "Hybrid schedule"],
     about:
       "Africell is a pan-African mobile operator known for youth culture, affordable data and Afrimoney financial services.",
@@ -114,6 +117,7 @@ export const JOBS: Job[] = [
       "3+ years commercial banking experience",
       "ACCA / CFA Level I is a plus",
     ],
+    skills: ["Credit Analysis", "Financial Statements", "Risk Reporting", "SME Lending"],
     benefits: ["Staff loan facility", "Pension top-up", "Medical cover"],
     about:
       "Rokel Commercial Bank is one of Sierra Leone's oldest commercial banks, with 27 branches nationwide.",
@@ -144,6 +148,7 @@ export const JOBS: Job[] = [
       "3+ years retail or fuel-station management",
       "Strong leadership and integrity",
     ],
+    skills: ["Operations Management", "Stock Control", "Cash Reconciliation", "HSE Standards"],
     benefits: ["Housing allowance", "Fuel allowance", "Medical cover"],
     about: "NP Sierra Leone is the country's largest indigenous downstream petroleum company.",
   },
@@ -173,6 +178,7 @@ export const JOBS: Job[] = [
       "5+ years in iron ore or base metals",
       "Proficiency in Leapfrog / Surpac",
     ],
+    skills: ["Core Logging", "Resource Modelling", "Drilling Supervision", "Surpac"],
     benefits: ["Site accommodation", "Rotation flights", "Life insurance"],
     about:
       "SL Mining operates the Marampa iron ore mine, one of Sierra Leone's largest export operations.",
@@ -202,6 +208,7 @@ export const JOBS: Job[] = [
       "Degree in Business, Finance or related",
       "2+ years SME banking or sales experience",
     ],
+    skills: ["Relationship Management", "Portfolio Quality", "Sales Pipeline", "Trade Products"],
     benefits: ["Sales commission", "Health insurance", "Career mobility across Africa"],
     about:
       "UBA is a pan-African bank present in 20 African countries, with a strong SME focus in Sierra Leone.",
@@ -231,6 +238,7 @@ export const JOBS: Job[] = [
       "BSc in Statistics, Economics or Data Science",
       "Proficiency in Stata, R or Python",
     ],
+    skills: ["Survey Analysis", "Stata", "R/Python", "Data Cleaning"],
     benefits: ["Training in international methodologies", "Travel per diems"],
     about:
       "Statistics Sierra Leone is the national statistical office, producing official data used by Government and partners.",
@@ -260,6 +268,7 @@ export const JOBS: Job[] = [
       "Degree in Public Policy, Law or Economics",
       "3+ years in policy or public sector research",
     ],
+    skills: ["Policy Writing", "Stakeholder Coordination", "Research", "Labour Standards"],
     benefits: ["Government pension", "Training abroad", "Job security"],
     about:
       "The Ministry of Labour and Social Security is responsible for employment policy, labour standards and workforce development.",
@@ -290,6 +299,7 @@ export const JOBS: Job[] = [
       "4+ years with UN, NGO or bilateral donor",
       "Fluent English; French an asset",
     ],
+    skills: ["Grant Management", "Results Tracking", "Donor Reporting", "Youth Employment"],
     benefits: ["UN medical plan", "Pension", "Learning stipend"],
     about:
       "UNDP Sierra Leone supports the Government to accelerate the SDGs, including decent work and youth empowerment.",
@@ -319,6 +329,7 @@ export const JOBS: Job[] = [
       "4+ years product management, ideally in fintech",
       "Experience with mobile money or payments",
     ],
+    skills: ["Product Roadmaps", "Fintech", "Merchant Growth", "Payments"],
     benefits: ["Stock in innovation projects", "Hybrid work", "Family health cover"],
     about: "Orange Money is the largest mobile money service in Sierra Leone.",
   },
@@ -343,6 +354,7 @@ export const JOBS: Job[] = [
       "Report NPS and mystery shopper results",
     ],
     requirements: ["Degree preferred", "3+ years multi-store retail leadership"],
+    skills: ["Retail Coaching", "Customer Experience", "NPS", "Visual Merchandising"],
     benefits: ["Store bonus", "Travel allowance", "Medical cover"],
     about: "Africell operates the largest retail footprint of any operator in Sierra Leone.",
   },
@@ -367,6 +379,7 @@ export const JOBS: Job[] = [
       "Maintain ISO 45001 documentation",
     ],
     requirements: ["NEBOSH IGC or equivalent", "3+ years in mining or heavy industry"],
+    skills: ["Incident Investigation", "Safety Training", "ISO 45001", "Risk Assessment"],
     benefits: ["Rotation schedule", "Site accommodation", "Life insurance"],
     about: "SL Mining is committed to zero-harm operations at the Marampa mine.",
   },

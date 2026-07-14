@@ -2,22 +2,27 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { CheckCircle2, Briefcase, LayoutDashboard, Search as SearchIcon } from "lucide-react";
 
-type SearchParams = { jobId?: string };
+type SearchParams = { jobId?: string; ref?: string };
 
 export const Route = createFileRoute("/application-submitted")({
   head: () => ({ meta: [{ title: "Application submitted — NexaRise" }] }),
   validateSearch: (s: Record<string, unknown>): SearchParams => ({
     jobId: typeof s.jobId === "string" ? s.jobId : undefined,
+    ref: typeof s.ref === "string" ? s.ref : undefined,
   }),
   component: ApplicationSubmittedPage,
 });
 
 function ApplicationSubmittedPage() {
+  const { ref } = Route.useSearch();
+  const reference = ref ?? "NXR-DEMO-2026";
+
   return (
     <AppShell>
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-3xl flex-col items-center justify-center px-4 py-16 text-center sm:px-6">
-        <div className="grid h-24 w-24 place-items-center rounded-full bg-gradient-primary text-white shadow-glow">
-          <CheckCircle2 className="h-12 w-12" strokeWidth={2.2} />
+        <div className="relative grid h-24 w-24 place-items-center rounded-full bg-gradient-primary text-white shadow-glow">
+          <span className="absolute inset-0 animate-ping rounded-full bg-primary/30" />
+          <CheckCircle2 className="relative h-12 w-12" strokeWidth={2.2} />
         </div>
         <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
           Application received
@@ -29,6 +34,12 @@ function ApplicationSubmittedPage() {
           Your application has been submitted successfully. The employer will review your profile
           and get back to you through the messages tab or by email.
         </p>
+        <div className="mt-6 rounded-2xl border border-border bg-card px-5 py-4 shadow-card">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Application reference
+          </div>
+          <div className="mt-1 font-mono text-lg font-bold text-secondary">{reference}</div>
+        </div>
 
         <div className="mt-10 grid w-full max-w-2xl gap-3 sm:grid-cols-3">
           <Link

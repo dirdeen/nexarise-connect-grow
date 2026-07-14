@@ -1,8 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { AppShell, CompanyLogo } from "@/components/AppShell";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { AppShell } from "@/components/AppShell";
+import { JobCard } from "@/components/JobCard";
 import { JOBS } from "@/lib/jobs";
-import { Search, MapPin, Clock, Wallet, Bookmark, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 export const Route = createFileRoute("/jobs")({
   head: () => ({ meta: [{ title: "Search Jobs — NexaRise" }] }),
@@ -31,19 +32,27 @@ const SALARY = [
   { label: "NLe 12,000+", min: 12000 },
   { label: "NLe 18,000+", min: 18000 },
 ];
+const SORTS = ["Most recent", "Highest salary", "Company A-Z"] as const;
 
 function JobSearchPage() {
-  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [loc, setLoc] = useState(LOCATIONS[0]);
   const [cat, setCat] = useState(CATEGORIES[0]);
   const [type, setType] = useState(TYPES[0]);
   const [exp, setExp] = useState(EXPERIENCE[0]);
   const [sal, setSal] = useState(SALARY[0].label);
+  const [sort, setSort] = useState<(typeof SORTS)[number]>(SORTS[0]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const timeout = window.setTimeout(() => setLoading(false), 220);
+    return () => window.clearTimeout(timeout);
+  }, [query, loc, cat, type, exp, sal, sort]);
 
   const results = useMemo(() => {
     const salMin = SALARY.find((s) => s.label === sal)?.min ?? 0;
-    return JOBS.filter((j) => {
+    const filtered = JOBS.filter((j) => {
       if (query && !`${j.title} ${j.company}`.toLowerCase().includes(query.toLowerCase()))
         return false;
       if (loc !== LOCATIONS[0] && j.location !== loc) return false;
@@ -53,11 +62,27 @@ function JobSearchPage() {
       if (j.salaryMin < salMin) return false;
       return true;
     });
-  }, [query, loc, cat, type, exp, sal]);
+
+    return [...filtered].sort((a, b) => {
+      if (sort === "Highest salary") return b.salaryMin - a.salaryMin;
+      if (sort === "Company A-Z") return a.company.localeCompare(b.company);
+      return a.postedDays - b.postedDays;
+    });
+  }, [query, loc, cat, type, exp, sal, sort]);
+
+  function clearFilters() {
+    setQuery("");
+    setLoc(LOCATIONS[0]);
+    setCat(CATEGORIES[0]);
+    setType(TYPES[0]);
+    setExp(EXPERIENCE[0]);
+    setSal(SALARY[0].label);
+    setSort(SORTS[0]);
+  }
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-0">
         <div className="rounded-3xl bg-gradient-hero p-8 text-white shadow-elegant">
           <h1 className="font-display text-3xl font-bold sm:text-4xl">
             Find your next role in Sierra Leone
@@ -65,18 +90,22 @@ function JobSearchPage() {
           <p className="mt-2 max-w-xl text-white/80">
             {JOBS.length}+ live openings from Sierra Leone's leading employers.
           </p>
-          <div className="mt-6 flex items-center gap-2 rounded-2xl bg-white p-2 shadow-glow">
-            <Search className="ml-2 h-5 w-5 text-muted-foreground" />
+          <label className="mt-6 flex items-center gap-2 rounded-2xl bg-white p-2 shadow-glow">
+            <span className="sr-only">Search jobs</span>
+            <Search className="ml-2 h-5 w-5 text-muted-foreground" aria-hidden="true" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by title, company or keyword"
               className="min-w-0 flex-1 bg-transparent px-1 py-2 text-sm text-foreground outline-none"
             />
-            <button className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow">
+            <button
+              type="button"
+              className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow"
+            >
               Search
             </button>
-          </div>
+          </label>
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[280px_1fr]">
@@ -87,6 +116,7 @@ function JobSearchPage() {
             </div>
             <Filter label="Location" value={loc} onChange={setLoc} options={LOCATIONS} />
             <Filter label="Job Category" value={cat} onChange={setCat} options={CATEGORIES} />
+            <Filter label="Job Type" value={type} onChange={setType} options={TYPES} />
             <Filter
               label="Salary Range"
               value={sal}
@@ -94,74 +124,67 @@ function JobSearchPage() {
               options={SALARY.map((s) => s.label)}
             />
             <Filter label="Experience" value={exp} onChange={setExp} options={EXPERIENCE} />
-            <Filter label="Employment Type" value={type} onChange={setType} options={TYPES} />
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40"
+            >
+              Clear filters
+            </button>
           </aside>
 
           <section>
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
                 <span className="font-semibold text-foreground">{results.length}</span> jobs found
               </p>
-              <select className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground">
-                <option>Sort: Most recent</option>
-                <option>Sort: Highest salary</option>
-              </select>
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                Sort
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as (typeof SORTS)[number])}
+                  className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                >
+                  {SORTS.map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </select>
+              </label>
             </div>
 
             <div className="grid gap-4">
-              {results.map((job) => (
-                <article
-                  key={job.id}
-                  onClick={() => navigate({ to: "/jobs/$jobId", params: { jobId: job.id } })}
-                  className="group grid cursor-pointer gap-4 rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-elegant sm:grid-cols-[auto_1fr_auto]"
-                >
-                  <CompanyLogo name={job.company} color={job.logoColor} size={56} />
-                  <div className="min-w-0">
-                    <h3 className="font-display text-lg font-semibold text-secondary group-hover:text-primary">
-                      {job.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">{job.company}</p>
-                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5" />
-                        {job.location}
-                      </span>
-                      <span className="inline-flex items-center gap-1">
-                        <Wallet className="h-3.5 w-3.5" />
-                        {job.salary}
-                      </span>
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5" />
-                        {job.type}
-                      </span>
-                      <span>Posted {job.postedDays}d ago</span>
+              {loading &&
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="grid animate-pulse gap-4 rounded-2xl border border-border bg-card p-5 shadow-card sm:grid-cols-[auto_1fr_auto]"
+                    aria-label="Loading job results"
+                  >
+                    <div className="h-14 w-14 rounded-xl bg-muted" />
+                    <div className="space-y-3">
+                      <div className="h-4 w-2/3 rounded bg-muted" />
+                      <div className="h-3 w-1/3 rounded bg-muted" />
+                      <div className="h-3 w-4/5 rounded bg-muted" />
                     </div>
+                    <div className="h-9 w-20 rounded-lg bg-muted" />
                   </div>
-                  <div className="flex items-center gap-2 sm:flex-col sm:items-end">
-                    <button
-                      onClick={(e) => e.stopPropagation()}
-                      className="grid h-9 w-9 place-items-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary"
-                      aria-label="Save"
-                    >
-                      <Bookmark className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate({ to: "/jobs/$jobId/apply", params: { jobId: job.id } });
-                      }}
-                      className="rounded-lg bg-gradient-primary px-4 py-2 text-sm font-semibold text-white shadow-glow"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </article>
-              ))}
-              {results.length === 0 && (
+                ))}
+              {!loading && results.map((job) => <JobCard key={job.id} job={job} />)}
+              {!loading && results.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
+                  <div className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-accent text-secondary">
+                    <Search className="h-5 w-5" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     No jobs match your filters. Try adjusting them.
                   </p>
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="mt-4 rounded-xl bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground"
+                  >
+                    Reset search
+                  </button>
                 </div>
               )}
             </div>

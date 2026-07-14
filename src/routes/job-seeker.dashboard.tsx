@@ -1,5 +1,6 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { AppShell, CompanyLogo } from "@/components/AppShell";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { AppShell } from "@/components/AppShell";
+import { JobCard } from "@/components/JobCard";
 import { JOBS } from "@/lib/jobs";
 import {
   Search,
@@ -10,9 +11,11 @@ import {
   Bookmark,
   CalendarCheck,
   Sparkles,
-  MapPin,
-  Clock,
-  Wallet,
+  CheckCircle2,
+  Code2,
+  LineChart,
+  Megaphone,
+  ShieldCheck,
 } from "lucide-react";
 
 export const Route = createFileRoute("/job-seeker/dashboard")({
@@ -34,18 +37,45 @@ const stats = [
 
 const quickActions = [
   { label: "Search Jobs", icon: Search, to: "/jobs" as const },
-  { label: "Upload CV", icon: Upload, to: "/job-seeker/dashboard" as const },
+  { label: "Update CV", icon: Upload, to: "/jobs/orange-network-eng/apply" as const },
   { label: "Find Mentor", icon: Users, to: "/choose-path" as const },
   { label: "Career Tips", icon: Lightbulb, to: "/job-seeker/dashboard" as const },
 ];
 
+const recentApplications = [
+  {
+    job: JOBS[0],
+    status: "Interview scheduled",
+    date: "Today",
+    tone: "bg-primary/10 text-primary",
+  },
+  {
+    job: JOBS[2],
+    status: "Under review",
+    date: "Yesterday",
+    tone: "bg-accent text-secondary",
+  },
+  {
+    job: JOBS[6],
+    status: "Submitted",
+    date: "3d ago",
+    tone: "bg-muted text-muted-foreground",
+  },
+];
+
+const jobCategories = [
+  { label: "Engineering", count: 2, icon: Code2, to: "/jobs" as const },
+  { label: "Finance", count: 2, icon: LineChart, to: "/jobs" as const },
+  { label: "Marketing", count: 1, icon: Megaphone, to: "/jobs" as const },
+  { label: "Health & Safety", count: 1, icon: ShieldCheck, to: "/jobs" as const },
+];
+
 function JobSeekerDashboard() {
-  const navigate = useNavigate();
   const recommended = JOBS.slice(0, 6);
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-0">
         {/* Welcome + Profile completion */}
         <div className="grid gap-6 lg:grid-cols-3">
           <section className="lg:col-span-2 rounded-3xl bg-gradient-hero p-8 text-white shadow-elegant">
@@ -154,6 +184,81 @@ function JobSeekerDashboard() {
           </div>
         </div>
 
+        <div className="mt-10 grid gap-6 xl:grid-cols-[1fr_360px]">
+          <section>
+            <div className="flex items-end justify-between">
+              <div>
+                <h2 className="font-display text-xl font-semibold text-secondary">
+                  Recent applications
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Track the latest activity across your job search.
+                </p>
+              </div>
+              <Link to="/application-submitted" className="text-sm font-semibold text-primary">
+                View tracker →
+              </Link>
+            </div>
+            <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+              {recentApplications.map((item) => (
+                <Link
+                  key={item.job.id}
+                  to="/jobs/$jobId"
+                  params={{ jobId: item.job.id }}
+                  className="grid gap-3 border-b border-border p-4 last:border-b-0 hover:bg-accent/60 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary/30 sm:grid-cols-[1fr_auto]"
+                >
+                  <div className="min-w-0">
+                    <div className="font-display text-sm font-semibold text-secondary">
+                      {item.job.title}
+                    </div>
+                    <div className="mt-1 text-sm text-muted-foreground">
+                      {item.job.company} · {item.job.location}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 sm:justify-end">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${item.tone}`}
+                    >
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      {item.status}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{item.date}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h2 className="font-display text-xl font-semibold text-secondary">Job categories</h2>
+            <p className="text-sm text-muted-foreground">Explore active areas hiring this week.</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+              {jobCategories.map((category) => (
+                <Link
+                  key={category.label}
+                  to={category.to}
+                  className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 shadow-card hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-secondary">
+                      <category.icon className="h-5 w-5" />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-semibold text-foreground">
+                        {category.label}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {category.count} open roles
+                      </span>
+                    </span>
+                  </span>
+                  <span className="text-sm font-semibold text-primary">View</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </div>
+
         {/* Recommended */}
         <div className="mt-10 flex items-end justify-between">
           <div>
@@ -171,58 +276,7 @@ function JobSeekerDashboard() {
 
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {recommended.map((job) => (
-            <article
-              key={job.id}
-              onClick={() => navigate({ to: "/jobs/$jobId", params: { jobId: job.id } })}
-              className="group cursor-pointer rounded-2xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-elegant"
-            >
-              <div className="flex items-start gap-3">
-                <CompanyLogo name={job.company} color={job.logoColor} />
-                <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-display text-base font-semibold text-secondary group-hover:text-primary">
-                    {job.title}
-                  </h3>
-                  <p className="truncate text-sm text-muted-foreground">{job.company}</p>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary"
-                  aria-label="Save job"
-                >
-                  <Bookmark className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {job.location}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="h-3.5 w-3.5" />
-                  {job.type}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <Wallet className="h-3.5 w-3.5" />
-                  {job.salary}
-                </span>
-              </div>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-secondary">
-                  {job.experience}
-                </span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate({ to: "/jobs/$jobId/apply", params: { jobId: job.id } });
-                  }}
-                  className="rounded-lg bg-gradient-primary px-4 py-1.5 text-xs font-semibold text-white shadow-glow"
-                >
-                  Apply
-                </button>
-              </div>
-            </article>
+            <JobCard key={job.id} job={job} compact />
           ))}
         </div>
       </div>

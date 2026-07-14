@@ -33,26 +33,66 @@ function JobApplicationPage() {
   const [submitting, setSubmitting] = useState(false);
   const [cvProgress, setCvProgress] = useState(0);
   const [certProgress, setCertProgress] = useState(0);
+  const [form, setForm] = useState({
+    fullName: "Ibrahim Kamara",
+    email: "ibrahim@nexarise.sl",
+    phone: "+232 76 123 456",
+    city: "Freetown",
+    coverLetter: "",
+    portfolio: "",
+    availability: "",
+    cvName: "",
+    certName: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  function simulateUpload(setter: (n: number) => void) {
+  function set<K extends keyof typeof form>(key: K, value: string) {
+    setForm((current) => ({ ...current, [key]: value }));
+    setErrors((current) => {
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  }
+
+  function validate() {
+    const next: Record<string, string> = {};
+    if (!form.fullName.trim()) next.fullName = "Full name is required.";
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) next.email = "Enter a valid email address.";
+    if (!/^\+?[0-9\s-]{7,}$/.test(form.phone)) next.phone = "Enter a valid phone number.";
+    if (!form.cvName) next.cvName = "Upload your CV before submitting.";
+    if (form.coverLetter.trim().length < 80) {
+      next.coverLetter = "Cover letter must be at least 80 characters.";
+    }
+    if (form.portfolio && !/^https?:\/\/\S+\.\S+/.test(form.portfolio)) {
+      next.portfolio = "Enter a valid URL starting with http:// or https://.";
+    }
+    return next;
+  }
+
+  function simulateUpload(setter: (n: number) => void, onDone: () => void) {
     setter(0);
-    const iv = setInterval(() => {
-      setter(0);
-      let n = 0;
-      const t = setInterval(() => {
-        n += 12;
-        setter(Math.min(n, 100));
-        if (n >= 100) clearInterval(t);
-      }, 90);
-      clearInterval(iv);
-    }, 0);
+    let n = 0;
+    const t = window.setInterval(() => {
+      n += 12;
+      setter(Math.min(n, 100));
+      if (n >= 100) {
+        window.clearInterval(t);
+        onDone();
+      }
+    }, 90);
   }
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
+    const validation = validate();
+    setErrors(validation);
+    if (Object.keys(validation).length > 0) return;
+
     setSubmitting(true);
-    setTimeout(() => {
-      navigate({ to: "/application-submitted", search: { jobId: job.id } });
+    window.setTimeout(() => {
+      const ref = `NXR-${job.id.slice(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+      navigate({ to: "/application-submitted", search: { jobId: job.id, ref } });
     }, 600);
   }
 
@@ -80,10 +120,30 @@ function JobApplicationPage() {
         <form onSubmit={onSubmit} className="mt-6 space-y-6">
           <Card title="Applicant Information">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Full name" defaultValue="Ibrahim Kamara" />
-              <Field label="Email address" type="email" defaultValue="ibrahim@nexarise.sl" />
-              <Field label="Phone number" defaultValue="+232 76 123 456" />
-              <Field label="Current city" defaultValue="Freetown" />
+              <Field
+                label="Full name"
+                value={form.fullName}
+                onChange={(value) => set("fullName", value)}
+                error={errors.fullName}
+              />
+              <Field
+                label="Email address"
+                type="email"
+                value={form.email}
+                onChange={(value) => set("email", value)}
+                error={errors.email}
+              />
+              <Field
+                label="Phone number"
+                value={form.phone}
+                onChange={(value) => set("phone", value)}
+                error={errors.phone}
+              />
+              <Field
+                label="Current city"
+                value={form.city}
+                onChange={(value) => set("city", value)}
+              />
             </div>
           </Card>
 
@@ -92,28 +152,59 @@ function JobApplicationPage() {
               label="Upload CV"
               hint="PDF, DOC or DOCX up to 5MB"
               progress={cvProgress}
-              onChoose={() => simulateUpload(setCvProgress)}
+              fileName={form.cvName}
+              error={errors.cvName}
+              onChoose={(name) => {
+                set("cvName", name);
+                simulateUpload(setCvProgress, () => undefined);
+              }}
             />
             <FileUpload
               label="Upload Certificates"
               hint="Optional — combine into one PDF if possible"
               progress={certProgress}
-              onChoose={() => simulateUpload(setCertProgress)}
+              fileName={form.certName}
+              onChoose={(name) => {
+                set("certName", name);
+                simulateUpload(setCertProgress, () => undefined);
+              }}
             />
           </Card>
 
           <Card title="Cover Letter">
             <textarea
               rows={6}
+              value={form.coverLetter}
+              onChange={(e) => set("coverLetter", e.target.value)}
               placeholder={`Dear hiring team at ${job.company}, ...`}
+              aria-invalid={Boolean(errors.coverLetter)}
               className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
+            <div className="mt-2 flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">
+                {form.coverLetter.trim().length}/80 minimum characters
+              </span>
+              {errors.coverLetter && (
+                <span className="font-medium text-destructive">{errors.coverLetter}</span>
+              )}
+            </div>
           </Card>
 
           <Card title="Additional">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Portfolio / LinkedIn (optional)" placeholder="https://" />
-              <Field label="Availability date" type="date" />
+              <Field
+                label="Portfolio / LinkedIn (optional)"
+                placeholder="https://"
+                value={form.portfolio}
+                onChange={(value) => set("portfolio", value)}
+                error={errors.portfolio}
+              />
+              <Field
+                label="Availability date"
+                type="date"
+                value={form.availability}
+                onChange={(value) => set("availability", value)}
+              />
             </div>
           </Card>
 
@@ -128,8 +219,9 @@ function JobApplicationPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center justify-center rounded-xl bg-gradient-primary px-6 py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-70"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-primary px-6 py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-70"
             >
+              {submitting && <CheckCircle2 className="h-4 w-4 animate-pulse" />}
               {submitting ? "Submitting…" : "Submit Application"}
             </button>
           </div>
@@ -151,13 +243,17 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 function Field({
   label,
   type = "text",
-  defaultValue,
+  value,
+  onChange,
   placeholder,
+  error,
 }: {
   label: string;
   type?: string;
-  defaultValue?: string;
+  value: string;
+  onChange: (value: string) => void;
   placeholder?: string;
+  error?: string;
 }) {
   return (
     <label className="block">
@@ -166,10 +262,13 @@ function Field({
       </span>
       <input
         type={type}
-        defaultValue={defaultValue}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-invalid={Boolean(error)}
         className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
       />
+      {error && <p className="mt-1 text-xs font-medium text-destructive">{error}</p>}
     </label>
   );
 }
@@ -178,12 +277,16 @@ function FileUpload({
   label,
   hint,
   progress,
+  fileName,
+  error,
   onChoose,
 }: {
   label: string;
   hint: string;
   progress: number;
-  onChoose: () => void;
+  fileName?: string;
+  error?: string;
+  onChoose: (fileName: string) => void;
 }) {
   const done = progress === 100;
   return (
@@ -191,7 +294,11 @@ function FileUpload({
       <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </div>
-      <div className="mt-1.5 rounded-xl border border-dashed border-border bg-background p-4">
+      <div
+        className={`mt-1.5 rounded-xl border border-dashed bg-background p-4 ${
+          error ? "border-destructive/50" : "border-border"
+        }`}
+      >
         <div className="flex items-center gap-3">
           <div className="grid h-11 w-11 place-items-center rounded-xl bg-accent text-secondary">
             {done ? (
@@ -202,18 +309,23 @@ function FileUpload({
           </div>
           <div className="flex-1">
             <div className="text-sm font-semibold text-foreground">
-              {done ? "cv-ibrahim-kamara.pdf" : "No file selected"}
+              {fileName || "No file selected"}
             </div>
             <div className="text-xs text-muted-foreground">{hint}</div>
           </div>
-          <button
-            type="button"
-            onClick={onChoose}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-secondary hover:border-primary/40"
-          >
+          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-secondary hover:border-primary/40">
             <Upload className="h-3.5 w-3.5" />
             Choose file
-          </button>
+            <input
+              type="file"
+              className="sr-only"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onChoose(file.name);
+              }}
+            />
+          </label>
         </div>
         {progress > 0 && (
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
@@ -224,6 +336,7 @@ function FileUpload({
           </div>
         )}
       </div>
+      {error && <p className="mt-1 text-xs font-medium text-destructive">{error}</p>}
     </div>
   );
 }
