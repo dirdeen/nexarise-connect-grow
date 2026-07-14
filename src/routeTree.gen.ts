@@ -11,9 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as ChoosePathRouteImport } from './routes/choose-path'
+import { Route as ApplicationSubmittedRouteImport } from './routes/application-submitted'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
+import { Route as JobSeekerDashboardRouteImport } from './routes/job-seeker.dashboard'
 import { Route as RoleDashboardRouteImport } from './routes/$role.dashboard'
+import { Route as JobsJobIdApplyRouteImport } from './routes/jobs.$jobId.apply'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -25,9 +30,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsRoute = JobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChoosePathRoute = ChoosePathRouteImport.update({
   id: '/choose-path',
   path: '/choose-path',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApplicationSubmittedRoute = ApplicationSubmittedRouteImport.update({
+  id: '/application-submitted',
+  path: '/application-submitted',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -35,54 +50,112 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsJobIdRoute = JobsJobIdRouteImport.update({
+  id: '/$jobId',
+  path: '/$jobId',
+  getParentRoute: () => JobsRoute,
+} as any)
+const JobSeekerDashboardRoute = JobSeekerDashboardRouteImport.update({
+  id: '/job-seeker/dashboard',
+  path: '/job-seeker/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoleDashboardRoute = RoleDashboardRouteImport.update({
   id: '/$role/dashboard',
   path: '/$role/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsJobIdApplyRoute = JobsJobIdApplyRouteImport.update({
+  id: '/apply',
+  path: '/apply',
+  getParentRoute: () => JobsJobIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/application-submitted': typeof ApplicationSubmittedRoute
   '/choose-path': typeof ChoosePathRoute
+  '/jobs': typeof JobsRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
+  '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
+  '/jobs/$jobId/apply': typeof JobsJobIdApplyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/application-submitted': typeof ApplicationSubmittedRoute
   '/choose-path': typeof ChoosePathRoute
+  '/jobs': typeof JobsRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
+  '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
+  '/jobs/$jobId/apply': typeof JobsJobIdApplyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/application-submitted': typeof ApplicationSubmittedRoute
   '/choose-path': typeof ChoosePathRoute
+  '/jobs': typeof JobsRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
+  '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
+  '/jobs/$jobId/apply': typeof JobsJobIdApplyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/choose-path' | '/login' | '/register' | '/$role/dashboard'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/choose-path' | '/login' | '/register' | '/$role/dashboard'
-  id:
-    | '__root__'
+  fullPaths:
     | '/'
+    | '/application-submitted'
     | '/choose-path'
+    | '/jobs'
     | '/login'
     | '/register'
     | '/$role/dashboard'
+    | '/job-seeker/dashboard'
+    | '/jobs/$jobId'
+    | '/jobs/$jobId/apply'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/application-submitted'
+    | '/choose-path'
+    | '/jobs'
+    | '/login'
+    | '/register'
+    | '/$role/dashboard'
+    | '/job-seeker/dashboard'
+    | '/jobs/$jobId'
+    | '/jobs/$jobId/apply'
+  id:
+    | '__root__'
+    | '/'
+    | '/application-submitted'
+    | '/choose-path'
+    | '/jobs'
+    | '/login'
+    | '/register'
+    | '/$role/dashboard'
+    | '/job-seeker/dashboard'
+    | '/jobs/$jobId'
+    | '/jobs/$jobId/apply'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApplicationSubmittedRoute: typeof ApplicationSubmittedRoute
   ChoosePathRoute: typeof ChoosePathRoute
+  JobsRoute: typeof JobsRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   RoleDashboardRoute: typeof RoleDashboardRoute
+  JobSeekerDashboardRoute: typeof JobSeekerDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -101,11 +174,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs': {
+      id: '/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof JobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/choose-path': {
       id: '/choose-path'
       path: '/choose-path'
       fullPath: '/choose-path'
       preLoaderRoute: typeof ChoosePathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/application-submitted': {
+      id: '/application-submitted'
+      path: '/application-submitted'
+      fullPath: '/application-submitted'
+      preLoaderRoute: typeof ApplicationSubmittedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -115,6 +202,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/$jobId': {
+      id: '/jobs/$jobId'
+      path: '/$jobId'
+      fullPath: '/jobs/$jobId'
+      preLoaderRoute: typeof JobsJobIdRouteImport
+      parentRoute: typeof JobsRoute
+    }
+    '/job-seeker/dashboard': {
+      id: '/job-seeker/dashboard'
+      path: '/job-seeker/dashboard'
+      fullPath: '/job-seeker/dashboard'
+      preLoaderRoute: typeof JobSeekerDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$role/dashboard': {
       id: '/$role/dashboard'
       path: '/$role/dashboard'
@@ -122,15 +223,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoleDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/$jobId/apply': {
+      id: '/jobs/$jobId/apply'
+      path: '/apply'
+      fullPath: '/jobs/$jobId/apply'
+      preLoaderRoute: typeof JobsJobIdApplyRouteImport
+      parentRoute: typeof JobsJobIdRoute
+    }
   }
 }
 
+interface JobsJobIdRouteChildren {
+  JobsJobIdApplyRoute: typeof JobsJobIdApplyRoute
+}
+
+const JobsJobIdRouteChildren: JobsJobIdRouteChildren = {
+  JobsJobIdApplyRoute: JobsJobIdApplyRoute,
+}
+
+const JobsJobIdRouteWithChildren = JobsJobIdRoute._addFileChildren(
+  JobsJobIdRouteChildren,
+)
+
+interface JobsRouteChildren {
+  JobsJobIdRoute: typeof JobsJobIdRouteWithChildren
+}
+
+const JobsRouteChildren: JobsRouteChildren = {
+  JobsJobIdRoute: JobsJobIdRouteWithChildren,
+}
+
+const JobsRouteWithChildren = JobsRoute._addFileChildren(JobsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApplicationSubmittedRoute: ApplicationSubmittedRoute,
   ChoosePathRoute: ChoosePathRoute,
+  JobsRoute: JobsRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   RoleDashboardRoute: RoleDashboardRoute,
+  JobSeekerDashboardRoute: JobSeekerDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

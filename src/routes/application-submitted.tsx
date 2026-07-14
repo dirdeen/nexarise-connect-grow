@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { CheckCircle2, Briefcase, LayoutDashboard, Search } from "lucide-react";
+import { CheckCircle2, Briefcase, LayoutDashboard, Search as SearchIcon } from "lucide-react";
 
-type Search = { jobId?: string };
+type SearchParams = { jobId?: string };
 
 export const Route = createFileRoute("/application-submitted")({
   head: () => ({ meta: [{ title: "Application submitted — NexaRise" }] }),
-  validateSearch: (s: Record<string, unknown>): Search => ({
+  validateSearch: (s: Record<string, unknown>): SearchParams => ({
     jobId: typeof s.jobId === "string" ? s.jobId : undefined,
   }),
   component: ApplicationSubmittedPage,
