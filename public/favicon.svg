@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="NexaRise">
+  <rect width="256" height="256" rx="48" fill="#085c53"/>
+  <path d="M58 204V52h31l78 101V52h31v152h-31L89 104v100H58Z" fill="#fff"/>
+  <path d="M154 52h50v24h-50z" fill="#1ec6a6"/>
+</svg>
