@@ -30,6 +30,17 @@ Use the demo account:
 
 The authentication layer is a client-side demo stub and is not production authentication.
 
+## Super Admin Demo Login
+
+Use the separate super admin entry point:
+
+- URL: `/admin/login`
+- Email: `admin@nexarise.sl`
+- Password: `AdminDemo2026!`
+
+Direct visits to `/admin/dashboard` and other `/admin/*` pages redirect to this demo admin login
+unless a super-admin demo session exists in the browser.
+
 ## Recommended Walkthrough
 
 1. Start at `/`

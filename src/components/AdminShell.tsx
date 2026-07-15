@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Activity,
   BarChart3,
@@ -15,6 +15,8 @@ import type { ReactNode } from "react";
 
 import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
+import { isSuperAdminAuthenticated, logoutSuperAdmin } from "@/lib/auth";
+import { useEffect, useState } from "react";
 
 const adminNav = [
   { label: "Dashboard", to: "/admin/dashboard" as const, icon: LayoutDashboard, exact: true },
@@ -27,6 +29,32 @@ const adminNav = [
 ];
 
 export function AdminShell({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
+  const [authorized, setAuthorized] = useState(false);
+
+  useEffect(() => {
+    if (!isSuperAdminAuthenticated()) {
+      navigate({ to: "/admin/login" });
+      return;
+    }
+    setAuthorized(true);
+  }, [navigate]);
+
+  function signOut() {
+    logoutSuperAdmin();
+    navigate({ to: "/admin/login" });
+  }
+
+  if (!authorized) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-gradient-subtle px-4">
+        <div role="status" className="text-sm font-semibold text-muted-foreground">
+          Checking super admin access...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md">
@@ -59,13 +87,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
             >
               AA
             </div>
-            <Link
-              to="/choose-path"
+            <button
+              type="button"
+              onClick={signOut}
               className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground"
               aria-label="Exit admin portal"
             >
               <LogOut className="h-4 w-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
