@@ -8,18 +8,18 @@ export const Route = createFileRoute("/")({
 });
 
 const stats = [
-  { label: "Job Seeker Demo", value: "Demo" },
-  { label: "Workforce Demo", value: "Demo" },
-  { label: "Employer Demo", value: "Demo" },
-  { label: "Mentor Demo", value: "Demo" },
+  { label: "Job Seeker Demo", value: "1,000" },
+  { label: "Workforce Demo", value: "10" },
+  { label: "Employer Demo", value: "50" },
+  { label: "Mentor Demo", value: "20" },
 ];
 
 const companies = [
-  "Strategic Partnership Opportunities",
-  "Become a NexaRise Partner",
+  // "Strategic Partnership Opportunities",
   "Coming Soon",
   "Workforce Partners",
   "Training Partners",
+  "Become a NexaRise Partner",
   "Employer Partners",
   "Mentor Network",
   "Community Partners",
@@ -197,11 +197,11 @@ function LandingPage() {
           <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Strategic Partnership Opportunities
           </p>
-          <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4 lg:grid-cols-8">
+          <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4 lg:grid-cols-7">
             {companies.map((c) => (
               <div
                 key={c}
-                className="grid h-14 place-items-center rounded-lg bg-background text-sm font-semibold text-muted-foreground shadow-card"
+                className="grid h-14 place-items-center rounded-lg bg-background text-sm font-semibold text-muted-foreground shadow-card  w-full text-center transition-transform hover:scale-105"
               >
                 {c}
               </div>
@@ -214,7 +214,7 @@ function LandingPage() {
       <section id="stories" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-secondary sm:text-4xl">
-            Demo journey examples
+            Testimonials & Success Stories
           </h2>
           <p className="mt-4 text-muted-foreground">
             Illustrative flows only. These are not verified testimonials.

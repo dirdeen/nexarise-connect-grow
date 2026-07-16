@@ -1,3 +1,5 @@
+![alt text](image.png)
+
 # NexaRise Development Roadmap
 
 ## Sprint 2: Foundations and Real Authentication

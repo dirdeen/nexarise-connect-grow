@@ -17,7 +17,7 @@ export function SiteHeader() {
             href="/#stats"
             className="text-sm font-medium text-muted-foreground hover:text-foreground"
           >
-            Demo Metrics
+            Metrics
           </a>
           <a
             href="/#stories"
@@ -76,7 +76,7 @@ export function SiteFooter() {
             links={[
               ["About", "/#features"],
               ["Partnership", "/#partners"],
-              ["Demo Guide", "/#stats"],
+              ["Guide", "/#stats"],
               ["Contact", "/#partners"],
             ]}
           />
