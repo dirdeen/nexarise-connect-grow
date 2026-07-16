@@ -134,14 +134,14 @@ function JobManagementCard({
           <Link
             to="/employer/jobs/$jobId/edit"
             params={{ jobId: job.id }}
-            className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
+            className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40 h-10"
           >
             <Edit3 className="h-4 w-4" />
             Edit
           </Link>
           <Link
             to="/employer/applications"
-            className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
+            className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40 h-10"
           >
             <Users className="h-4 w-4" />
             Applicants
@@ -149,7 +149,7 @@ function JobManagementCard({
           <button
             type="button"
             onClick={onArchive}
-            className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
+            className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40 h-10"
           >
             <Archive className="h-4 w-4" />
             Archive
@@ -157,14 +157,14 @@ function JobManagementCard({
           <button
             type="button"
             onClick={onDelete}
-            className="inline-flex items-center gap-2 rounded-xl border border-destructive/30 px-3 py-2 text-sm font-semibold text-destructive hover:bg-destructive/10"
+            className="inline-flex items-center gap-2 rounded-xl border border-destructive/30 px-3 py-2 text-sm font-semibold text-destructive hover:bg-destructive/10 h-10"
           >
             <Trash2 className="h-4 w-4" />
             Delete
           </button>
           <Link
             to="/employer/applications"
-            className="inline-flex items-center gap-2 rounded-xl bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground"
+            className="inline-flex items-center gap-2 rounded-xl bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground h-10"
           >
             <Eye className="h-4 w-4" />
             View applicants
