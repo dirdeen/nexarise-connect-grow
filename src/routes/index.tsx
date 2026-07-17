@@ -8,10 +8,10 @@ export const Route = createFileRoute("/")({
 });
 
 const stats = [
-  { label: "Job Seeker Demo", value: "1,000" },
-  { label: "Workforce Demo", value: "10" },
-  { label: "Employer Demo", value: "50" },
-  { label: "Mentor Demo", value: "20" },
+  { label: "Job Seeker Demo", value: "0" },
+  { label: "Workforce Demo", value: "0" },
+  { label: "Employer Demo", value: "0" },
+  { label: "Mentor Demo", value: "0" },
 ];
 
 const companies = [
