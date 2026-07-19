@@ -1,14 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Search, Shield, UserCheck, UserMinus, UserX } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { AdminShell } from "@/components/AdminShell";
-import { ADMIN_USERS, type AdminRole, type AdminUser, type AdminUserStatus } from "@/lib/admin";
+import {
+  fetchAdminUsers,
+  deleteAdminUser,
+  updateAdminUserRole,
+  updateAdminUserStatus,
+  type AdminUserRow,
+} from "@/lib/production";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/users")({
   head: () => ({ meta: [{ title: "User Management - NexaRise Admin" }] }),
   component: UserManagementPage,
 });
+
+type AdminRole =
+  "Job Seeker" | "Employer" | "Workforce" | "Mentor" | "Support Admin" | "Super Admin";
+type AdminUserStatus = "Active" | "Suspended" | "Pending";
 
 const ROLES: Array<AdminRole | "All roles"> = [
   "All roles",
@@ -27,10 +38,42 @@ const STATUSES: Array<AdminUserStatus | "All statuses"> = [
 ];
 
 function UserManagementPage() {
-  const [users, setUsers] = useState<AdminUser[]>(ADMIN_USERS);
+  const [users, setUsers] = useState<AdminUserRow[]>([]);
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<AdminRole | "All roles">("All roles");
   const [status, setStatus] = useState<AdminUserStatus | "All statuses">("All statuses");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadUsers(showLoading = true) {
+      if (showLoading) setLoading(true);
+      setError("");
+      try {
+        const rows = await fetchAdminUsers();
+        if (active) setUsers(rows);
+      } catch (err) {
+        if (active) setError(err instanceof Error ? err.message : "Unable to load users.");
+      } finally {
+        if (active && showLoading) setLoading(false);
+      }
+    }
+
+    void loadUsers();
+    const channel = supabase
+      ?.channel("admin-users-profiles")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        void loadUsers(false);
+      })
+      .subscribe();
+
+    return () => {
+      active = false;
+      if (channel && supabase) void supabase.removeChannel(channel);
+    };
+  }, []);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -46,20 +89,39 @@ function UserManagementPage() {
     });
   }, [query, role, status, users]);
 
-  function updateStatus(userId: string, nextStatus: AdminUserStatus) {
-    setUsers((current) =>
-      current.map((user) => (user.id === userId ? { ...user, status: nextStatus } : user)),
-    );
+  async function updateStatus(userId: string, nextStatus: AdminUserStatus) {
+    setError("");
+    try {
+      await updateAdminUserStatus(userId, nextStatus);
+      setUsers((current) =>
+        current.map((user) => (user.id === userId ? { ...user, status: nextStatus } : user)),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update user status.");
+    }
   }
 
-  function updateRole(userId: string, nextRole: AdminRole) {
-    setUsers((current) =>
-      current.map((user) => (user.id === userId ? { ...user, role: nextRole } : user)),
-    );
+  async function updateRole(userId: string, nextRole: AdminRole) {
+    setError("");
+    try {
+      await updateAdminUserRole(userId, nextRole);
+      setUsers((current) =>
+        current.map((user) => (user.id === userId ? { ...user, role: nextRole } : user)),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update user role.");
+    }
   }
 
-  function deleteUser(userId: string) {
-    setUsers((current) => current.filter((user) => user.id !== userId));
+  async function deleteUser(userId: string, userName: string) {
+    setError("");
+    if (!window.confirm(`Delete ${userName}? This removes the user from Supabase Auth.`)) return;
+    try {
+      await deleteAdminUser(userId);
+      setUsers((current) => current.filter((user) => user.id !== userId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to delete this user.");
+    }
   }
 
   return (
@@ -109,6 +171,15 @@ function UserManagementPage() {
             </select>
           </div>
         </section>
+
+        {error && (
+          <div
+            role="alert"
+            className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
 
         <section className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
           <div className="overflow-x-auto">
@@ -163,7 +234,7 @@ function UserManagementPage() {
                         />
                         <IconButton
                           label={`Delete ${user.name}`}
-                          onClick={() => deleteUser(user.id)}
+                          onClick={() => deleteUser(user.id, user.name)}
                           icon={UserX}
                         />
                         <IconButton
@@ -178,7 +249,10 @@ function UserManagementPage() {
               </tbody>
             </table>
           </div>
-          {filteredUsers.length === 0 && (
+          {loading && (
+            <div className="p-10 text-center text-sm text-muted-foreground">Loading users...</div>
+          )}
+          {!loading && filteredUsers.length === 0 && (
             <div className="p-10 text-center text-sm text-muted-foreground">
               No users match the current filters.
             </div>

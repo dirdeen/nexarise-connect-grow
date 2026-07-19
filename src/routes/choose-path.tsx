@@ -1,5 +1,6 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
+import { logout, updateCurrentUserRole, type ProfileRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/choose-path")({
   head: () => ({ meta: [{ title: "Choose your path — NexaRise" }] }),
@@ -14,6 +15,7 @@ type Path = {
   to: string;
   icon: string;
   accent: string;
+  role: ProfileRole;
 };
 
 const paths: Path[] = [
@@ -24,45 +26,58 @@ const paths: Path[] = [
     to: "/job-seeker/dashboard",
     icon: "💼",
     accent: "from-primary to-primary-glow",
+    role: "job_seeker",
   },
   {
     title: "Verified Workforce",
-    description: "Join the demo network of skilled workers.",
+    description: "Join the verified network of skilled workers.",
     bullets: ["Drivers", "Keke Riders", "Office Assistants", "Professional Cleaners"],
     cta: "Join Workforce",
     to: "/workforce/dashboard",
     icon: "🛠️",
     accent: "from-secondary to-primary",
+    role: "workforce",
   },
   {
     title: "Employer",
-    description: "Recruit talent or request verified workforce.",
-    cta: "Employer Portal",
-    to: "/employer/dashboard",
+    description: "Register an employer account for admin review before hiring.",
+    cta: "Register Employer",
+    to: "/register",
     icon: "🏢",
     accent: "from-secondary to-secondary",
+    role: "employer",
   },
   {
-    title: "Mentorship & Training",
-    description: "Connect with demo mentors and upcoming training opportunities.",
-    cta: "Continue",
+    title: "Become a Mentor",
+    description: "Create a mentor profile and publish mentorship programs.",
+    cta: "Mentor Portal",
     to: "/mentorship/dashboard",
     icon: "🎓",
     accent: "from-primary-glow to-secondary",
+    role: "mentor",
   },
 ];
 
 function ChoosePathPage() {
   const navigate = useNavigate();
 
+  async function signOut() {
+    await logout();
+    navigate({ to: "/" });
+  }
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <header className="border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Logo />
-          <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+          <button
+            type="button"
+            onClick={signOut}
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
             Sign out
-          </Link>
+          </button>
         </div>
       </header>
 
@@ -105,7 +120,15 @@ function ChoosePathPage() {
               )}
 
               <button
-                onClick={() => navigate({ to: p.to })}
+                onClick={async () => {
+                  if (p.role === "employer") {
+                    await logout();
+                    navigate({ to: "/register", search: { role: "employer" } });
+                    return;
+                  }
+                  await updateCurrentUserRole(p.role);
+                  navigate({ to: p.to });
+                }}
                 className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground transition-all group-hover:bg-gradient-primary group-hover:shadow-glow"
               >
                 {p.cta} →

@@ -1,18 +1,52 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Bell, Briefcase, Home, LogOut, Search, Settings, UserRound } from "lucide-react";
-import type { ReactNode } from "react";
-import { DemoDataNotice } from "@/components/DemoDataNotice";
+import { useEffect, useState, type ReactNode } from "react";
+
+import { logout } from "@/lib/auth";
+import { getCurrentProfile, getProfileInitials, type Profile } from "@/lib/production";
 
 const navItems = [
   { label: "Dashboard", to: "/job-seeker/dashboard" as const, icon: Home, exact: true },
   { label: "Search Jobs", to: "/jobs" as const, icon: Search },
   { label: "Applications", to: "/application-submitted" as const, icon: Briefcase },
-  { label: "Profile", to: "/choose-path" as const, icon: UserRound },
+  { label: "Profile", to: "/job-seeker/profile" as const, icon: UserRound },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadProfile() {
+      try {
+        const currentProfile = await getCurrentProfile();
+        if (!active) return;
+        if (!currentProfile) {
+          navigate({ to: "/login" });
+          return;
+        }
+        setProfile(currentProfile);
+      } catch {
+        if (active) setProfile(null);
+      }
+    }
+
+    void loadProfile();
+    window.addEventListener("nexarise-profile-updated", loadProfile);
+    return () => {
+      active = false;
+      window.removeEventListener("nexarise-profile-updated", loadProfile);
+    };
+  }, [navigate]);
+
+  async function signOut() {
+    await logout();
+    navigate({ to: "/" });
+  }
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md">
@@ -39,30 +73,41 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Search className="h-4 w-4" />
               Search jobs…
             </button>
-            <button
+            <Link
+              to="/job-seeker/notifications"
               className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
               aria-label="Notifications"
             >
               <Bell className="h-4 w-4" />
-            </button>
-            <div
-              className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
-              aria-label="Ibrahim Kamara profile"
-            >
-              IB
-            </div>
+            </Link>
             <Link
-              to="/"
+              to="/job-seeker/profile"
+              className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
+              aria-label={`${profile?.full_name ?? "Job seeker"} profile`}
+            >
+              {profile?.profile_photo_url ? (
+                <img
+                  src={profile.profile_photo_url}
+                  alt=""
+                  className="h-full w-full rounded-full object-cover"
+                />
+              ) : (
+                getProfileInitials(profile, "JS")
+              )}
+            </Link>
+            <button
+              type="button"
+              onClick={signOut}
               className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground"
               aria-label="Sign out"
             >
               <LogOut className="h-4 w-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
       <div className="mx-auto flex max-w-7xl gap-6 lg:px-8">
-        <DesktopSidebar />
+        <DesktopSidebar profile={profile} />
         <main className="min-w-0 flex-1 pb-24 md:pb-8">{children}</main>
       </div>
       <MobileBottomNav />
@@ -70,17 +115,20 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-function DesktopSidebar() {
+function DesktopSidebar({ profile }: { profile: Profile | null }) {
   return (
     <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-64 shrink-0 self-start rounded-2xl border border-border bg-card p-4 shadow-card lg:block">
       <div className="rounded-xl bg-accent p-4">
         <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Career Platform
         </div>
-        <div className="mt-2 font-display text-lg font-semibold text-secondary">Ibrahim Kamara</div>
-        <div className="mt-1 text-xs text-muted-foreground">Job Seeker · Freetown</div>
+        <div className="mt-2 font-display text-lg font-semibold text-secondary">
+          {profile?.full_name ?? "Job Seeker"}
+        </div>
+        <div className="mt-1 text-xs text-muted-foreground">
+          Job Seeker · {profile?.location ?? "Location not set"}
+        </div>
       </div>
-      <DemoDataNotice compact className="mt-4" />
       <nav className="mt-4 space-y-1" aria-label="Job seeker navigation">
         {navItems.map((item) => (
           <Link
@@ -98,7 +146,7 @@ function DesktopSidebar() {
       <div className="mt-6 rounded-xl border border-border p-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-secondary">
           <Settings className="h-4 w-4" />
-          Sprint 2 Focus
+          Career tools
         </div>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
           Build your profile, apply to matched jobs, and track every opportunity.

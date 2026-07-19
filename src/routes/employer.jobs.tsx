@@ -1,9 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Archive, Edit3, Eye, Search, Trash2, Users } from "lucide-react";
 
 import { EmployerShell } from "@/components/EmployerShell";
-import { EMPLOYER_JOBS, type EmployerJob, type EmployerJobStatus } from "@/lib/employer";
+import {
+  archiveEmployerJob,
+  deleteEmployerJob,
+  EMPLOYER_JOBS,
+  fetchEmployerJobs,
+  type EmployerJob,
+  type EmployerJobStatus,
+} from "@/lib/employer";
 
 export const Route = createFileRoute("/employer/jobs")({
   head: () => ({ meta: [{ title: "Manage Jobs — NexaRise" }] }),
@@ -16,6 +23,33 @@ function ManageJobsPage() {
   const [jobs, setJobs] = useState(EMPLOYER_JOBS);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<(typeof statusOptions)[number]>("All");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadJobs() {
+      setLoading(true);
+      setError("");
+      try {
+        const employerJobs = await fetchEmployerJobs();
+        if (active) setJobs(employerJobs);
+      } catch (err) {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Unable to load employer jobs.");
+          setJobs([]);
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    void loadJobs();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const visibleJobs = useMemo(() => {
     return jobs.filter((job) => {
@@ -27,14 +61,26 @@ function ManageJobsPage() {
     });
   }, [jobs, query, status]);
 
-  function updateStatus(id: string, nextStatus: EmployerJobStatus) {
-    setJobs((current) =>
-      current.map((job) => (job.id === id ? { ...job, status: nextStatus } : job)),
-    );
+  async function updateStatus(id: string, nextStatus: EmployerJobStatus) {
+    setError("");
+    try {
+      if (nextStatus === "Archived") await archiveEmployerJob(id);
+      setJobs((current) =>
+        current.map((job) => (job.id === id ? { ...job, status: nextStatus } : job)),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update this job.");
+    }
   }
 
-  function deleteJob(id: string) {
-    setJobs((current) => current.filter((job) => job.id !== id));
+  async function deleteJob(id: string) {
+    setError("");
+    try {
+      await deleteEmployerJob(id);
+      setJobs((current) => current.filter((job) => job.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to delete this job.");
+    }
   }
 
   return (
@@ -81,16 +127,34 @@ function ManageJobsPage() {
           </label>
         </section>
 
+        {error && (
+          <div
+            role="alert"
+            className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
+
         <section className="mt-6 grid gap-4">
-          {visibleJobs.map((job) => (
-            <JobManagementCard
-              key={job.id}
-              job={job}
-              onArchive={() => updateStatus(job.id, "Archived")}
-              onDelete={() => deleteJob(job.id)}
-            />
-          ))}
-          {visibleJobs.length === 0 && (
+          {loading &&
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                aria-hidden="true"
+                className="h-36 animate-pulse rounded-2xl border border-border bg-card shadow-card"
+              />
+            ))}
+          {!loading &&
+            visibleJobs.map((job) => (
+              <JobManagementCard
+                key={job.id}
+                job={job}
+                onArchive={() => updateStatus(job.id, "Archived")}
+                onDelete={() => deleteJob(job.id)}
+              />
+            ))}
+          {!loading && visibleJobs.length === 0 && (
             <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
               <p className="text-sm text-muted-foreground">No jobs match this search.</p>
             </div>

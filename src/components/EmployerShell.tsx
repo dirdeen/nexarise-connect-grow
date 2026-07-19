@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Bell,
   BriefcaseBusiness,
@@ -10,11 +10,11 @@ import {
   Settings,
   UserRound,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
-import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
-import { COMPANY_PROFILE } from "@/lib/employer";
+import { logout } from "@/lib/auth";
+import { getCurrentProfile, getProfileInitials, type Profile } from "@/lib/production";
 
 const employerNav = [
   { label: "Dashboard", to: "/employer/dashboard" as const, icon: LayoutDashboard, exact: true },
@@ -26,6 +26,57 @@ const employerNav = [
 ];
 
 export function EmployerShell({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
+  const [authorized, setAuthorized] = useState(false);
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkEmployerAccess() {
+      const profile = await getCurrentProfile();
+      if (!active) return;
+
+      if (!profile) {
+        navigate({ to: "/login" });
+        return;
+      }
+
+      if (profile.role !== "employer") {
+        navigate({ to: "/choose-path" });
+        return;
+      }
+
+      if (profile.verification_status !== "verified") {
+        navigate({ to: "/employer/pending-approval" });
+        return;
+      }
+
+      setProfile(profile);
+      setAuthorized(true);
+    }
+
+    void checkEmployerAccess();
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
+
+  if (!authorized) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-gradient-subtle px-4">
+        <div role="status" className="text-sm font-semibold text-muted-foreground">
+          Checking employer approval...
+        </div>
+      </div>
+    );
+  }
+
+  async function signOut() {
+    await logout();
+    navigate({ to: "/login" });
+  }
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md">
@@ -45,26 +96,28 @@ export function EmployerShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <button
-              type="button"
+            <Link
+              to="/notifications"
               className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
               aria-label="Employer notifications"
             >
               <Bell className="h-4 w-4" />
-            </button>
-            <div
-              className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
-              aria-label={`${COMPANY_PROFILE.name} profile`}
-            >
-              {COMPANY_PROFILE.initials}
-            </div>
+            </Link>
             <Link
-              to="/choose-path"
+              to="/employer/profile"
+              className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
+              aria-label={`${profile?.full_name ?? "Employer"} profile`}
+            >
+              {getProfileInitials(profile, "EA")}
+            </Link>
+            <button
+              type="button"
+              onClick={signOut}
               className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground"
               aria-label="Exit employer portal"
             >
               <LogOut className="h-4 w-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
@@ -74,17 +127,18 @@ export function EmployerShell({ children }: { children: ReactNode }) {
           <div className="rounded-xl bg-accent p-4">
             <div className="flex items-center gap-3">
               <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-primary text-sm font-bold text-white shadow-glow">
-                {COMPANY_PROFILE.initials}
+                {getProfileInitials(profile, "EA")}
               </div>
               <div>
                 <div className="font-display text-sm font-semibold text-secondary">
-                  {COMPANY_PROFILE.name}
+                  {profile?.full_name ?? "Employer Account"}
                 </div>
-                <div className="text-xs text-muted-foreground">{COMPANY_PROFILE.location}</div>
+                <div className="text-xs text-muted-foreground">
+                  {profile?.location ?? "Location not set"}
+                </div>
               </div>
             </div>
           </div>
-          <DemoDataNotice compact className="mt-4" />
           <nav className="mt-4 space-y-1" aria-label="Employer navigation">
             {employerNav.map((item) => (
               <Link

@@ -1,13 +1,14 @@
 import { createFileRoute, Link, useNavigate, notFound } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { AppShell, CompanyLogo } from "@/components/AppShell";
-import { findJob } from "@/lib/jobs";
+import { fetchJobById, submitJobApplication, uploadCvDocument } from "@/lib/jobs";
 import { ArrowLeft, Upload, FileText, CheckCircle2 } from "lucide-react";
+import { getCurrentProfile } from "@/lib/production";
 
 export const Route = createFileRoute("/jobs/$jobId/apply")({
   head: () => ({ meta: [{ title: "Apply — NexaRise" }] }),
-  loader: ({ params }) => {
-    const job = findJob(params.jobId);
+  loader: async ({ params }) => {
+    const job = await fetchJobById(params.jobId);
     if (!job) throw notFound();
     return { job };
   },
@@ -33,11 +34,12 @@ function JobApplicationPage() {
   const [submitting, setSubmitting] = useState(false);
   const [cvProgress, setCvProgress] = useState(0);
   const [certProgress, setCertProgress] = useState(0);
+  const [cvFile, setCvFile] = useState<File | null>(null);
   const [form, setForm] = useState({
-    fullName: "Ibrahim Kamara",
-    email: "ibrahim@nexarise.sl",
-    phone: "+232 76 123 456",
-    city: "Freetown",
+    fullName: "",
+    email: "",
+    phone: "",
+    city: "",
     coverLetter: "",
     portfolio: "",
     availability: "",
@@ -45,6 +47,31 @@ function JobApplicationPage() {
     certName: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadApplicantProfile() {
+      try {
+        const profile = await getCurrentProfile();
+        if (!active || !profile) return;
+        setForm((current) => ({
+          ...current,
+          fullName: profile.full_name ?? "",
+          email: profile.email ?? "",
+          phone: profile.phone ?? "",
+          city: profile.location ?? "",
+        }));
+      } catch {
+        // The form remains editable for users who need to sign in before submission.
+      }
+    }
+
+    void loadApplicantProfile();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function set<K extends keyof typeof form>(key: K, value: string) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -83,17 +110,27 @@ function JobApplicationPage() {
     }, 90);
   }
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const validation = validate();
     setErrors(validation);
     if (Object.keys(validation).length > 0) return;
 
     setSubmitting(true);
-    window.setTimeout(() => {
-      const ref = `NXR-${job.id.slice(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+    try {
+      const cvUrl = cvFile ? await uploadCvDocument(cvFile) : undefined;
+      const ref = await submitJobApplication({
+        jobId: job.id,
+        cvUrl,
+        coverLetter: form.coverLetter,
+      });
       navigate({ to: "/application-submitted", search: { jobId: job.id, ref } });
-    }, 600);
+    } catch (err) {
+      setErrors({
+        form: err instanceof Error ? err.message : "Unable to submit your application.",
+      });
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -154,8 +191,9 @@ function JobApplicationPage() {
               progress={cvProgress}
               fileName={form.cvName}
               error={errors.cvName}
-              onChoose={(name) => {
-                set("cvName", name);
+              onChoose={(file) => {
+                setCvFile(file);
+                set("cvName", file.name);
                 simulateUpload(setCvProgress, () => undefined);
               }}
             />
@@ -164,8 +202,8 @@ function JobApplicationPage() {
               hint="Optional — combine into one PDF if possible"
               progress={certProgress}
               fileName={form.certName}
-              onChoose={(name) => {
-                set("certName", name);
+              onChoose={(file) => {
+                set("certName", file.name);
                 simulateUpload(setCertProgress, () => undefined);
               }}
             />
@@ -209,6 +247,11 @@ function JobApplicationPage() {
           </Card>
 
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            {errors.form && (
+              <div role="alert" className="text-sm font-medium text-destructive sm:mr-auto">
+                {errors.form}
+              </div>
+            )}
             <button
               type="button"
               onClick={() => navigate({ to: "/jobs/$jobId", params: { jobId: job.id } })}
@@ -286,7 +329,7 @@ function FileUpload({
   progress: number;
   fileName?: string;
   error?: string;
-  onChoose: (fileName: string) => void;
+  onChoose: (file: File) => void;
 }) {
   const done = progress === 100;
   return (
@@ -323,7 +366,7 @@ function FileUpload({
               aria-label={label}
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file) onChoose(file.name);
+                if (file) onChoose(file);
               }}
             />
           </label>

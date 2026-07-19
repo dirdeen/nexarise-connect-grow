@@ -1,3 +1,5 @@
+import { requireSupabase } from "@/lib/supabase";
+
 export type MentorIndustry =
   "Technology" | "Finance" | "Operations" | "Entrepreneurship" | "Public Sector";
 
@@ -65,246 +67,62 @@ export type MentorshipNotification = {
   unread: boolean;
 };
 
-export const MENTORS: Mentor[] = [
-  {
-    id: "mariama-koroma",
-    name: "Mariama Koroma",
-    title: "Senior Product Manager",
-    company: "Demo Telecom SL",
-    industry: "Technology",
-    location: "Freetown",
-    experience: "10 years",
-    availability: "Tuesdays and Thursdays",
-    rating: 4.9,
-    reviews: 38,
-    biography:
-      "Product leader helping early-career professionals build roadmaps, stakeholder confidence and practical execution habits.",
-    skills: ["Product strategy", "Career planning", "Stakeholder management", "Agile delivery"],
-    certifications: ["Certified Scrum Product Owner", "Digital Transformation Leadership"],
-    highlights: [
-      "Built youth digital products",
-      "Mentored 45 job seekers",
-      "Speaker at Freetown Tech Week",
-    ],
-  },
-  {
-    id: "ibrahim-sankoh",
-    name: "Ibrahim Sankoh",
-    title: "Finance Controller",
-    company: "Demo Commercial Bank",
-    industry: "Finance",
-    location: "Bo",
-    experience: "12 years",
-    availability: "Saturday mornings",
-    rating: 4.8,
-    reviews: 29,
-    biography:
-      "Finance mentor focused on interview preparation, accounting growth paths and workplace professionalism.",
-    skills: ["Financial reporting", "Interview coaching", "Excel", "Audit readiness"],
-    certifications: ["ACCA Advanced Diploma", "Risk Management Essentials"],
-    highlights: [
-      "Banking leadership coach",
-      "Supports graduate trainees",
-      "Community finance trainer",
-    ],
-  },
-  {
-    id: "fatmata-swaray",
-    name: "Fatmata Swaray",
-    title: "Founder and Operations Lead",
-    company: "Salone Fresh Logistics",
-    industry: "Entrepreneurship",
-    location: "Kenema",
-    experience: "8 years",
-    availability: "Weekday evenings",
-    rating: 4.7,
-    reviews: 21,
-    biography:
-      "Entrepreneur mentoring founders and operations talent on customer discovery, basic finance and resilient execution.",
-    skills: ["Business planning", "Operations", "Customer discovery", "Pitch preparation"],
-    certifications: ["SME Growth Programme", "Operations Management"],
-    highlights: ["Built regional supply network", "Mentors women founders", "Grant pitch reviewer"],
-  },
-  {
-    id: "joseph-bangura",
-    name: "Joseph Bangura",
-    title: "HR and Talent Advisor",
-    company: "NexaRise Partner Network",
-    industry: "Operations",
-    location: "Makeni",
-    experience: "9 years",
-    availability: "Mondays",
-    rating: 4.6,
-    reviews: 18,
-    biography:
-      "Talent advisor helping mentees improve CVs, prepare for competency interviews and build strong work habits.",
-    skills: ["CV review", "Interview practice", "Workplace readiness", "People operations"],
-    certifications: ["Human Resource Management", "Coaching Skills for Managers"],
-    highlights: ["Reviewed 600+ CVs", "Runs mock interviews", "Employer readiness specialist"],
-  },
-  {
-    id: "amina-turay",
-    name: "Amina Turay",
-    title: "Public Policy Analyst",
-    company: "Demo Civic Agency",
-    industry: "Public Sector",
-    location: "Freetown",
-    experience: "7 years",
-    availability: "Friday afternoons",
-    rating: 4.8,
-    reviews: 24,
-    biography:
-      "Policy mentor supporting graduates interested in public service, research, civic technology and programme delivery.",
-    skills: ["Policy research", "Grant writing", "Programme design", "Public speaking"],
-    certifications: ["Monitoring and Evaluation", "Public Sector Leadership"],
-    highlights: ["Youth policy facilitator", "M&E trainer", "Supports civic fellows"],
-  },
-];
+export type MentorProfileRecord = {
+  user_id: string;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  location: string | null;
+  profile_photo_url: string | null;
+  verification_status: string;
+  headline: string;
+  biography: string;
+  industry: string;
+  skills: string[];
+  certifications: string[];
+  availability: string;
+  years_of_experience: number | null;
+};
 
-export const MENTEES: Mentee[] = [
-  {
-    id: "ibrahim-kamara",
-    name: "Ibrahim Kamara",
-    focus: "Product management transition",
-    status: "Active",
-    nextStep: "Review portfolio goals",
-  },
-  {
-    id: "zainab-jalloh",
-    name: "Zainab Jalloh",
-    focus: "Office administration growth",
-    status: "Active",
-    nextStep: "Mock interview",
-  },
-  {
-    id: "mohamed-conteh",
-    name: "Mohamed Conteh",
-    focus: "Finance internship readiness",
-    status: "Pending",
-    nextStep: "Accept request",
-  },
-];
+export type MentorProfileInput = {
+  fullName: string;
+  phone: string;
+  location: string;
+  headline: string;
+  biography: string;
+  industry: string;
+  skills: string;
+  certifications: string;
+  availability: string;
+  yearsOfExperience: string;
+};
 
-export const SESSIONS: MentorshipSession[] = [
-  {
-    id: "session-product-roadmap",
-    mentor: "Mariama Koroma",
-    mentee: "Ibrahim Kamara",
-    topic: "Product roadmap review",
-    date: "18 Jul 2026",
-    time: "10:00 AM",
-    status: "Upcoming",
-    notes: "Bring product case study draft and top three career questions.",
-  },
-  {
-    id: "session-cv-review",
-    mentor: "Joseph Bangura",
-    mentee: "Zainab Jalloh",
-    topic: "CV and interview practice",
-    date: "21 Jul 2026",
-    time: "4:30 PM",
-    status: "Upcoming",
-    notes: "Focus on office assistant achievements and STAR answers.",
-  },
-  {
-    id: "session-finance-goals",
-    mentor: "Ibrahim Sankoh",
-    mentee: "Mohamed Conteh",
-    topic: "Finance career planning",
-    date: "9 Jul 2026",
-    time: "11:00 AM",
-    status: "Completed",
-    notes: "Mentee will complete Excel practice and update LinkedIn summary.",
-  },
-];
+export type MentorshipProgram = {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  targetAudience: string;
+  capacity: number | null;
+  deliveryMode: string;
+  schedule: string;
+  status: "draft" | "published" | "archived";
+  createdAt: string;
+};
 
-export const CONVERSATIONS: Conversation[] = [
-  {
-    id: "mariama-ibrahim",
-    participant: "Ibrahim Kamara",
-    role: "Product mentee",
-    lastMessage: "I attached the case study outline for review.",
-    read: false,
-    attachments: 1,
-    messages: [
-      {
-        from: "mentee",
-        body: "I attached the case study outline for review.",
-        time: "9:12 AM",
-        read: false,
-      },
-      {
-        from: "mentor",
-        body: "Thanks, I will mark the strongest sections before our session.",
-        time: "9:20 AM",
-        read: true,
-      },
-    ],
-  },
-  {
-    id: "mariama-zainab",
-    participant: "Zainab Jalloh",
-    role: "Office administration mentee",
-    lastMessage: "Thank you for the interview checklist.",
-    read: true,
-    attachments: 0,
-    messages: [
-      {
-        from: "mentor",
-        body: "Use the checklist to prepare three examples from your last assignment.",
-        time: "Yesterday",
-        read: true,
-      },
-      {
-        from: "mentee",
-        body: "Thank you for the interview checklist.",
-        time: "Yesterday",
-        read: true,
-      },
-    ],
-  },
-];
+export type MentorshipProgramInput = {
+  title: string;
+  category: string;
+  description: string;
+  targetAudience: string;
+  capacity: string;
+  deliveryMode: string;
+  schedule: string;
+  status: MentorshipProgram["status"];
+};
 
-export const NOTIFICATIONS: MentorshipNotification[] = [
-  {
-    id: "request-new",
-    type: "New mentorship request",
-    message: "Mohamed Conteh requested finance career guidance.",
-    time: "12 min ago",
-    unread: true,
-  },
-  {
-    id: "request-accepted",
-    type: "Accepted request",
-    message: "Mariama accepted Ibrahim's product mentorship request.",
-    time: "1 hr ago",
-    unread: true,
-  },
-  {
-    id: "session-reminder",
-    type: "Session reminder",
-    message: "Product roadmap review starts on 18 Jul 2026 at 10:00 AM.",
-    time: "Today",
-    unread: false,
-  },
-  {
-    id: "new-message",
-    type: "New message",
-    message: "Ibrahim sent a new attachment in mentorship chat.",
-    time: "Today",
-    unread: true,
-  },
-  {
-    id: "application-update",
-    type: "Application updates",
-    message: "Your mentee Zainab moved to interview stage for Office Assistant.",
-    time: "Yesterday",
-    unread: false,
-  },
-];
-
-export const MENTOR_INDUSTRIES: Array<MentorIndustry | "All industries"> = [
-  "All industries",
+export const MENTOR_INDUSTRIES: Array<MentorIndustry | "All"> = [
+  "All",
   "Technology",
   "Finance",
   "Operations",
@@ -312,14 +130,166 @@ export const MENTOR_INDUSTRIES: Array<MentorIndustry | "All industries"> = [
   "Public Sector",
 ];
 
-export function findMentor(id: string) {
-  return MENTORS.find((mentor) => mentor.id === id);
+export const MENTORS: Mentor[] = [];
+export const MENTEES: Mentee[] = [];
+export const SESSIONS: MentorshipSession[] = [];
+export const CONVERSATIONS: Conversation[] = [];
+export const NOTIFICATIONS: MentorshipNotification[] = [];
+
+function listFromText(value: string) {
+  return value
+    .split(/[\n,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
-export function findSession(id: string) {
-  return SESSIONS.find((session) => session.id === id);
+function parseNumber(value: string) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
-export function findConversation(id: string) {
-  return CONVERSATIONS.find((conversation) => conversation.id === id);
+function formatDate(value: string) {
+  return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+async function currentUserId() {
+  const client = requireSupabase();
+  const { data, error } = await client.auth.getUser();
+  if (error || !data.user) throw new Error("Sign in as a mentor to continue.");
+  return data.user.id;
+}
+
+export async function fetchCurrentMentorProfile(): Promise<MentorProfileRecord> {
+  const client = requireSupabase();
+  const userId = await currentUserId();
+
+  const [{ data: profile, error: profileError }, { data: mentorProfile, error: mentorError }] =
+    await Promise.all([
+      client
+        .from("profiles")
+        .select(
+          "user_id, full_name, email, phone, location, profile_photo_url, verification_status",
+        )
+        .eq("user_id", userId)
+        .single(),
+      client
+        .from("mentor_profiles")
+        .select(
+          "headline, biography, industry, skills, certifications, availability, years_of_experience",
+        )
+        .eq("user_id", userId)
+        .maybeSingle(),
+    ]);
+
+  if (profileError) throw new Error(profileError.message);
+  if (mentorError) throw new Error(mentorError.message);
+
+  return {
+    user_id: profile.user_id,
+    full_name: profile.full_name,
+    email: profile.email,
+    phone: profile.phone,
+    location: profile.location,
+    profile_photo_url: profile.profile_photo_url,
+    verification_status: profile.verification_status,
+    headline: mentorProfile?.headline ?? "",
+    biography: mentorProfile?.biography ?? "",
+    industry: mentorProfile?.industry ?? "",
+    skills: mentorProfile?.skills ?? [],
+    certifications: mentorProfile?.certifications ?? [],
+    availability: mentorProfile?.availability ?? "",
+    years_of_experience: mentorProfile?.years_of_experience ?? null,
+  };
+}
+
+export async function saveCurrentMentorProfile(values: MentorProfileInput) {
+  const client = requireSupabase();
+  const userId = await currentUserId();
+
+  const [{ error: profileError }, { error: mentorError }] = await Promise.all([
+    client
+      .from("profiles")
+      .update({
+        full_name: values.fullName.trim(),
+        phone: values.phone.trim() || null,
+        location: values.location.trim() || null,
+      })
+      .eq("user_id", userId),
+    client.from("mentor_profiles").upsert(
+      {
+        user_id: userId,
+        headline: values.headline.trim() || null,
+        biography: values.biography.trim() || null,
+        industry: values.industry.trim() || null,
+        skills: listFromText(values.skills),
+        certifications: listFromText(values.certifications),
+        availability: values.availability.trim() || null,
+        years_of_experience: parseNumber(values.yearsOfExperience),
+      },
+      { onConflict: "user_id" },
+    ),
+  ]);
+
+  if (profileError) throw new Error(profileError.message);
+  if (mentorError) throw new Error(mentorError.message);
+  window.dispatchEvent(new Event("nexarise-profile-updated"));
+}
+
+export async function fetchMentorshipPrograms(): Promise<MentorshipProgram[]> {
+  const client = requireSupabase();
+  const userId = await currentUserId();
+
+  const { data, error } = await client
+    .from("mentorship_programs")
+    .select(
+      "id, title, category, description, target_audience, capacity, delivery_mode, schedule, status, created_at",
+    )
+    .eq("mentor_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+
+  return (data ?? []).map((program) => ({
+    id: program.id,
+    title: program.title,
+    category: program.category,
+    description: program.description,
+    targetAudience: program.target_audience ?? "Not set",
+    capacity: program.capacity,
+    deliveryMode: program.delivery_mode,
+    schedule: program.schedule ?? "Schedule not set",
+    status: program.status,
+    createdAt: formatDate(program.created_at),
+  }));
+}
+
+export async function createMentorshipProgram(values: MentorshipProgramInput) {
+  const client = requireSupabase();
+  const userId = await currentUserId();
+
+  const { error } = await client.from("mentorship_programs").insert({
+    mentor_id: userId,
+    title: values.title.trim(),
+    category: values.category,
+    description: values.description.trim(),
+    target_audience: values.targetAudience.trim() || null,
+    capacity: parseNumber(values.capacity),
+    delivery_mode: values.deliveryMode,
+    schedule: values.schedule.trim() || null,
+    status: values.status,
+  });
+
+  if (error) throw new Error(error.message);
+}
+
+export function findMentor(_id: string) {
+  return undefined;
+}
+
+export function findSession(_id: string) {
+  return undefined;
+}
+
+export function findConversation(_id: string) {
+  return undefined;
 }

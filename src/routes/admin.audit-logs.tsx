@@ -29,9 +29,9 @@ function AuditLogsPage() {
 
         <section className="grid gap-4 sm:grid-cols-3">
           {[
-            ["User activity", "1,284 events", Activity],
-            ["Login history", "94 admin logins", LogIn],
-            ["Admin actions", "36 changes", UserCog],
+            ["User activity", "Not configured", Activity],
+            ["Login history", "Not configured", LogIn],
+            ["Admin actions", "Not configured", UserCog],
           ].map(([label, value, Icon]) => (
             <div
               key={label as string}
@@ -83,6 +83,11 @@ function AuditLogsPage() {
               </tbody>
             </table>
           </div>
+          {AUDIT_LOGS.length === 0 && (
+            <div className="p-10 text-center text-sm text-muted-foreground">
+              Audit event storage is not connected yet.
+            </div>
+          )}
         </section>
       </div>
     </AdminShell>

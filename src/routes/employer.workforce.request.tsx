@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 
 import { EmployerShell } from "@/components/EmployerShell";
-import { WORKFORCE_CATEGORIES, type WorkerCategory } from "@/lib/workforce";
+import { createWorkforceRequest, WORKFORCE_CATEGORIES, type WorkerCategory } from "@/lib/workforce";
 
 export const Route = createFileRoute("/employer/workforce/request")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -35,6 +35,8 @@ function EmployerWorkforceRequest() {
   const navigate = useNavigate();
   const { category } = Route.useSearch();
   const [errors, setErrors] = useState<RequestErrors>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
   const [values, setValues] = useState<RequestValues>({
     category,
     numberRequired: "2",
@@ -50,9 +52,10 @@ function EmployerWorkforceRequest() {
   function update<K extends keyof RequestValues>(field: K, value: RequestValues[K]) {
     setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
+    setFormError("");
   }
 
-  function submitRequest(event: React.FormEvent<HTMLFormElement>) {
+  async function submitRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors: RequestErrors = {};
 
@@ -66,7 +69,28 @@ function EmployerWorkforceRequest() {
 
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length === 0) {
-      navigate({ to: "/employer/workforce/recommended", search: { category: values.category } });
+      setSubmitting(true);
+      try {
+        const requestId = await createWorkforceRequest({
+          category: values.category,
+          numberRequired: Number(values.numberRequired),
+          location: values.location.trim(),
+          startDate: values.startDate,
+          shift: values.shift,
+          duration: values.duration.trim(),
+          transport: values.transport,
+          accommodation: values.accommodation,
+          specialRequirements: values.specialRequirements.trim(),
+        });
+        navigate({
+          to: "/employer/workforce/recommended",
+          search: { category: values.category, requestId },
+        });
+      } catch (err) {
+        setFormError(err instanceof Error ? err.message : "Unable to submit workforce request.");
+      } finally {
+        setSubmitting(false);
+      }
     }
   }
 
@@ -182,12 +206,22 @@ function EmployerWorkforceRequest() {
             />
           </Field>
 
+          {formError && (
+            <div
+              role="alert"
+              className="mt-5 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+            >
+              {formError}
+            </div>
+          )}
+
           <div className="mt-6 flex justify-end">
             <button
               type="submit"
-              className="rounded-xl bg-secondary px-5 py-3 text-sm font-semibold text-secondary-foreground hover:bg-gradient-primary hover:shadow-glow"
+              disabled={submitting}
+              className="rounded-xl bg-secondary px-5 py-3 text-sm font-semibold text-secondary-foreground hover:bg-gradient-primary hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Submit request
+              {submitting ? "Submitting..." : "Submit request"}
             </button>
           </div>
         </form>
@@ -196,15 +230,7 @@ function EmployerWorkforceRequest() {
   );
 }
 
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
   return (
     <label className="mt-5 block first:mt-0">
       <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   BarChart3,
   BriefcaseBusiness,
@@ -10,13 +11,12 @@ import {
 
 import { AdminShell, AdminStat } from "@/components/AdminShell";
 import {
-  ADMIN_ANALYTICS,
-  ADMIN_USERS,
-  AUDIT_LOGS,
-  PLATFORM_STATS,
-  REVENUE_SERIES,
-  VERIFICATIONS,
-} from "@/lib/admin";
+  fetchAdminStats,
+  fetchAdminUsers,
+  type AdminStats,
+  type AdminUserRow,
+} from "@/lib/production";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard - NexaRise" }] }),
@@ -24,12 +24,81 @@ export const Route = createFileRoute("/admin/dashboard")({
 });
 
 function AdminDashboard() {
-  const pendingVerifications = VERIFICATIONS.filter((item) => item.status === "Pending");
-  const maxRevenue = Math.max(...REVENUE_SERIES.map((item) => item.value));
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [users, setUsers] = useState<AdminUserRow[]>([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadAdminData(showLoading = true) {
+      if (showLoading) setLoading(true);
+      setError("");
+      try {
+        const [nextStats, nextUsers] = await Promise.all([fetchAdminStats(), fetchAdminUsers()]);
+        if (active) {
+          setStats(nextStats);
+          setUsers(nextUsers);
+        }
+      } catch (err) {
+        if (active) setError(err instanceof Error ? err.message : "Unable to load admin data.");
+      } finally {
+        if (active && showLoading) setLoading(false);
+      }
+    }
+
+    void loadAdminData();
+    const channel = supabase
+      ?.channel("admin-dashboard-live-data")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        void loadAdminData(false);
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "jobs" }, () => {
+        void loadAdminData(false);
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "applications" }, () => {
+        void loadAdminData(false);
+      })
+      .subscribe();
+
+    return () => {
+      active = false;
+      if (channel && supabase) void supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const statCards = [
+    ["Total users", `${stats?.totalUsers ?? 0}`, "registered profiles"],
+    ["Active employers", `${stats?.activeEmployers ?? 0}`, "employer profiles"],
+    ["Job seekers", `${stats?.jobSeekers ?? 0}`, "career profiles"],
+    ["Revenue", stats?.revenue ?? "Not configured", "billing not connected"],
+    ["Workforce members", `${stats?.workforceMembers ?? 0}`, "registered profiles"],
+    ["Mentors", `${stats?.mentors ?? 0}`, "registered profiles"],
+    ["Active jobs", `${stats?.activeJobs ?? 0}`, "accepting applications"],
+    ["Applications", `${stats?.applications ?? 0}`, "tracked submissions"],
+  ];
+
+  const analytics = [
+    { label: "Jobs posted", value: stats?.activeJobs ?? 0, change: "Live database" },
+    { label: "Applications", value: stats?.applications ?? 0, change: "Live database" },
+    { label: "Hiring rate", value: "Not configured", change: "Requires hiring outcome tracking" },
+    { label: "Workforce requests", value: "Not configured", change: "Requires workforce tables" },
+    { label: "Mentorship sessions", value: "Not configured", change: "Requires mentorship tables" },
+  ];
 
   return (
     <AdminShell>
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-0">
+        {error && (
+          <div
+            role="alert"
+            className="mb-6 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
+
         <section className="rounded-3xl bg-gradient-hero p-8 text-white shadow-elegant">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
             Super Admin Portal
@@ -40,8 +109,7 @@ function AdminDashboard() {
                 Platform command center
               </h1>
               <p className="mt-2 max-w-2xl text-white/80">
-                Monitor users, employers, workforce operations, mentorship, applications and revenue
-                across NexaRise.
+                Monitor users, employers, applications and platform operations across NexaRise.
               </p>
             </div>
             <Link
@@ -55,42 +123,14 @@ function AdminDashboard() {
         </section>
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <AdminStat
-            label="Total users"
-            value={`${PLATFORM_STATS.totalUsers}`}
-            helper="demo record set"
-          />
-          <AdminStat
-            label="Active employers"
-            value={`${PLATFORM_STATS.activeEmployers}`}
-            helper="demo employer records"
-          />
-          <AdminStat
-            label="Job seekers"
-            value={`${PLATFORM_STATS.jobSeekers}`}
-            helper="career profiles"
-          />
-          <AdminStat label="Revenue" value={PLATFORM_STATS.revenue} helper="demo only" />
-          <AdminStat
-            label="Workforce members"
-            value={`${PLATFORM_STATS.workforceMembers}`}
-            helper="active network"
-          />
-          <AdminStat
-            label="Mentors"
-            value={`${PLATFORM_STATS.mentors}`}
-            helper="approved mentors"
-          />
-          <AdminStat
-            label="Active jobs"
-            value={`${PLATFORM_STATS.activeJobs}`}
-            helper="accepting applications"
-          />
-          <AdminStat
-            label="Applications"
-            value={`${PLATFORM_STATS.applications}`}
-            helper="tracked submissions"
-          />
+          {statCards.map(([label, value, helper]) => (
+            <AdminStat
+              key={label}
+              label={label}
+              value={value}
+              helper={loading ? "Loading" : helper}
+            />
+          ))}
         </section>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1fr_360px]">
@@ -100,21 +140,14 @@ function AdminDashboard() {
                 <h2 className="font-display text-xl font-semibold text-secondary">
                   Revenue overview
                 </h2>
-                <p className="text-sm text-muted-foreground">Monthly platform revenue in NLe.</p>
+                <p className="text-sm text-muted-foreground">
+                  Billing and revenue tracking are not connected yet.
+                </p>
               </div>
               <Wallet className="h-5 w-5 text-primary" />
             </div>
-            <div className="mt-6 flex h-64 items-end gap-3">
-              {REVENUE_SERIES.map((item) => (
-                <div key={item.label} className="flex flex-1 flex-col items-center gap-2">
-                  <div
-                    className="w-full rounded-t-xl bg-gradient-primary"
-                    style={{ height: `${Math.max(18, (item.value / maxRevenue) * 100)}%` }}
-                    aria-label={`${item.label} revenue ${item.value}`}
-                  />
-                  <span className="text-xs font-semibold text-muted-foreground">{item.label}</span>
-                </div>
-              ))}
+            <div className="mt-6 rounded-2xl border border-dashed border-border bg-background p-10 text-center text-sm text-muted-foreground">
+              Connect a billing table or payment provider to enable revenue analytics.
             </div>
           </section>
 
@@ -124,7 +157,7 @@ function AdminDashboard() {
               {[
                 { label: "Manage users", to: "/admin/users" as const, icon: Users },
                 {
-                  label: `${pendingVerifications.length} verifications pending`,
+                  label: "Review verifications",
                   to: "/admin/verification" as const,
                   icon: ShieldCheck,
                 },
@@ -154,7 +187,7 @@ function AdminDashboard() {
               Platform analytics
             </h2>
             <div className="mt-5 grid gap-3">
-              {ADMIN_ANALYTICS.map((item) => (
+              {analytics.map((item) => (
                 <div
                   key={item.label}
                   className="flex items-center justify-between rounded-xl bg-accent p-4"
@@ -169,21 +202,9 @@ function AdminDashboard() {
           </section>
 
           <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
-            <h2 className="font-display text-xl font-semibold text-secondary">Latest audit logs</h2>
-            <div className="mt-5 grid gap-3">
-              {AUDIT_LOGS.slice(0, 4).map((log) => (
-                <div key={log.id} className="rounded-xl bg-accent p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="text-sm font-semibold text-secondary">{log.action}</div>
-                      <div className="mt-1 text-xs text-muted-foreground">
-                        {log.actor} · {log.target}
-                      </div>
-                    </div>
-                    <span className="text-xs font-semibold text-primary">{log.time}</span>
-                  </div>
-                </div>
-              ))}
+            <h2 className="font-display text-xl font-semibold text-secondary">Audit logs</h2>
+            <div className="mt-5 rounded-2xl border border-dashed border-border bg-background p-8 text-center text-sm text-muted-foreground">
+              Audit event storage is not connected yet.
             </div>
           </section>
         </div>
@@ -204,7 +225,7 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {ADMIN_USERS.slice(0, 5).map((user) => (
+                {users.slice(0, 5).map((user) => (
                   <tr key={user.id}>
                     <td className="py-3 font-semibold text-secondary">{user.name}</td>
                     <td className="py-3 text-muted-foreground">{user.role}</td>
@@ -220,6 +241,9 @@ function AdminDashboard() {
               </tbody>
             </table>
           </div>
+          {!loading && users.length === 0 && (
+            <div className="p-10 text-center text-sm text-muted-foreground">No users found.</div>
+          )}
         </section>
       </div>
     </AdminShell>

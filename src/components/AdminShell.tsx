@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
 import { isSuperAdminAuthenticated, logoutSuperAdmin } from "@/lib/auth";
 import { useEffect, useState } from "react";
@@ -33,15 +32,26 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    if (!isSuperAdminAuthenticated()) {
-      navigate({ to: "/admin/login" });
-      return;
+    let active = true;
+
+    async function checkAccess() {
+      const allowed = await isSuperAdminAuthenticated();
+      if (!active) return;
+      if (!allowed) {
+        navigate({ to: "/admin/login" });
+        return;
+      }
+      setAuthorized(true);
     }
-    setAuthorized(true);
+
+    void checkAccess();
+    return () => {
+      active = false;
+    };
   }, [navigate]);
 
-  function signOut() {
-    logoutSuperAdmin();
+  async function signOut() {
+    await logoutSuperAdmin();
     navigate({ to: "/admin/login" });
   }
 
@@ -83,9 +93,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </Link>
             <div
               className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
-              aria-label="Aminata Admin profile"
+              aria-label="Super admin profile"
             >
-              AA
+              SA
             </div>
             <button
               type="button"
@@ -104,17 +114,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <div className="rounded-xl bg-accent p-4">
             <div className="flex items-center gap-3">
               <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-primary text-sm font-bold text-white shadow-glow">
-                AA
+                SA
               </div>
               <div>
-                <div className="font-display text-sm font-semibold text-secondary">
-                  Aminata Admin
-                </div>
+                <div className="font-display text-sm font-semibold text-secondary">Super Admin</div>
                 <div className="text-xs text-muted-foreground">Super Admin · NexaRise</div>
               </div>
             </div>
           </div>
-          <DemoDataNotice compact className="mt-4" />
           <nav className="mt-4 space-y-1" aria-label="Admin navigation">
             {adminNav.map((item) => (
               <Link

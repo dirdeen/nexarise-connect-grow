@@ -1,9 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, FileCheck2, FileX2, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AdminShell } from "@/components/AdminShell";
-import { VERIFICATIONS, type VerificationItem } from "@/lib/admin";
+import {
+  fetchVerificationQueue,
+  updateVerificationStatus,
+  type VerificationQueueItem,
+} from "@/lib/production";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/verification")({
   head: () => ({ meta: [{ title: "Verification Management - NexaRise Admin" }] }),
@@ -11,11 +16,51 @@ export const Route = createFileRoute("/admin/verification")({
 });
 
 function VerificationManagementPage() {
-  const [items, setItems] = useState<VerificationItem[]>(VERIFICATIONS);
+  const [items, setItems] = useState<VerificationQueueItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const pending = items.filter((item) => item.status === "Pending").length;
 
-  function updateVerification(id: string, status: VerificationItem["status"]) {
-    setItems((current) => current.map((item) => (item.id === id ? { ...item, status } : item)));
+  useEffect(() => {
+    let active = true;
+
+    async function loadItems(showLoading = true) {
+      if (showLoading) setLoading(true);
+      setError("");
+      try {
+        const rows = await fetchVerificationQueue();
+        if (active) setItems(rows);
+      } catch (err) {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Unable to load verification records.");
+        }
+      } finally {
+        if (active && showLoading) setLoading(false);
+      }
+    }
+
+    void loadItems();
+    const channel = supabase
+      ?.channel("admin-verification-profiles")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        void loadItems(false);
+      })
+      .subscribe();
+
+    return () => {
+      active = false;
+      if (channel && supabase) void supabase.removeChannel(channel);
+    };
+  }, []);
+
+  async function updateVerification(id: string, status: VerificationQueueItem["status"]) {
+    setError("");
+    try {
+      await updateVerificationStatus(id, status);
+      setItems((current) => current.map((item) => (item.id === id ? { ...item, status } : item)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update verification status.");
+    }
   }
 
   return (
@@ -53,6 +98,14 @@ function VerificationManagementPage() {
         </section>
 
         <section className="mt-8 grid gap-4">
+          {error && (
+            <div
+              role="alert"
+              className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+            >
+              {error}
+            </div>
+          )}
           {items.map((item) => (
             <article
               key={item.id}
@@ -101,6 +154,16 @@ function VerificationManagementPage() {
               </div>
             </article>
           ))}
+          {loading && (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
+              Loading verification records...
+            </div>
+          )}
+          {!loading && items.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
+              No verification records are available yet.
+            </div>
+          )}
         </section>
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-card">

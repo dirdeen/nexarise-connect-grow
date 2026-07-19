@@ -17,7 +17,7 @@ export function SiteHeader() {
             href="/#stats"
             className="text-sm font-medium text-muted-foreground hover:text-foreground"
           >
-            Metrics
+            Platform Areas
           </a>
           <a
             href="/#stories"
@@ -76,7 +76,7 @@ export function SiteFooter() {
             links={[
               ["About", "/#features"],
               ["Partnership", "/#partners"],
-              ["Guide", "/#stats"],
+              ["Platform Areas", "/#stats"],
               ["Contact", "/#partners"],
             ]}
           />

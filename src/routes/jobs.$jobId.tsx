@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell, CompanyLogo } from "@/components/AppShell";
-import { findJob } from "@/lib/jobs";
+import { fetchJobById, isJobSaved, saveJob, unsaveJob } from "@/lib/jobs";
 import {
   ArrowLeft,
   Bookmark,
@@ -15,8 +15,8 @@ import {
 
 export const Route = createFileRoute("/jobs/$jobId")({
   head: () => ({ meta: [{ title: "Job Details — NexaRise" }] }),
-  loader: ({ params }) => {
-    const job = findJob(params.jobId);
+  loader: async ({ params }) => {
+    const job = await fetchJobById(params.jobId);
     if (!job) throw notFound();
     return { job };
   },
@@ -48,14 +48,54 @@ function JobDetailsPage() {
   const navigate = useNavigate();
   const [saved, setSaved] = useState(false);
   const [shared, setShared] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadSavedState() {
+      try {
+        const isSaved = await isJobSaved(job.id);
+        if (active) setSaved(isSaved);
+      } catch {
+        if (active) setSaved(false);
+      }
+    }
+
+    void loadSavedState();
+    return () => {
+      active = false;
+    };
+  }, [job.id]);
 
   function shareJob() {
     setShared(true);
+    setMessage("Job link copied.");
     const path = `/jobs/${job.id}`;
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(`${window.location.origin}${path}`).catch(() => undefined);
     }
-    window.setTimeout(() => setShared(false), 1800);
+    window.setTimeout(() => {
+      setShared(false);
+      setMessage("");
+    }, 1800);
+  }
+
+  async function toggleSaved() {
+    setMessage("");
+    try {
+      if (saved) {
+        await unsaveJob(job.id);
+        setSaved(false);
+        setMessage("Job removed from saved jobs.");
+      } else {
+        await saveJob(job.id);
+        setSaved(true);
+        setMessage("Job saved to your profile.");
+      }
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Unable to update saved jobs.");
+    }
   }
 
   return (
@@ -183,7 +223,7 @@ function JobDetailsPage() {
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={() => setSaved((current) => !current)}
+                onClick={toggleSaved}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-secondary hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 aria-label={saved ? `Remove saved ${job.title}` : `Save ${job.title}`}
                 aria-pressed={saved}
@@ -200,6 +240,14 @@ function JobDetailsPage() {
                 <Share2 className="h-4 w-4" /> {shared ? "Copied" : "Share"}
               </button>
             </div>
+            {message && (
+              <div
+                role="status"
+                className="mt-3 rounded-xl border border-border bg-accent px-3 py-2 text-xs font-semibold text-secondary"
+              >
+                {message}
+              </div>
+            )}
             <div className="mt-6 space-y-2 text-xs text-muted-foreground">
               <div className="flex items-center justify-between">
                 <span>Experience</span>

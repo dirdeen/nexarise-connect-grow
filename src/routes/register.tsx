@@ -1,15 +1,25 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { AuthShell, Field } from "./login";
-import { register } from "@/lib/auth";
+import { register, type ProfileRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/register")({
+  validateSearch: (search: Record<string, unknown>): { role?: ProfileRole } => ({
+    role:
+      search.role === "employer" || search.role === "mentor"
+        ? (search.role as ProfileRole)
+        : undefined,
+  }),
   head: () => ({ meta: [{ title: "Create account — NexaRise" }] }),
   component: RegisterPage,
 });
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const { role } = Route.useSearch();
+  const selectedRole = role ?? "job_seeker";
+  const isEmployerRegistration = selectedRole === "employer";
+  const isMentorRegistration = selectedRole === "mentor";
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
@@ -18,6 +28,7 @@ function RegisterPage() {
     confirm: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   function set<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -33,26 +44,62 @@ function RegisterPage() {
     return e;
   }
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
-    register(form.email);
-    navigate({ to: "/choose-path" });
+    setSubmitting(true);
+    const result = await register({
+      email: form.email,
+      password: form.password,
+      fullName: form.fullName,
+      phone: form.phone,
+      role: selectedRole,
+    });
+    setSubmitting(false);
+    if (!result.ok) {
+      setErrors({ form: result.error ?? "Registration failed." });
+      return;
+    }
+    navigate({ to: isEmployerRegistration ? "/employer/pending-approval" : "/choose-path" });
   }
 
   return (
     <AuthShell
-      title="Create your account"
-      subtitle="Join NexaRise and choose your path in minutes."
+      title={
+        isEmployerRegistration
+          ? "Register as an employer"
+          : isMentorRegistration
+            ? "Register as a mentor"
+            : "Create your account"
+      }
+      subtitle={
+        isEmployerRegistration
+          ? "Create an employer account. Admin approval is required before the hiring portal opens."
+          : isMentorRegistration
+            ? "Create a mentor account, then complete your mentor profile and programs."
+            : "Join NexaRise and choose your path in minutes."
+      }
     >
+      {isEmployerRegistration && (
+        <div className="mb-5 rounded-xl border border-primary/25 bg-primary/10 p-4 text-sm text-secondary">
+          Employer accounts are reviewed by NexaRise admins before posting jobs or reviewing
+          applicants.
+        </div>
+      )}
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field label="Full name">
+        <Field label={isEmployerRegistration ? "Company or organisation name" : "Full name"}>
           <input
             value={form.fullName}
             onChange={(e) => set("fullName", e.target.value)}
-            placeholder="Aminata Kamara"
+            placeholder={
+              isEmployerRegistration
+                ? "NexaRise Hiring Partner"
+                : isMentorRegistration
+                  ? "Mentor full name"
+                  : "Full name"
+            }
             className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
           {errors.fullName && <Err msg={errors.fullName} />}
@@ -104,10 +151,13 @@ function RegisterPage() {
 
         <button
           type="submit"
+          disabled={submitting}
           className="mt-2 w-full rounded-lg bg-gradient-primary px-4 py-3 text-sm font-semibold text-white shadow-glow transition-transform hover:scale-[1.01]"
         >
-          Create account
+          {submitting ? "Creating account..." : "Create account"}
         </button>
+
+        {errors.form && <Err msg={errors.form} />}
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}

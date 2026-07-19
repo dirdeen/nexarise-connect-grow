@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as ChoosePathRouteImport } from './routes/choose-path'
@@ -17,18 +18,26 @@ import { Route as ApplicationSubmittedRouteImport } from './routes/application-s
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkforceWorkersRouteImport } from './routes/workforce.workers'
 import { Route as WorkforceRegisterRouteImport } from './routes/workforce.register'
+import { Route as WorkforceProfileRouteImport } from './routes/workforce.profile'
+import { Route as WorkforceDocumentsRouteImport } from './routes/workforce.documents'
 import { Route as WorkforceDashboardRouteImport } from './routes/workforce.dashboard'
 import { Route as WorkforceCategoriesRouteImport } from './routes/workforce.categories'
+import { Route as WorkforceAssignmentsRouteImport } from './routes/workforce.assignments'
 import { Route as MentorshipSessionsRouteImport } from './routes/mentorship.sessions'
 import { Route as MentorshipRequestRouteImport } from './routes/mentorship.request'
+import { Route as MentorshipProgramsRouteImport } from './routes/mentorship.programs'
+import { Route as MentorshipProfileRouteImport } from './routes/mentorship.profile'
 import { Route as MentorshipNotificationsRouteImport } from './routes/mentorship.notifications'
 import { Route as MentorshipMessagesRouteImport } from './routes/mentorship.messages'
 import { Route as MentorshipMentorsRouteImport } from './routes/mentorship.mentors'
 import { Route as MentorshipDashboardRouteImport } from './routes/mentorship.dashboard'
 import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
+import { Route as JobSeekerProfileRouteImport } from './routes/job-seeker.profile'
+import { Route as JobSeekerNotificationsRouteImport } from './routes/job-seeker.notifications'
 import { Route as JobSeekerDashboardRouteImport } from './routes/job-seeker.dashboard'
 import { Route as EmployerSettingsRouteImport } from './routes/employer.settings'
 import { Route as EmployerProfileRouteImport } from './routes/employer.profile'
+import { Route as EmployerPendingApprovalRouteImport } from './routes/employer.pending-approval'
 import { Route as EmployerJobsRouteImport } from './routes/employer.jobs'
 import { Route as EmployerDashboardRouteImport } from './routes/employer.dashboard'
 import { Route as EmployerApplicationsRouteImport } from './routes/employer.applications'
@@ -51,11 +60,17 @@ import { Route as EmployerWorkforceRecommendedRouteImport } from './routes/emplo
 import { Route as EmployerWorkforceConfirmRouteImport } from './routes/employer.workforce.confirm'
 import { Route as EmployerJobsNewRouteImport } from './routes/employer.jobs.new'
 import { Route as EmployerApplicationsCandidateIdRouteImport } from './routes/employer.applications.$candidateId'
+import { Route as EmployerWorkforceWorkersWorkerIdRouteImport } from './routes/employer.workforce.workers.$workerId'
 import { Route as EmployerJobsJobIdEditRouteImport } from './routes/employer.jobs.$jobId.edit'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -93,6 +108,16 @@ const WorkforceRegisterRoute = WorkforceRegisterRouteImport.update({
   path: '/workforce/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkforceProfileRoute = WorkforceProfileRouteImport.update({
+  id: '/workforce/profile',
+  path: '/workforce/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkforceDocumentsRoute = WorkforceDocumentsRouteImport.update({
+  id: '/workforce/documents',
+  path: '/workforce/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkforceDashboardRoute = WorkforceDashboardRouteImport.update({
   id: '/workforce/dashboard',
   path: '/workforce/dashboard',
@@ -103,6 +128,11 @@ const WorkforceCategoriesRoute = WorkforceCategoriesRouteImport.update({
   path: '/workforce/categories',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkforceAssignmentsRoute = WorkforceAssignmentsRouteImport.update({
+  id: '/workforce/assignments',
+  path: '/workforce/assignments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MentorshipSessionsRoute = MentorshipSessionsRouteImport.update({
   id: '/mentorship/sessions',
   path: '/mentorship/sessions',
@@ -111,6 +141,16 @@ const MentorshipSessionsRoute = MentorshipSessionsRouteImport.update({
 const MentorshipRequestRoute = MentorshipRequestRouteImport.update({
   id: '/mentorship/request',
   path: '/mentorship/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorshipProgramsRoute = MentorshipProgramsRouteImport.update({
+  id: '/mentorship/programs',
+  path: '/mentorship/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorshipProfileRoute = MentorshipProfileRouteImport.update({
+  id: '/mentorship/profile',
+  path: '/mentorship/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentorshipNotificationsRoute = MentorshipNotificationsRouteImport.update({
@@ -138,6 +178,16 @@ const JobsJobIdRoute = JobsJobIdRouteImport.update({
   path: '/$jobId',
   getParentRoute: () => JobsRoute,
 } as any)
+const JobSeekerProfileRoute = JobSeekerProfileRouteImport.update({
+  id: '/job-seeker/profile',
+  path: '/job-seeker/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobSeekerNotificationsRoute = JobSeekerNotificationsRouteImport.update({
+  id: '/job-seeker/notifications',
+  path: '/job-seeker/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JobSeekerDashboardRoute = JobSeekerDashboardRouteImport.update({
   id: '/job-seeker/dashboard',
   path: '/job-seeker/dashboard',
@@ -151,6 +201,11 @@ const EmployerSettingsRoute = EmployerSettingsRouteImport.update({
 const EmployerProfileRoute = EmployerProfileRouteImport.update({
   id: '/employer/profile',
   path: '/employer/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployerPendingApprovalRoute = EmployerPendingApprovalRouteImport.update({
+  id: '/employer/pending-approval',
+  path: '/employer/pending-approval',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmployerJobsRoute = EmployerJobsRouteImport.update({
@@ -271,6 +326,12 @@ const EmployerApplicationsCandidateIdRoute =
     path: '/$candidateId',
     getParentRoute: () => EmployerApplicationsRoute,
   } as any)
+const EmployerWorkforceWorkersWorkerIdRoute =
+  EmployerWorkforceWorkersWorkerIdRouteImport.update({
+    id: '/employer/workforce/workers/$workerId',
+    path: '/employer/workforce/workers/$workerId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const EmployerJobsJobIdEditRoute = EmployerJobsJobIdEditRouteImport.update({
   id: '/$jobId/edit',
   path: '/$jobId/edit',
@@ -283,6 +344,7 @@ export interface FileRoutesByFullPath {
   '/choose-path': typeof ChoosePathRoute
   '/jobs': typeof JobsRouteWithChildren
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -296,18 +358,26 @@ export interface FileRoutesByFullPath {
   '/employer/applications': typeof EmployerApplicationsRouteWithChildren
   '/employer/dashboard': typeof EmployerDashboardRoute
   '/employer/jobs': typeof EmployerJobsRouteWithChildren
+  '/employer/pending-approval': typeof EmployerPendingApprovalRoute
   '/employer/profile': typeof EmployerProfileRoute
   '/employer/settings': typeof EmployerSettingsRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/job-seeker/notifications': typeof JobSeekerNotificationsRoute
+  '/job-seeker/profile': typeof JobSeekerProfileRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
   '/mentorship/dashboard': typeof MentorshipDashboardRoute
   '/mentorship/mentors': typeof MentorshipMentorsRouteWithChildren
   '/mentorship/messages': typeof MentorshipMessagesRoute
   '/mentorship/notifications': typeof MentorshipNotificationsRoute
+  '/mentorship/profile': typeof MentorshipProfileRoute
+  '/mentorship/programs': typeof MentorshipProgramsRoute
   '/mentorship/request': typeof MentorshipRequestRoute
   '/mentorship/sessions': typeof MentorshipSessionsRouteWithChildren
+  '/workforce/assignments': typeof WorkforceAssignmentsRoute
   '/workforce/categories': typeof WorkforceCategoriesRoute
   '/workforce/dashboard': typeof WorkforceDashboardRoute
+  '/workforce/documents': typeof WorkforceDocumentsRoute
+  '/workforce/profile': typeof WorkforceProfileRoute
   '/workforce/register': typeof WorkforceRegisterRoute
   '/workforce/workers': typeof WorkforceWorkersRouteWithChildren
   '/employer/applications/$candidateId': typeof EmployerApplicationsCandidateIdRoute
@@ -321,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/mentorship/sessions/$sessionId': typeof MentorshipSessionsSessionIdRoute
   '/workforce/workers/$workerId': typeof WorkforceWorkersWorkerIdRoute
   '/employer/jobs/$jobId/edit': typeof EmployerJobsJobIdEditRoute
+  '/employer/workforce/workers/$workerId': typeof EmployerWorkforceWorkersWorkerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -328,6 +399,7 @@ export interface FileRoutesByTo {
   '/choose-path': typeof ChoosePathRoute
   '/jobs': typeof JobsRouteWithChildren
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -341,18 +413,26 @@ export interface FileRoutesByTo {
   '/employer/applications': typeof EmployerApplicationsRouteWithChildren
   '/employer/dashboard': typeof EmployerDashboardRoute
   '/employer/jobs': typeof EmployerJobsRouteWithChildren
+  '/employer/pending-approval': typeof EmployerPendingApprovalRoute
   '/employer/profile': typeof EmployerProfileRoute
   '/employer/settings': typeof EmployerSettingsRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/job-seeker/notifications': typeof JobSeekerNotificationsRoute
+  '/job-seeker/profile': typeof JobSeekerProfileRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
   '/mentorship/dashboard': typeof MentorshipDashboardRoute
   '/mentorship/mentors': typeof MentorshipMentorsRouteWithChildren
   '/mentorship/messages': typeof MentorshipMessagesRoute
   '/mentorship/notifications': typeof MentorshipNotificationsRoute
+  '/mentorship/profile': typeof MentorshipProfileRoute
+  '/mentorship/programs': typeof MentorshipProgramsRoute
   '/mentorship/request': typeof MentorshipRequestRoute
   '/mentorship/sessions': typeof MentorshipSessionsRouteWithChildren
+  '/workforce/assignments': typeof WorkforceAssignmentsRoute
   '/workforce/categories': typeof WorkforceCategoriesRoute
   '/workforce/dashboard': typeof WorkforceDashboardRoute
+  '/workforce/documents': typeof WorkforceDocumentsRoute
+  '/workforce/profile': typeof WorkforceProfileRoute
   '/workforce/register': typeof WorkforceRegisterRoute
   '/workforce/workers': typeof WorkforceWorkersRouteWithChildren
   '/employer/applications/$candidateId': typeof EmployerApplicationsCandidateIdRoute
@@ -366,6 +446,7 @@ export interface FileRoutesByTo {
   '/mentorship/sessions/$sessionId': typeof MentorshipSessionsSessionIdRoute
   '/workforce/workers/$workerId': typeof WorkforceWorkersWorkerIdRoute
   '/employer/jobs/$jobId/edit': typeof EmployerJobsJobIdEditRoute
+  '/employer/workforce/workers/$workerId': typeof EmployerWorkforceWorkersWorkerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -374,6 +455,7 @@ export interface FileRoutesById {
   '/choose-path': typeof ChoosePathRoute
   '/jobs': typeof JobsRouteWithChildren
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/register': typeof RegisterRoute
   '/$role/dashboard': typeof RoleDashboardRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -387,18 +469,26 @@ export interface FileRoutesById {
   '/employer/applications': typeof EmployerApplicationsRouteWithChildren
   '/employer/dashboard': typeof EmployerDashboardRoute
   '/employer/jobs': typeof EmployerJobsRouteWithChildren
+  '/employer/pending-approval': typeof EmployerPendingApprovalRoute
   '/employer/profile': typeof EmployerProfileRoute
   '/employer/settings': typeof EmployerSettingsRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/job-seeker/notifications': typeof JobSeekerNotificationsRoute
+  '/job-seeker/profile': typeof JobSeekerProfileRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
   '/mentorship/dashboard': typeof MentorshipDashboardRoute
   '/mentorship/mentors': typeof MentorshipMentorsRouteWithChildren
   '/mentorship/messages': typeof MentorshipMessagesRoute
   '/mentorship/notifications': typeof MentorshipNotificationsRoute
+  '/mentorship/profile': typeof MentorshipProfileRoute
+  '/mentorship/programs': typeof MentorshipProgramsRoute
   '/mentorship/request': typeof MentorshipRequestRoute
   '/mentorship/sessions': typeof MentorshipSessionsRouteWithChildren
+  '/workforce/assignments': typeof WorkforceAssignmentsRoute
   '/workforce/categories': typeof WorkforceCategoriesRoute
   '/workforce/dashboard': typeof WorkforceDashboardRoute
+  '/workforce/documents': typeof WorkforceDocumentsRoute
+  '/workforce/profile': typeof WorkforceProfileRoute
   '/workforce/register': typeof WorkforceRegisterRoute
   '/workforce/workers': typeof WorkforceWorkersRouteWithChildren
   '/employer/applications/$candidateId': typeof EmployerApplicationsCandidateIdRoute
@@ -412,6 +502,7 @@ export interface FileRoutesById {
   '/mentorship/sessions/$sessionId': typeof MentorshipSessionsSessionIdRoute
   '/workforce/workers/$workerId': typeof WorkforceWorkersWorkerIdRoute
   '/employer/jobs/$jobId/edit': typeof EmployerJobsJobIdEditRoute
+  '/employer/workforce/workers/$workerId': typeof EmployerWorkforceWorkersWorkerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -421,6 +512,7 @@ export interface FileRouteTypes {
     | '/choose-path'
     | '/jobs'
     | '/login'
+    | '/notifications'
     | '/register'
     | '/$role/dashboard'
     | '/admin/analytics'
@@ -434,18 +526,26 @@ export interface FileRouteTypes {
     | '/employer/applications'
     | '/employer/dashboard'
     | '/employer/jobs'
+    | '/employer/pending-approval'
     | '/employer/profile'
     | '/employer/settings'
     | '/job-seeker/dashboard'
+    | '/job-seeker/notifications'
+    | '/job-seeker/profile'
     | '/jobs/$jobId'
     | '/mentorship/dashboard'
     | '/mentorship/mentors'
     | '/mentorship/messages'
     | '/mentorship/notifications'
+    | '/mentorship/profile'
+    | '/mentorship/programs'
     | '/mentorship/request'
     | '/mentorship/sessions'
+    | '/workforce/assignments'
     | '/workforce/categories'
     | '/workforce/dashboard'
+    | '/workforce/documents'
+    | '/workforce/profile'
     | '/workforce/register'
     | '/workforce/workers'
     | '/employer/applications/$candidateId'
@@ -459,6 +559,7 @@ export interface FileRouteTypes {
     | '/mentorship/sessions/$sessionId'
     | '/workforce/workers/$workerId'
     | '/employer/jobs/$jobId/edit'
+    | '/employer/workforce/workers/$workerId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -466,6 +567,7 @@ export interface FileRouteTypes {
     | '/choose-path'
     | '/jobs'
     | '/login'
+    | '/notifications'
     | '/register'
     | '/$role/dashboard'
     | '/admin/analytics'
@@ -479,18 +581,26 @@ export interface FileRouteTypes {
     | '/employer/applications'
     | '/employer/dashboard'
     | '/employer/jobs'
+    | '/employer/pending-approval'
     | '/employer/profile'
     | '/employer/settings'
     | '/job-seeker/dashboard'
+    | '/job-seeker/notifications'
+    | '/job-seeker/profile'
     | '/jobs/$jobId'
     | '/mentorship/dashboard'
     | '/mentorship/mentors'
     | '/mentorship/messages'
     | '/mentorship/notifications'
+    | '/mentorship/profile'
+    | '/mentorship/programs'
     | '/mentorship/request'
     | '/mentorship/sessions'
+    | '/workforce/assignments'
     | '/workforce/categories'
     | '/workforce/dashboard'
+    | '/workforce/documents'
+    | '/workforce/profile'
     | '/workforce/register'
     | '/workforce/workers'
     | '/employer/applications/$candidateId'
@@ -504,6 +614,7 @@ export interface FileRouteTypes {
     | '/mentorship/sessions/$sessionId'
     | '/workforce/workers/$workerId'
     | '/employer/jobs/$jobId/edit'
+    | '/employer/workforce/workers/$workerId'
   id:
     | '__root__'
     | '/'
@@ -511,6 +622,7 @@ export interface FileRouteTypes {
     | '/choose-path'
     | '/jobs'
     | '/login'
+    | '/notifications'
     | '/register'
     | '/$role/dashboard'
     | '/admin/analytics'
@@ -524,18 +636,26 @@ export interface FileRouteTypes {
     | '/employer/applications'
     | '/employer/dashboard'
     | '/employer/jobs'
+    | '/employer/pending-approval'
     | '/employer/profile'
     | '/employer/settings'
     | '/job-seeker/dashboard'
+    | '/job-seeker/notifications'
+    | '/job-seeker/profile'
     | '/jobs/$jobId'
     | '/mentorship/dashboard'
     | '/mentorship/mentors'
     | '/mentorship/messages'
     | '/mentorship/notifications'
+    | '/mentorship/profile'
+    | '/mentorship/programs'
     | '/mentorship/request'
     | '/mentorship/sessions'
+    | '/workforce/assignments'
     | '/workforce/categories'
     | '/workforce/dashboard'
+    | '/workforce/documents'
+    | '/workforce/profile'
     | '/workforce/register'
     | '/workforce/workers'
     | '/employer/applications/$candidateId'
@@ -549,6 +669,7 @@ export interface FileRouteTypes {
     | '/mentorship/sessions/$sessionId'
     | '/workforce/workers/$workerId'
     | '/employer/jobs/$jobId/edit'
+    | '/employer/workforce/workers/$workerId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -557,6 +678,7 @@ export interface RootRouteChildren {
   ChoosePathRoute: typeof ChoosePathRoute
   JobsRoute: typeof JobsRouteWithChildren
   LoginRoute: typeof LoginRoute
+  NotificationsRoute: typeof NotificationsRoute
   RegisterRoute: typeof RegisterRoute
   RoleDashboardRoute: typeof RoleDashboardRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
@@ -570,23 +692,32 @@ export interface RootRouteChildren {
   EmployerApplicationsRoute: typeof EmployerApplicationsRouteWithChildren
   EmployerDashboardRoute: typeof EmployerDashboardRoute
   EmployerJobsRoute: typeof EmployerJobsRouteWithChildren
+  EmployerPendingApprovalRoute: typeof EmployerPendingApprovalRoute
   EmployerProfileRoute: typeof EmployerProfileRoute
   EmployerSettingsRoute: typeof EmployerSettingsRoute
   JobSeekerDashboardRoute: typeof JobSeekerDashboardRoute
+  JobSeekerNotificationsRoute: typeof JobSeekerNotificationsRoute
+  JobSeekerProfileRoute: typeof JobSeekerProfileRoute
   MentorshipDashboardRoute: typeof MentorshipDashboardRoute
   MentorshipMentorsRoute: typeof MentorshipMentorsRouteWithChildren
   MentorshipMessagesRoute: typeof MentorshipMessagesRoute
   MentorshipNotificationsRoute: typeof MentorshipNotificationsRoute
+  MentorshipProfileRoute: typeof MentorshipProfileRoute
+  MentorshipProgramsRoute: typeof MentorshipProgramsRoute
   MentorshipRequestRoute: typeof MentorshipRequestRoute
   MentorshipSessionsRoute: typeof MentorshipSessionsRouteWithChildren
+  WorkforceAssignmentsRoute: typeof WorkforceAssignmentsRoute
   WorkforceCategoriesRoute: typeof WorkforceCategoriesRoute
   WorkforceDashboardRoute: typeof WorkforceDashboardRoute
+  WorkforceDocumentsRoute: typeof WorkforceDocumentsRoute
+  WorkforceProfileRoute: typeof WorkforceProfileRoute
   WorkforceRegisterRoute: typeof WorkforceRegisterRoute
   WorkforceWorkersRoute: typeof WorkforceWorkersRouteWithChildren
   EmployerWorkforceConfirmRoute: typeof EmployerWorkforceConfirmRoute
   EmployerWorkforceRecommendedRoute: typeof EmployerWorkforceRecommendedRoute
   EmployerWorkforceRequestRoute: typeof EmployerWorkforceRequestRoute
   EmployerWorkforceSuccessRoute: typeof EmployerWorkforceSuccessRoute
+  EmployerWorkforceWorkersWorkerIdRoute: typeof EmployerWorkforceWorkersWorkerIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -596,6 +727,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -647,6 +785,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkforceRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workforce/profile': {
+      id: '/workforce/profile'
+      path: '/workforce/profile'
+      fullPath: '/workforce/profile'
+      preLoaderRoute: typeof WorkforceProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workforce/documents': {
+      id: '/workforce/documents'
+      path: '/workforce/documents'
+      fullPath: '/workforce/documents'
+      preLoaderRoute: typeof WorkforceDocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workforce/dashboard': {
       id: '/workforce/dashboard'
       path: '/workforce/dashboard'
@@ -661,6 +813,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkforceCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workforce/assignments': {
+      id: '/workforce/assignments'
+      path: '/workforce/assignments'
+      fullPath: '/workforce/assignments'
+      preLoaderRoute: typeof WorkforceAssignmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mentorship/sessions': {
       id: '/mentorship/sessions'
       path: '/mentorship/sessions'
@@ -673,6 +832,20 @@ declare module '@tanstack/react-router' {
       path: '/mentorship/request'
       fullPath: '/mentorship/request'
       preLoaderRoute: typeof MentorshipRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentorship/programs': {
+      id: '/mentorship/programs'
+      path: '/mentorship/programs'
+      fullPath: '/mentorship/programs'
+      preLoaderRoute: typeof MentorshipProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentorship/profile': {
+      id: '/mentorship/profile'
+      path: '/mentorship/profile'
+      fullPath: '/mentorship/profile'
+      preLoaderRoute: typeof MentorshipProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentorship/notifications': {
@@ -710,6 +883,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JobsJobIdRouteImport
       parentRoute: typeof JobsRoute
     }
+    '/job-seeker/profile': {
+      id: '/job-seeker/profile'
+      path: '/job-seeker/profile'
+      fullPath: '/job-seeker/profile'
+      preLoaderRoute: typeof JobSeekerProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/job-seeker/notifications': {
+      id: '/job-seeker/notifications'
+      path: '/job-seeker/notifications'
+      fullPath: '/job-seeker/notifications'
+      preLoaderRoute: typeof JobSeekerNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/job-seeker/dashboard': {
       id: '/job-seeker/dashboard'
       path: '/job-seeker/dashboard'
@@ -729,6 +916,13 @@ declare module '@tanstack/react-router' {
       path: '/employer/profile'
       fullPath: '/employer/profile'
       preLoaderRoute: typeof EmployerProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employer/pending-approval': {
+      id: '/employer/pending-approval'
+      path: '/employer/pending-approval'
+      fullPath: '/employer/pending-approval'
+      preLoaderRoute: typeof EmployerPendingApprovalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/employer/jobs': {
@@ -885,6 +1079,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployerApplicationsCandidateIdRouteImport
       parentRoute: typeof EmployerApplicationsRoute
     }
+    '/employer/workforce/workers/$workerId': {
+      id: '/employer/workforce/workers/$workerId'
+      path: '/employer/workforce/workers/$workerId'
+      fullPath: '/employer/workforce/workers/$workerId'
+      preLoaderRoute: typeof EmployerWorkforceWorkersWorkerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/employer/jobs/$jobId/edit': {
       id: '/employer/jobs/$jobId/edit'
       path: '/$jobId/edit'
@@ -981,6 +1182,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChoosePathRoute: ChoosePathRoute,
   JobsRoute: JobsRouteWithChildren,
   LoginRoute: LoginRoute,
+  NotificationsRoute: NotificationsRoute,
   RegisterRoute: RegisterRoute,
   RoleDashboardRoute: RoleDashboardRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
@@ -994,23 +1196,32 @@ const rootRouteChildren: RootRouteChildren = {
   EmployerApplicationsRoute: EmployerApplicationsRouteWithChildren,
   EmployerDashboardRoute: EmployerDashboardRoute,
   EmployerJobsRoute: EmployerJobsRouteWithChildren,
+  EmployerPendingApprovalRoute: EmployerPendingApprovalRoute,
   EmployerProfileRoute: EmployerProfileRoute,
   EmployerSettingsRoute: EmployerSettingsRoute,
   JobSeekerDashboardRoute: JobSeekerDashboardRoute,
+  JobSeekerNotificationsRoute: JobSeekerNotificationsRoute,
+  JobSeekerProfileRoute: JobSeekerProfileRoute,
   MentorshipDashboardRoute: MentorshipDashboardRoute,
   MentorshipMentorsRoute: MentorshipMentorsRouteWithChildren,
   MentorshipMessagesRoute: MentorshipMessagesRoute,
   MentorshipNotificationsRoute: MentorshipNotificationsRoute,
+  MentorshipProfileRoute: MentorshipProfileRoute,
+  MentorshipProgramsRoute: MentorshipProgramsRoute,
   MentorshipRequestRoute: MentorshipRequestRoute,
   MentorshipSessionsRoute: MentorshipSessionsRouteWithChildren,
+  WorkforceAssignmentsRoute: WorkforceAssignmentsRoute,
   WorkforceCategoriesRoute: WorkforceCategoriesRoute,
   WorkforceDashboardRoute: WorkforceDashboardRoute,
+  WorkforceDocumentsRoute: WorkforceDocumentsRoute,
+  WorkforceProfileRoute: WorkforceProfileRoute,
   WorkforceRegisterRoute: WorkforceRegisterRoute,
   WorkforceWorkersRoute: WorkforceWorkersRouteWithChildren,
   EmployerWorkforceConfirmRoute: EmployerWorkforceConfirmRoute,
   EmployerWorkforceRecommendedRoute: EmployerWorkforceRecommendedRoute,
   EmployerWorkforceRequestRoute: EmployerWorkforceRequestRoute,
   EmployerWorkforceSuccessRoute: EmployerWorkforceSuccessRoute,
+  EmployerWorkforceWorkersWorkerIdRoute: EmployerWorkforceWorkersWorkerIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

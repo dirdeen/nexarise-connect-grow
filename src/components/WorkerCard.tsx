@@ -5,11 +5,13 @@ import type { Worker } from "@/lib/workforce";
 
 export function WorkerCard({
   worker,
+  profileContext = "workforce",
   selectable = false,
   selected = false,
   onSelect,
 }: {
   worker: Worker;
+  profileContext?: "workforce" | "employer";
   selectable?: boolean;
   selected?: boolean;
   onSelect?: () => void;
@@ -56,13 +58,23 @@ export function WorkerCard({
         ))}
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link
-          to="/workforce/workers/$workerId"
-          params={{ workerId: worker.id }}
-          className="rounded-xl border border-border px-4 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
-        >
-          View profile
-        </Link>
+        {profileContext === "employer" ? (
+          <Link
+            to="/employer/workforce/workers/$workerId"
+            params={{ workerId: worker.id }}
+            className="rounded-xl border border-border px-4 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
+          >
+            View profile
+          </Link>
+        ) : (
+          <Link
+            to="/workforce/workers/$workerId"
+            params={{ workerId: worker.id }}
+            className="rounded-xl border border-border px-4 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
+          >
+            View profile
+          </Link>
+        )}
         {selectable && (
           <button
             type="button"

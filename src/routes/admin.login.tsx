@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { AuthShell, Field } from "./login";
-import { loginSuperAdmin, SUPER_ADMIN_DEMO_EMAIL, SUPER_ADMIN_DEMO_PASSWORD } from "@/lib/auth";
+import { loginSuperAdmin } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/login")({
   head: () => ({ meta: [{ title: "Super Admin Sign In - NexaRise" }] }),
@@ -12,11 +12,12 @@ export const Route = createFileRoute("/admin/login")({
 
 function AdminLoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState(SUPER_ADMIN_DEMO_EMAIL);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(event: FormEvent) {
+  async function onSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
     if (!email || !password) {
@@ -24,7 +25,9 @@ function AdminLoginPage() {
       return;
     }
 
-    const result = loginSuperAdmin(email, password);
+    setSubmitting(true);
+    const result = await loginSuperAdmin(email, password);
+    setSubmitting(false);
     if (!result.ok) {
       setError(result.error ?? "Super admin login failed.");
       return;
@@ -36,16 +39,16 @@ function AdminLoginPage() {
   return (
     <AuthShell
       title="Super admin sign in"
-      subtitle="Restricted demo access for platform operations, verification and audit controls."
+      subtitle="Restricted access for platform operations, verification and audit controls."
     >
       <div className="mb-5 rounded-xl border border-primary/25 bg-primary/10 p-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-secondary">
           <ShieldCheck className="h-4 w-4 text-primary" />
-          Super Admin Demo Access
+          Super Admin Access
         </div>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-          Use this screen for admin testing only. Production admin access must use real
-          authentication, roles and audit controls.
+          Sign in with a Supabase account that has an admin or super admin role in the profiles
+          table.
         </p>
       </div>
 
@@ -82,20 +85,11 @@ function AdminLoginPage() {
 
         <button
           type="submit"
+          disabled={submitting}
           className="w-full rounded-lg bg-gradient-primary px-4 py-3 text-sm font-semibold text-white shadow-glow transition-transform hover:scale-[1.01]"
         >
-          Sign in to admin
+          {submitting ? "Checking access..." : "Sign in to admin"}
         </button>
-
-        <div className="rounded-lg bg-accent px-3 py-2 text-xs text-secondary">
-          <div>
-            Email: <code className="font-mono font-semibold">{SUPER_ADMIN_DEMO_EMAIL}</code>
-          </div>
-          <div className="mt-1">
-            Password: <code className="font-mono font-semibold">{SUPER_ADMIN_DEMO_PASSWORD}</code>
-          </div>
-        </div>
-
         <p className="text-center text-sm text-muted-foreground">
           Not an admin?{" "}
           <Link to="/login" className="font-semibold text-primary hover:underline">

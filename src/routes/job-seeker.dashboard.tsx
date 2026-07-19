@@ -1,93 +1,115 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AppShell } from "@/components/AppShell";
-import { JobCard } from "@/components/JobCard";
-import { JOBS } from "@/lib/jobs";
+import { useEffect, useState } from "react";
 import {
-  Search,
-  Upload,
-  Users,
-  Lightbulb,
-  Briefcase,
   Bookmark,
+  Briefcase,
   CalendarCheck,
-  Sparkles,
   CheckCircle2,
   Code2,
+  Lightbulb,
   LineChart,
   Megaphone,
+  Search,
   ShieldCheck,
+  Sparkles,
+  Upload,
+  UserRound,
 } from "lucide-react";
 
+import { AppShell } from "@/components/AppShell";
+import { JobCard } from "@/components/JobCard";
+import { fetchJobSeekerDashboard, type JobSeekerDashboardData } from "@/lib/production";
+
 export const Route = createFileRoute("/job-seeker/dashboard")({
-  head: () => ({ meta: [{ title: "Job Seeker Dashboard — NexaRise" }] }),
+  head: () => ({ meta: [{ title: "Job Seeker Dashboard - NexaRise" }] }),
   component: JobSeekerDashboard,
 });
 
-const stats = [
-  { label: "Applications Sent", value: 14, icon: Briefcase, tone: "from-primary to-primary-glow" },
-  { label: "Saved Jobs", value: 8, icon: Bookmark, tone: "from-secondary to-primary" },
-  {
-    label: "Interview Invitations",
-    value: 3,
-    icon: CalendarCheck,
-    tone: "from-primary-glow to-secondary",
-  },
-  { label: "Recommended Jobs", value: 12, icon: Sparkles, tone: "from-secondary to-secondary" },
-];
+const categoryIcons = [Code2, LineChart, Megaphone, ShieldCheck];
 
 const quickActions = [
   { label: "Search Jobs", icon: Search, to: "/jobs" as const },
-  { label: "Update CV", icon: Upload, to: "/jobs/orange-network-eng/apply" as const },
-  { label: "Find Mentor", icon: Users, to: "/choose-path" as const },
+  { label: "Upload CV", icon: Upload, to: "/jobs" as const },
+  { label: "Career Profile", icon: UserRound, to: "/job-seeker/profile" as const },
   { label: "Career Tips", icon: Lightbulb, to: "/job-seeker/dashboard" as const },
 ];
 
-const recentApplications = [
-  {
-    job: JOBS[0],
-    status: "Interview scheduled",
-    date: "Today",
-    tone: "bg-primary/10 text-primary",
-  },
-  {
-    job: JOBS[2],
-    status: "Under review",
-    date: "Yesterday",
-    tone: "bg-accent text-secondary",
-  },
-  {
-    job: JOBS[6],
-    status: "Submitted",
-    date: "3d ago",
-    tone: "bg-muted text-muted-foreground",
-  },
-];
-
-const jobCategories = [
-  { label: "Engineering", count: 2, icon: Code2, to: "/jobs" as const },
-  { label: "Finance", count: 2, icon: LineChart, to: "/jobs" as const },
-  { label: "Marketing", count: 1, icon: Megaphone, to: "/jobs" as const },
-  { label: "Health & Safety", count: 1, icon: ShieldCheck, to: "/jobs" as const },
-];
-
 function JobSeekerDashboard() {
-  const recommended = JOBS.slice(0, 6);
+  const [data, setData] = useState<JobSeekerDashboardData | null>(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadDashboard() {
+      setLoading(true);
+      setError("");
+      try {
+        const dashboard = await fetchJobSeekerDashboard();
+        if (active) setData(dashboard);
+      } catch (err) {
+        if (active) setError(err instanceof Error ? err.message : "Unable to load dashboard.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    void loadDashboard();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const stats = [
+    {
+      label: "Applications Sent",
+      value: data?.applications.length ?? 0,
+      icon: Briefcase,
+      tone: "from-primary to-primary-glow",
+    },
+    {
+      label: "Saved Jobs",
+      value: data?.savedJobsCount ?? 0,
+      icon: Bookmark,
+      tone: "from-secondary to-primary",
+    },
+    {
+      label: "Interview Invitations",
+      value: data?.applications.filter((item) => item.status === "Interview").length ?? 0,
+      icon: CalendarCheck,
+      tone: "from-primary-glow to-secondary",
+    },
+    {
+      label: "Recommended Jobs",
+      value: data?.recommendedJobs.length ?? 0,
+      icon: Sparkles,
+      tone: "from-secondary to-secondary",
+    },
+  ];
 
   return (
     <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-0">
-        {/* Welcome + Profile completion */}
+        {error && (
+          <div
+            role="alert"
+            className="mb-6 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
+
         <div className="grid gap-6 lg:grid-cols-3">
-          <section className="lg:col-span-2 rounded-3xl bg-gradient-hero p-8 text-white shadow-elegant">
+          <section className="rounded-3xl bg-gradient-hero p-8 text-white shadow-elegant lg:col-span-2">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
               Career Platform
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold sm:text-4xl">
-              Welcome back, Ibrahim
+              Welcome back, {data?.profile?.full_name ?? "Job Seeker"}
             </h1>
             <p className="mt-2 max-w-xl text-white/80">
-              Ready to take the next step in your career? Here's what's happening across your job
-              search today.
+              Track your applications, discover active roles and keep your career profile current.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
@@ -97,8 +119,7 @@ function JobSeekerDashboard() {
                 <Search className="h-4 w-4" /> Search jobs
               </Link>
               <Link
-                to="/jobs/$jobId/apply"
-                params={{ jobId: "orange-network-eng" }}
+                to="/jobs"
                 className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/15"
               >
                 <Upload className="h-4 w-4" /> Upload CV
@@ -112,46 +133,21 @@ function JobSeekerDashboard() {
                 Profile Completion
               </h2>
               <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
-                78%
+                {data?.profileCompletion ?? 0}%
               </span>
             </div>
             <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-full rounded-full bg-gradient-primary" style={{ width: "78%" }} />
+              <div
+                className="h-full rounded-full bg-gradient-primary"
+                style={{ width: `${data?.profileCompletion ?? 0}%` }}
+              />
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
-              Complete your profile to improve job recommendations and unlock verified badges.
+              Complete your profile to improve job recommendations and employer confidence.
             </p>
-            <ul className="mt-4 space-y-2 text-sm">
-              {[
-                ["Basic info", true],
-                ["CV uploaded", true],
-                ["Skills verified", false],
-                ["Reference checks", false],
-              ].map(([label, done]) => (
-                <li key={label as string} className="flex items-center gap-2">
-                  <span
-                    className={`grid h-4 w-4 place-items-center rounded-full text-[10px] ${
-                      done ? "bg-primary text-white" : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {done ? "✓" : ""}
-                  </span>
-                  <span className={done ? "text-foreground" : "text-muted-foreground"}>
-                    {label}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/register"
-              className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground hover:bg-gradient-primary hover:shadow-glow"
-            >
-              Complete profile
-            </Link>
           </section>
         </div>
 
-        {/* Stats */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((s) => (
             <div key={s.label} className="rounded-2xl border border-border bg-card p-5 shadow-card">
@@ -161,7 +157,9 @@ function JobSeekerDashboard() {
                 >
                   <s.icon className="h-5 w-5" />
                 </div>
-                <span className="text-xs font-semibold text-primary">+2 this week</span>
+                <span className="text-xs font-semibold text-primary">
+                  {loading ? "Loading" : "Live"}
+                </span>
               </div>
               <div className="mt-4 font-display text-3xl font-bold text-secondary">{s.value}</div>
               <div className="text-sm text-muted-foreground">{s.label}</div>
@@ -169,7 +167,6 @@ function JobSeekerDashboard() {
           ))}
         </div>
 
-        {/* Quick actions */}
         <div className="mt-8">
           <h2 className="font-display text-xl font-semibold text-secondary">Quick Actions</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -184,7 +181,7 @@ function JobSeekerDashboard() {
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-foreground">{a.label}</div>
-                  <div className="text-xs text-muted-foreground">Get started →</div>
+                  <div className="text-xs text-muted-foreground">Open →</div>
                 </div>
               </Link>
             ))}
@@ -202,79 +199,81 @@ function JobSeekerDashboard() {
                   Track the latest activity across your job search.
                 </p>
               </div>
-              <Link to="/application-submitted" className="text-sm font-semibold text-primary">
-                View tracker →
-              </Link>
             </div>
             <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
-              {recentApplications.map((item) => (
-                <Link
-                  key={item.job.id}
-                  to="/jobs/$jobId"
-                  params={{ jobId: item.job.id }}
-                  className="grid gap-3 border-b border-border p-4 last:border-b-0 hover:bg-accent/60 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary/30 sm:grid-cols-[1fr_auto]"
+              {(data?.applications ?? []).map((item) => (
+                <div
+                  key={item.id}
+                  className="grid gap-3 border-b border-border p-4 last:border-b-0 sm:grid-cols-[1fr_auto]"
                 >
                   <div className="min-w-0">
                     <div className="font-display text-sm font-semibold text-secondary">
-                      {item.job.title}
+                      {item.appliedFor}
                     </div>
                     <div className="mt-1 text-sm text-muted-foreground">
-                      {item.job.company} · {item.job.location}
+                      {item.location} · {item.appliedDate}
                     </div>
                   </div>
                   <div className="flex items-center gap-3 sm:justify-end">
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${item.tone}`}
-                    >
+                    <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-secondary">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       {item.status}
                     </span>
-                    <span className="text-xs text-muted-foreground">{item.date}</span>
                   </div>
-                </Link>
+                </div>
               ))}
+              {!loading && (data?.applications.length ?? 0) === 0 && (
+                <div className="p-8 text-center text-sm text-muted-foreground">
+                  No applications submitted yet.
+                </div>
+              )}
             </div>
           </section>
 
           <section>
             <h2 className="font-display text-xl font-semibold text-secondary">Job categories</h2>
-            <p className="text-sm text-muted-foreground">Explore active areas hiring this week.</p>
+            <p className="text-sm text-muted-foreground">Explore active areas hiring now.</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-              {jobCategories.map((category) => (
-                <Link
-                  key={category.label}
-                  to={category.to}
-                  className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 shadow-card hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-secondary">
-                      <category.icon className="h-5 w-5" />
-                    </span>
-                    <span>
-                      <span className="block text-sm font-semibold text-foreground">
-                        {category.label}
+              {(data?.categories ?? []).map((category, index) => {
+                const Icon = categoryIcons[index % categoryIcons.length];
+                return (
+                  <Link
+                    key={category.label}
+                    to="/jobs"
+                    className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 shadow-card hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-secondary">
+                        <Icon className="h-5 w-5" />
                       </span>
-                      <span className="text-xs text-muted-foreground">
-                        {category.count} open roles
+                      <span>
+                        <span className="block text-sm font-semibold text-foreground">
+                          {category.label}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {category.count} open roles
+                        </span>
                       </span>
                     </span>
-                  </span>
-                  <span className="text-sm font-semibold text-primary">View</span>
-                </Link>
-              ))}
+                    <span className="text-sm font-semibold text-primary">View</span>
+                  </Link>
+                );
+              })}
+              {!loading && (data?.categories.length ?? 0) === 0 && (
+                <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-center text-sm text-muted-foreground">
+                  No active job categories yet.
+                </div>
+              )}
             </div>
           </section>
         </div>
 
-        {/* Recommended */}
         <div className="mt-10 flex items-end justify-between">
           <div>
             <h2 className="font-display text-xl font-semibold text-secondary">
               Recommended for you
             </h2>
-            <p className="text-sm text-muted-foreground">
-              Matched to your profile and preferences.
-            </p>
+            <p className="text-sm text-muted-foreground">Active jobs currently available.</p>
           </div>
           <Link to="/jobs" className="text-sm font-semibold text-primary hover:underline">
             View all →
@@ -282,9 +281,14 @@ function JobSeekerDashboard() {
         </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {recommended.map((job) => (
+          {(data?.recommendedJobs ?? []).map((job) => (
             <JobCard key={job.id} job={job} compact />
           ))}
+          {!loading && (data?.recommendedJobs.length ?? 0) === 0 && (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground md:col-span-2 xl:col-span-3">
+              No active jobs are available yet.
+            </div>
+          )}
         </div>
       </div>
     </AppShell>

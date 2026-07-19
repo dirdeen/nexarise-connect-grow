@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
   CalendarCheck,
@@ -9,43 +10,77 @@ import {
 } from "lucide-react";
 
 import { EmployerShell } from "@/components/EmployerShell";
-import { CANDIDATES, COMPANY_PROFILE, EMPLOYER_JOBS } from "@/lib/employer";
+import { fetchEmployerDashboard, type EmployerDashboardData } from "@/lib/production";
 
 export const Route = createFileRoute("/employer/dashboard")({
-  head: () => ({ meta: [{ title: "Employer Dashboard — NexaRise" }] }),
+  head: () => ({ meta: [{ title: "Employer Dashboard - NexaRise" }] }),
   component: EmployerDashboard,
 });
 
-const stats = [
-  {
-    label: "Active posts",
-    value: EMPLOYER_JOBS.filter((job) => job.status === "Active").length,
-    icon: BriefcaseBusiness,
-  },
-  {
-    label: "Applications",
-    value: CANDIDATES.length,
-    icon: ClipboardList,
-  },
-  {
-    label: "Profile views",
-    value: EMPLOYER_JOBS.reduce((sum, job) => sum + job.views, 0),
-    icon: Eye,
-  },
-  {
-    label: "Interviews",
-    value: CANDIDATES.filter((candidate) => candidate.status === "Interview").length,
-    icon: CalendarCheck,
-  },
-];
-
 function EmployerDashboard() {
-  const activeJobs = EMPLOYER_JOBS.filter((job) => job.status === "Active").slice(0, 3);
-  const recentApplications = CANDIDATES.slice(0, 3);
+  const [data, setData] = useState<EmployerDashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadDashboard() {
+      setLoading(true);
+      setError("");
+      try {
+        const dashboard = await fetchEmployerDashboard();
+        if (active) setData(dashboard);
+      } catch (err) {
+        if (active) setError(err instanceof Error ? err.message : "Unable to load dashboard.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    void loadDashboard();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const activeJobs = (data?.jobs ?? []).filter((job) => job.status === "Active").slice(0, 3);
+  const recentApplications = (data?.applications ?? []).slice(0, 3);
+  const stats = [
+    {
+      label: "Active posts",
+      value: activeJobs.length,
+      icon: BriefcaseBusiness,
+    },
+    {
+      label: "Applications",
+      value: data?.applications.length ?? 0,
+      icon: ClipboardList,
+    },
+    {
+      label: "Profile views",
+      value: 0,
+      icon: Eye,
+    },
+    {
+      label: "Interviews",
+      value: data?.applications.filter((candidate) => candidate.status === "Interview").length ?? 0,
+      icon: CalendarCheck,
+    },
+  ];
 
   return (
     <EmployerShell>
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-0">
+        {error && (
+          <div
+            role="alert"
+            className="mb-6 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
+
         <section className="rounded-3xl bg-gradient-hero p-8 text-white shadow-elegant">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
             Employer Portal
@@ -53,7 +88,7 @@ function EmployerDashboard() {
           <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <h1 className="font-display text-3xl font-bold sm:text-4xl">
-                Welcome back, {COMPANY_PROFILE.name}
+                Welcome back, {data?.companyName ?? "Employer"}
               </h1>
               <p className="mt-2 max-w-2xl text-white/80">
                 Manage active roles, review candidates, and keep hiring workflows moving from one
@@ -80,7 +115,9 @@ function EmployerDashboard() {
                 <div className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-secondary">
                   <stat.icon className="h-5 w-5" />
                 </div>
-                <span className="text-xs font-semibold text-primary">Sprint 3</span>
+                <span className="text-xs font-semibold text-primary">
+                  {loading ? "Loading" : "Live"}
+                </span>
               </div>
               <div className="mt-4 font-display text-3xl font-bold text-secondary">
                 {stat.value}
@@ -97,17 +134,19 @@ function EmployerDashboard() {
                 <h2 className="font-display text-xl font-semibold text-secondary">
                   Company overview
                 </h2>
-                <p className="text-sm text-muted-foreground">{COMPANY_PROFILE.industry}</p>
+                <p className="text-sm text-muted-foreground">
+                  {data?.industry ?? "Industry not set"}
+                </p>
               </div>
               <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                Verified
+                {data?.verificationStatus ?? "pending"}
               </span>
             </div>
             <dl className="mt-5 grid gap-4 sm:grid-cols-3">
               {[
-                ["Location", COMPANY_PROFILE.location],
-                ["Team size", COMPANY_PROFILE.employees],
+                ["Location", data?.companyLocation ?? "Location not set"],
                 ["Open roles", `${activeJobs.length} active`],
+                ["Applications", `${data?.applications.length ?? 0} received`],
               ].map(([label, value]) => (
                 <div key={label} className="rounded-xl bg-accent p-4">
                   <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -180,11 +219,15 @@ function EmployerDashboard() {
                   </div>
                   <div className="mt-4 flex flex-wrap gap-3 text-xs text-muted-foreground">
                     <span>{job.applicants} applicants</span>
-                    <span>{job.views} views</span>
                     <span>Posted {job.posted}</span>
                   </div>
                 </article>
               ))}
+              {!loading && activeJobs.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
+                  No active job posts yet.
+                </div>
+              )}
             </div>
           </section>
 
@@ -223,6 +266,11 @@ function EmployerDashboard() {
                   </div>
                 </Link>
               ))}
+              {!loading && recentApplications.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
+                  No applications received yet.
+                </div>
+              )}
             </div>
           </section>
         </div>

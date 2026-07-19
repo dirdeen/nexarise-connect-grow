@@ -1,8 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bell, CalendarCheck, CheckCircle2, Inbox, UserPlus, Users } from "lucide-react";
+import {
+  Bell,
+  CalendarCheck,
+  CheckCircle2,
+  Inbox,
+  PlusCircle,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { MentorshipShell, MentorshipStat } from "@/components/MentorshipShell";
-import { CONVERSATIONS, MENTEES, NOTIFICATIONS, SESSIONS } from "@/lib/mentorship";
+import {
+  CONVERSATIONS,
+  fetchCurrentMentorProfile,
+  fetchMentorshipPrograms,
+  MENTEES,
+  NOTIFICATIONS,
+  SESSIONS,
+  type MentorProfileRecord,
+  type MentorshipProgram,
+} from "@/lib/mentorship";
+import { getCurrentProfile, type Profile } from "@/lib/production";
 
 export const Route = createFileRoute("/mentorship/dashboard")({
   head: () => ({ meta: [{ title: "Mentor Dashboard - NexaRise" }] }),
@@ -10,10 +29,28 @@ export const Route = createFileRoute("/mentorship/dashboard")({
 });
 
 function MentorDashboard() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [mentorProfile, setMentorProfile] = useState<MentorProfileRecord | null>(null);
+  const [programs, setPrograms] = useState<MentorshipProgram[]>([]);
   const activeMentees = MENTEES.filter((mentee) => mentee.status === "Active");
   const pendingRequests = MENTEES.filter((mentee) => mentee.status === "Pending");
   const upcomingSessions = SESSIONS.filter((session) => session.status === "Upcoming");
   const unreadMessages = CONVERSATIONS.filter((conversation) => !conversation.read).length;
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([getCurrentProfile(), fetchCurrentMentorProfile(), fetchMentorshipPrograms()])
+      .then(([currentProfile, currentMentorProfile, currentPrograms]) => {
+        if (!active) return;
+        setProfile(currentProfile);
+        setMentorProfile(currentMentorProfile);
+        setPrograms(currentPrograms);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <MentorshipShell>
@@ -24,28 +61,26 @@ function MentorDashboard() {
           </span>
           <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
-              <h1 className="font-display text-3xl font-bold sm:text-4xl">Welcome back, Mariama</h1>
+              <h1 className="font-display text-3xl font-bold sm:text-4xl">
+                Welcome back, {profile?.full_name ?? "Mentor"}
+              </h1>
               <p className="mt-2 max-w-2xl text-white/80">
-                Manage mentees, session notes, requests, messages and career guidance from one
-                place.
+                Manage your profile, mentorship programs, requests, sessions and messages from one
+                mentor workspace.
               </p>
             </div>
             <Link
-              to="/mentorship/messages"
+              to="/mentorship/programs"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-secondary shadow-glow hover:bg-white/95"
             >
-              <Inbox className="h-4 w-4" />
-              Open messages
+              <PlusCircle className="h-4 w-4" />
+              Post program
             </Link>
           </div>
         </section>
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <MentorshipStat
-            label="Active mentees"
-            value={`${activeMentees.length}`}
-            helper="2 on track"
-          />
+          <MentorshipStat label="Programs" value={`${programs.length}`} helper="created by you" />
           <MentorshipStat
             label="Pending requests"
             value={`${pendingRequests.length}`}
@@ -73,24 +108,30 @@ function MentorDashboard() {
               <Users className="h-5 w-5 text-primary" />
             </div>
             <div className="mt-5 grid gap-4">
-              {activeMentees.map((mentee) => (
-                <article key={mentee.id} className="rounded-xl bg-accent p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="font-display text-base font-semibold text-secondary">
-                        {mentee.name}
-                      </h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{mentee.focus}</p>
+              {activeMentees.length ? (
+                activeMentees.map((mentee) => (
+                  <article key={mentee.id} className="rounded-xl bg-accent p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="font-display text-base font-semibold text-secondary">
+                          {mentee.name}
+                        </h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{mentee.focus}</p>
+                      </div>
+                      <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                        {mentee.status}
+                      </span>
                     </div>
-                    <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                      {mentee.status}
-                    </span>
-                  </div>
-                  <div className="mt-3 text-xs font-semibold text-secondary">
-                    Next: {mentee.nextStep}
-                  </div>
-                </article>
-              ))}
+                    <div className="mt-3 text-xs font-semibold text-secondary">
+                      Next: {mentee.nextStep}
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="rounded-xl border border-dashed border-border bg-background p-5 text-sm text-muted-foreground">
+                  No active mentee relationships yet.
+                </div>
+              )}
             </div>
           </section>
 
@@ -99,18 +140,23 @@ function MentorDashboard() {
               Profile completion
             </h2>
             <div className="mt-4 flex items-center justify-between text-sm">
-              <span className="font-semibold text-secondary">86%</span>
+              <span className="font-semibold text-secondary">
+                {profileCompletion(mentorProfile)}%
+              </span>
               <span className="text-muted-foreground">Mentor profile</span>
             </div>
             <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
-              <div className="h-full w-[86%] rounded-full bg-gradient-primary" />
+              <div
+                className="h-full rounded-full bg-gradient-primary"
+                style={{ width: `${profileCompletion(mentorProfile)}%` }}
+              />
             </div>
             <ul className="mt-5 space-y-3 text-sm">
               {[
-                ["Biography", true],
-                ["Skills", true],
-                ["Availability", true],
-                ["Certifications", false],
+                ["Biography", Boolean(mentorProfile?.biography)],
+                ["Skills", Boolean(mentorProfile?.skills.length)],
+                ["Availability", Boolean(mentorProfile?.availability)],
+                ["Certifications", Boolean(mentorProfile?.certifications.length)],
               ].map(([label, done]) => (
                 <li key={label as string} className="flex items-center gap-2">
                   <CheckCircle2
@@ -152,6 +198,21 @@ function MentorDashboard() {
   );
 }
 
+function profileCompletion(profile: MentorProfileRecord | null) {
+  const values = [
+    profile?.full_name,
+    profile?.phone,
+    profile?.location,
+    profile?.headline,
+    profile?.biography,
+    profile?.industry,
+    profile?.skills.length ? "skills" : "",
+    profile?.availability,
+    profile?.years_of_experience ? "experience" : "",
+  ];
+  return Math.round((values.filter(Boolean).length / values.length) * 100);
+}
+
 function Panel({
   title,
   icon: Icon,
@@ -170,11 +231,17 @@ function Panel({
         <Icon className="h-5 w-5 text-primary" />
       </div>
       <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
-        {items.map((item) => (
-          <li key={item} className="rounded-xl bg-accent p-3">
-            {item}
+        {items.length > 0 ? (
+          items.map((item) => (
+            <li key={item} className="rounded-xl bg-accent p-3">
+              {item}
+            </li>
+          ))
+        ) : (
+          <li className="rounded-xl border border-dashed border-border p-3">
+            No records available yet.
           </li>
-        ))}
+        )}
       </ul>
       <Link to={to} className="mt-4 inline-flex text-sm font-semibold text-primary">
         View all

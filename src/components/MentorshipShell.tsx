@@ -1,24 +1,30 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Bell,
   CalendarCheck,
   Home,
   Inbox,
   LogOut,
-  Search,
+  PlusCircle,
   Settings,
   UserRound,
   Users,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
-import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
-import { NOTIFICATIONS } from "@/lib/mentorship";
+import { logout } from "@/lib/auth";
+import {
+  fetchCurrentUserNotifications,
+  getCurrentProfile,
+  getProfileInitials,
+  type Profile,
+} from "@/lib/production";
 
 const mentorshipNav = [
   { label: "Dashboard", to: "/mentorship/dashboard" as const, icon: Home, exact: true },
-  { label: "Mentors", to: "/mentorship/mentors" as const, icon: Users },
+  { label: "Profile", to: "/mentorship/profile" as const, icon: UserRound },
+  { label: "Programs", to: "/mentorship/programs" as const, icon: Users },
   { label: "Requests", to: "/mentorship/request" as const, icon: UserRound },
   { label: "Sessions", to: "/mentorship/sessions" as const, icon: CalendarCheck },
   { label: "Messages", to: "/mentorship/messages" as const, icon: Inbox },
@@ -26,7 +32,51 @@ const mentorshipNav = [
 ];
 
 export function MentorshipShell({ children }: { children: ReactNode }) {
-  const unread = NOTIFICATIONS.filter((notification) => notification.unread).length;
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [authorized, setAuthorized] = useState(false);
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkAccess() {
+      const currentProfile = await getCurrentProfile();
+      if (!active) return;
+      if (!currentProfile) {
+        navigate({ to: "/login" });
+        return;
+      }
+      if (currentProfile.role !== "mentor") {
+        navigate({ to: "/choose-path" });
+        return;
+      }
+      setProfile(currentProfile);
+      setAuthorized(true);
+      const notifications = await fetchCurrentUserNotifications().catch(() => []);
+      if (active) setUnread(notifications.filter((notification) => !notification.isRead).length);
+    }
+
+    void checkAccess();
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
+
+  async function signOut() {
+    await logout();
+    navigate({ to: "/login" });
+  }
+
+  if (!authorized) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-gradient-subtle px-4">
+        <div role="status" className="text-sm font-semibold text-muted-foreground">
+          Checking mentorship access...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -48,11 +98,11 @@ export function MentorshipShell({ children }: { children: ReactNode }) {
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <Link
-              to="/mentorship/mentors"
+              to="/mentorship/programs"
               className="hidden h-10 items-center gap-2 rounded-xl border border-border bg-card px-3 text-sm text-muted-foreground hover:border-primary/40 hover:text-foreground sm:inline-flex"
             >
-              <Search className="h-4 w-4" />
-              Find mentor
+              <PlusCircle className="h-4 w-4" />
+              Post program
             </Link>
             <Link
               to="/mentorship/notifications"
@@ -64,19 +114,21 @@ export function MentorshipShell({ children }: { children: ReactNode }) {
                 <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-primary" />
               )}
             </Link>
-            <div
-              className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
-              aria-label="Mariama Koroma mentor profile"
-            >
-              MK
-            </div>
             <Link
-              to="/choose-path"
+              to="/mentorship/profile"
+              className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
+              aria-label={`${profile?.full_name ?? "Mentor"} profile`}
+            >
+              {getProfileInitials(profile, "MN")}
+            </Link>
+            <button
+              type="button"
+              onClick={signOut}
               className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground"
               aria-label="Exit mentorship"
             >
               <LogOut className="h-4 w-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
@@ -88,11 +140,12 @@ export function MentorshipShell({ children }: { children: ReactNode }) {
               Mentorship
             </div>
             <div className="mt-2 font-display text-lg font-semibold text-secondary">
-              Mariama Koroma
+              {profile?.full_name ?? "Mentor"}
             </div>
-            <div className="mt-1 text-xs text-muted-foreground">Mentor · Product leadership</div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              Mentor · {profile?.location ?? "Location not set"}
+            </div>
           </div>
-          <DemoDataNotice compact className="mt-4" />
           <nav className="mt-4 space-y-1" aria-label="Mentorship navigation">
             {mentorshipNav.map((item) => (
               <Link
@@ -116,7 +169,7 @@ export function MentorshipShell({ children }: { children: ReactNode }) {
               <div className="h-full w-[86%] rounded-full bg-gradient-primary" />
             </div>
             <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-              Add two more availability windows to reach 100%.
+              Keep your availability and profile details current.
             </p>
           </div>
         </aside>

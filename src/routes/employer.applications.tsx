@@ -1,9 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CalendarPlus, Download, ExternalLink, Search, ThumbsDown, UserCheck } from "lucide-react";
 
 import { EmployerShell } from "@/components/EmployerShell";
-import { CANDIDATES, type Candidate } from "@/lib/employer";
+import { type Candidate } from "@/lib/employer";
+import {
+  fetchEmployerApplications,
+  getApplicationCvDownloadUrl,
+  updateApplicationStatus,
+} from "@/lib/production";
 
 export const Route = createFileRoute("/employer/applications")({
   head: () => ({ meta: [{ title: "Applications — NexaRise" }] }),
@@ -11,8 +16,32 @@ export const Route = createFileRoute("/employer/applications")({
 });
 
 function ApplicationsPage() {
-  const [candidates, setCandidates] = useState(CANDIDATES);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadApplications() {
+      setLoading(true);
+      setError("");
+      try {
+        const applications = await fetchEmployerApplications();
+        if (active) setCandidates(applications);
+      } catch (err) {
+        if (active) setError(err instanceof Error ? err.message : "Unable to load applications.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    void loadApplications();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const visibleCandidates = useMemo(() => {
     return candidates.filter((candidate) =>
@@ -22,10 +51,16 @@ function ApplicationsPage() {
     );
   }, [candidates, query]);
 
-  function setStatus(id: string, status: Candidate["status"]) {
-    setCandidates((current) =>
-      current.map((candidate) => (candidate.id === id ? { ...candidate, status } : candidate)),
-    );
+  async function setStatus(id: string, status: Candidate["status"]) {
+    setError("");
+    try {
+      await updateApplicationStatus(id, status);
+      setCandidates((current) =>
+        current.map((candidate) => (candidate.id === id ? { ...candidate, status } : candidate)),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update application status.");
+    }
   }
 
   return (
@@ -50,7 +85,23 @@ function ApplicationsPage() {
           />
         </label>
 
+        {error && (
+          <div
+            role="alert"
+            className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
+
         <section className="mt-6 grid gap-4">
+          {loading &&
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-48 animate-pulse rounded-2xl border border-border bg-card shadow-card"
+              />
+            ))}
           {visibleCandidates.map((candidate) => (
             <ApplicantCard
               key={candidate.id}
@@ -60,6 +111,11 @@ function ApplicationsPage() {
               onInterview={() => setStatus(candidate.id, "Interview")}
             />
           ))}
+          {!loading && visibleCandidates.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
+              No applications match the current filters.
+            </div>
+          )}
         </section>
       </div>
     </EmployerShell>
@@ -78,6 +134,18 @@ function ApplicantCard({
   onInterview: () => void;
 }) {
   const [downloaded, setDownloaded] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+
+  async function downloadCv() {
+    setDownloadError("");
+    try {
+      const url = await getApplicationCvDownloadUrl(candidate.cvFile);
+      window.open(url, "_blank", "noopener,noreferrer");
+      setDownloaded(true);
+    } catch (err) {
+      setDownloadError(err instanceof Error ? err.message : "Unable to download this CV.");
+    }
+  }
 
   return (
     <article className="rounded-2xl border border-border bg-card p-5 shadow-card">
@@ -117,22 +185,40 @@ function ApplicantCard({
         </div>
 
         <div className="flex flex-col gap-2">
-          <a
-            href={candidate.portfolio}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
-          >
-            <ExternalLink className="h-4 w-4" />
-            Portfolio
-          </a>
+          {candidate.portfolio ? (
+            <a
+              href={candidate.portfolio}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Portfolio
+            </a>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-muted-foreground opacity-70"
+            >
+              <ExternalLink className="h-4 w-4" />
+              No portfolio
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => setDownloaded(true)}
+            onClick={downloadCv}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
             aria-live="polite"
           >
             <Download className="h-4 w-4" />
-            {downloaded ? "CV ready (demo)" : "Download CV"}
+            {downloaded ? "CV ready" : "Download CV"}
           </button>
+          {downloadError && (
+            <div role="alert" className="rounded-xl bg-destructive/10 p-3 text-xs text-destructive">
+              {downloadError}
+            </div>
+          )}
           <button
             type="button"
             onClick={onShortlist}

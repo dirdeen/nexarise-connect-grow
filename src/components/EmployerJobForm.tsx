@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import type { EmployerJob, EmployerJobFormValues } from "@/lib/employer";
 
@@ -25,6 +25,10 @@ export function EmployerJobForm({
 }) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setValues(initialValues);
+  }, [initialValues]);
 
   function set<K extends keyof EmployerJobFormValues>(key: K, value: EmployerJobFormValues[K]) {
     setValues((current) => ({ ...current, [key]: value }));

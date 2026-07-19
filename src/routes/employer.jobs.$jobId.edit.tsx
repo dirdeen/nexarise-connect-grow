@@ -1,14 +1,20 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
 
 import { EmployerJobForm } from "@/components/EmployerJobForm";
 import { EmployerShell } from "@/components/EmployerShell";
-import { findEmployerJob, valuesFromJob, type EmployerJobFormValues } from "@/lib/employer";
+import {
+  fetchEmployerJobById,
+  updateEmployerJob,
+  valuesFromJob,
+  type EmployerJobFormValues,
+} from "@/lib/employer";
 
 export const Route = createFileRoute("/employer/jobs/$jobId/edit")({
   head: () => ({ meta: [{ title: "Edit Job — NexaRise" }] }),
-  loader: ({ params }) => {
-    const job = findEmployerJob(params.jobId);
+  loader: async ({ params }) => {
+    const job = await fetchEmployerJobById(params.jobId);
     if (!job) throw notFound();
     return { job };
   },
@@ -18,9 +24,16 @@ export const Route = createFileRoute("/employer/jobs/$jobId/edit")({
 function EditJobPage() {
   const { job } = Route.useLoaderData();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  function saveJob(_values: EmployerJobFormValues) {
-    navigate({ to: "/employer/jobs" });
+  async function saveJob(values: EmployerJobFormValues) {
+    setError("");
+    try {
+      await updateEmployerJob(job.id, values);
+      navigate({ to: "/employer/jobs" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to save this job.");
+    }
   }
 
   return (
@@ -39,6 +52,14 @@ function EditJobPage() {
             Update the role details for {job.title}.
           </p>
         </div>
+        {error && (
+          <div
+            role="alert"
+            className="mb-5 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
         <EmployerJobForm
           initialValues={valuesFromJob(job)}
           submitLabel="Save changes"

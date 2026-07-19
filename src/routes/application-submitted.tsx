@@ -15,7 +15,7 @@ export const Route = createFileRoute("/application-submitted")({
 
 function ApplicationSubmittedPage() {
   const { ref } = Route.useSearch();
-  const reference = ref ?? "NXR-DEMO-2026";
+  const reference = ref ?? "Pending reference";
 
   return (
     <AppShell>

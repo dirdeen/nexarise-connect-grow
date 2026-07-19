@@ -1,3 +1,5 @@
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+
 export type EmployerJobStatus = "Active" | "Draft" | "Archived";
 
 export type EmployerJob = {
@@ -49,200 +51,176 @@ export type EmployerJobFormValues = {
   benefits: string;
 };
 
-export const COMPANY_PROFILE = {
-  name: "NexaRise Talent Partners",
-  initials: "NR",
-  location: "Freetown, Sierra Leone",
-  industry: "Recruitment & Workforce Development",
-  employees: "24 team members",
-  verified: true,
+export const EMPLOYER_JOBS: EmployerJob[] = [];
+export const CANDIDATES: Candidate[] = [];
+
+type EmployerJobRow = {
+  id: string;
+  title: string;
+  employer_id: string;
+  description: string;
+  category: string;
+  location: string;
+  employment_type: string;
+  minimum_qualification: string | null;
+  minimum_experience: string | null;
+  salary_min: number | null;
+  salary_max: number | null;
+  application_deadline: string | null;
+  status: string;
+  created_at: string | null;
 };
 
-export const EMPLOYER_JOBS: EmployerJob[] = [
-  {
-    id: "front-office-coordinator",
-    title: "Front Office Coordinator",
-    company: COMPANY_PROFILE.name,
-    category: "Operations",
-    location: "Freetown",
-    type: "Full-time",
-    salary: "NLe 6,000 – 8,000 / mo",
-    description:
-      "Coordinate reception, visitor support, scheduling and client communication for a growing workforce partner in Freetown.",
-    requirements: [
-      "2+ years office administration experience",
-      "Strong written and spoken English",
-      "Comfortable with spreadsheets and scheduling tools",
-    ],
-    benefits: ["Medical allowance", "Transport stipend", "Career development plan"],
-    applicants: 28,
-    views: 412,
-    posted: "2d ago",
-    status: "Active",
-  },
-  {
-    id: "field-verification-officer",
-    title: "Field Verification Officer",
-    company: COMPANY_PROFILE.name,
-    category: "Public Sector",
-    location: "Bo",
-    type: "Contract",
-    salary: "NLe 5,500 – 7,200 / mo",
-    description:
-      "Verify workforce member identities, references and job readiness across partner communities.",
-    requirements: [
-      "Experience in field operations or community work",
-      "Ability to travel within assigned district",
-      "Excellent record keeping and integrity",
-    ],
-    benefits: ["Per diem", "Mobile data allowance", "Safety training"],
-    applicants: 17,
-    views: 265,
-    posted: "5d ago",
-    status: "Active",
-  },
-  {
-    id: "employer-success-associate",
-    title: "Employer Success Associate",
-    company: COMPANY_PROFILE.name,
-    category: "Marketing",
-    location: "Freetown",
-    type: "Full-time",
-    salary: "NLe 8,000 – 10,000 / mo",
-    description:
-      "Support employers with job posts, candidate shortlists, interview scheduling and hiring outcomes.",
-    requirements: [
-      "3+ years customer success or recruitment experience",
-      "Strong communication and follow-up habits",
-      "Comfortable presenting hiring insights",
-    ],
-    benefits: ["Performance bonus", "Hybrid work", "Learning budget"],
-    applicants: 34,
-    views: 518,
-    posted: "1w ago",
-    status: "Draft",
-  },
-  {
-    id: "training-program-coordinator",
-    title: "Training Program Coordinator",
-    company: COMPANY_PROFILE.name,
-    category: "Development",
-    location: "Kenema",
-    type: "Contract",
-    salary: "NLe 7,000 – 9,000 / mo",
-    description:
-      "Coordinate employability workshops, mentor sessions and training partner reporting in the Eastern Region.",
-    requirements: [
-      "Experience coordinating training or youth programs",
-      "Strong reporting and partner management skills",
-      "Willingness to travel for program monitoring",
-    ],
-    benefits: ["Project completion bonus", "Travel allowance", "Training certification"],
-    applicants: 12,
-    views: 188,
-    posted: "3w ago",
-    status: "Archived",
-  },
-];
-
-export const CANDIDATES: Candidate[] = [
-  {
-    id: "aminata-kamara",
-    name: "Aminata Kamara",
-    role: "Front Office Coordinator",
-    location: "Freetown",
-    email: "aminata.kamara@example.com",
-    phone: "+232 76 222 114",
-    portfolio: "https://portfolio.example.com/aminata",
-    cvFile: "aminata-kamara-cv.pdf",
-    experience: "4 years office administration",
-    education: "Diploma in Business Administration, Demo Business Institute",
-    skills: ["Scheduling", "Client Service", "Microsoft Excel", "Records Management"],
-    certifications: ["Customer Service Essentials", "Office Administration"],
-    workHistory: [
-      "Reception Assistant, Demo Business College",
-      "Administrative Clerk, Demo Commercial Bank",
-    ],
-    appliedFor: "Front Office Coordinator",
-    appliedDate: "Today",
-    status: "New",
-    summary:
-      "Organized front-office professional with strong reception, scheduling and client communication experience.",
-  },
-  {
-    id: "mohamed-bangura",
-    name: "Mohamed Bangura",
-    role: "Field Verification Officer",
-    location: "Bo",
-    email: "mohamed.bangura@example.com",
-    phone: "+232 77 445 901",
-    portfolio: "https://portfolio.example.com/mohamed-bangura",
-    cvFile: "mohamed-bangura-cv.pdf",
-    experience: "5 years field operations",
-    education: "BSc Sociology, Demo University",
-    skills: ["Field Visits", "Reference Checks", "Data Collection", "Community Engagement"],
-    certifications: ["Safeguarding Training", "KoboToolbox Data Collection"],
-    workHistory: [
-      "Enumerator, Demo Statistics Agency",
-      "Field Assistant, Demo Development Partner",
-    ],
-    appliedFor: "Field Verification Officer",
-    appliedDate: "Yesterday",
-    status: "Shortlisted",
-    summary:
-      "Reliable field operator with district-level verification, survey and stakeholder coordination experience.",
-  },
-  {
-    id: "fatmata-sesay",
-    name: "Fatmata Sesay",
-    role: "Employer Success Associate",
-    location: "Freetown",
-    email: "fatmata.sesay@example.com",
-    phone: "+232 78 010 345",
-    portfolio: "https://fatmata.example.com",
-    cvFile: "fatmata-sesay-cv.pdf",
-    experience: "6 years recruitment and account support",
-    education: "BA Human Resource Management, Demo University",
-    skills: ["Recruitment", "Account Management", "Interview Coordination", "Reporting"],
-    certifications: ["HR Analytics Fundamentals", "Interviewing Skills"],
-    workHistory: ["Recruitment Officer, Demo Telecom SL", "HR Assistant, Demo Mobile SL"],
-    appliedFor: "Employer Success Associate",
-    appliedDate: "2d ago",
-    status: "Interview",
-    summary:
-      "Recruitment-focused HR professional with strong employer communication and candidate pipeline management.",
-  },
-  {
-    id: "ibrahim-koroma",
-    name: "Ibrahim Koroma",
-    role: "Training Program Coordinator",
-    location: "Kenema",
-    email: "ibrahim.koroma@example.com",
-    phone: "+232 79 300 882",
-    portfolio: "https://portfolio.example.com/ibrahim-koroma",
-    cvFile: "ibrahim-koroma-cv.pdf",
-    experience: "3 years training coordination",
-    education: "BSc Development Studies, Eastern Technical University",
-    skills: ["Training Logistics", "Partner Reporting", "Workshop Facilitation", "M&E"],
-    certifications: ["Project Cycle Management", "Youth Facilitation"],
-    workHistory: [
-      "Program Assistant, Demo Training Council",
-      "Training Intern, Demo Development Agency",
-    ],
-    appliedFor: "Training Program Coordinator",
-    appliedDate: "4d ago",
-    status: "New",
-    summary:
-      "Program coordinator with hands-on training logistics and partner reporting experience in Eastern Province.",
-  },
-];
-
-export function findEmployerJob(id: string) {
-  return EMPLOYER_JOBS.find((job) => job.id === id);
+function splitLines(value: string) {
+  return value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
 }
 
-export function findCandidate(id: string) {
-  return CANDIDATES.find((candidate) => candidate.id === id);
+function parseSalaryRange(value: string) {
+  const amounts = value.match(/\d[\d,]*/g)?.map((part) => Number(part.replace(/,/g, ""))) ?? [];
+  return {
+    salary_min: amounts[0] ?? null,
+    salary_max: amounts[1] ?? amounts[0] ?? null,
+  };
+}
+
+function dbStatusToEmployerStatus(status: string): EmployerJobStatus {
+  if (status === "archived") return "Archived";
+  if (status === "draft") return "Draft";
+  return "Active";
+}
+
+function employerStatusToDbStatus(status: EmployerJobStatus) {
+  if (status === "Archived") return "archived";
+  if (status === "Draft") return "draft";
+  return "active";
+}
+
+function formatSalary(min: number | null, max: number | null) {
+  if (!min && !max) return "Salary not listed";
+  if (min && max && min !== max) return `NLe ${min.toLocaleString()} - ${max.toLocaleString()}`;
+  return `NLe ${(min ?? max ?? 0).toLocaleString()}`;
+}
+
+function relativePosted(createdAt: string | null) {
+  if (!createdAt) return "recently";
+  const days = Math.max(0, Math.floor((Date.now() - new Date(createdAt).getTime()) / 86_400_000));
+  if (days === 0) return "today";
+  if (days === 1) return "1d ago";
+  if (days < 7) return `${days}d ago`;
+  return `${Math.floor(days / 7)}w ago`;
+}
+
+function extractSection(description: string, heading: string) {
+  const section = description.split(/\n{2,}/).find((part) => part.startsWith(`${heading}:`));
+  return section
+    ? section
+        .replace(`${heading}:`, "")
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean)
+    : [];
+}
+
+function mapEmployerJob(row: EmployerJobRow, applicants = 0): EmployerJob {
+  return {
+    id: row.id,
+    title: row.title,
+    company: "Employer Account",
+    category: row.category,
+    location: row.location,
+    type: row.employment_type as EmployerJob["type"],
+    salary: formatSalary(row.salary_min, row.salary_max),
+    description: row.description.split(/\n{2,}/)[0] ?? row.description,
+    requirements: [
+      row.minimum_qualification,
+      row.minimum_experience ? `${row.minimum_experience} experience` : null,
+      ...extractSection(row.description, "Requirements"),
+    ].filter(Boolean) as string[],
+    benefits: extractSection(row.description, "Benefits"),
+    applicants,
+    views: 0,
+    posted: relativePosted(row.created_at),
+    status: dbStatusToEmployerStatus(row.status),
+  };
+}
+
+function jobPayload(values: EmployerJobFormValues, status: EmployerJobStatus = "Active") {
+  const requirements = splitLines(values.requirements);
+  const benefits = splitLines(values.benefits);
+  const { salary_min, salary_max } = parseSalaryRange(values.salary);
+
+  return {
+    title: values.title.trim(),
+    description: [
+      values.description.trim(),
+      requirements.length ? `Requirements:\n${requirements.join("\n")}` : "",
+      benefits.length ? `Benefits:\n${benefits.join("\n")}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n\n"),
+    category: values.category.trim(),
+    location: values.location.trim(),
+    employment_type: values.type,
+    minimum_qualification: requirements[0] ?? null,
+    minimum_experience: null,
+    salary_min,
+    salary_max,
+    status: employerStatusToDbStatus(status),
+  };
+}
+
+export async function fetchEmployerJobs() {
+  if (!isSupabaseConfigured || !supabase) return [];
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) throw new Error("Please sign in as an employer to manage jobs.");
+
+  const [{ data, error }, { data: applicationRows, error: applicationsError }] = await Promise.all([
+    supabase
+      .from("jobs")
+      .select("*")
+      .eq("employer_id", user.id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("applications")
+      .select("job_id, jobs!inner(employer_id)")
+      .eq("jobs.employer_id", user.id),
+  ]);
+
+  if (error) throw new Error(error.message);
+  if (applicationsError) throw new Error(applicationsError.message);
+
+  const applicantCounts = new Map<string, number>();
+  for (const row of applicationRows ?? []) {
+    const jobId = (row as { job_id: string }).job_id;
+    applicantCounts.set(jobId, (applicantCounts.get(jobId) ?? 0) + 1);
+  }
+
+  return ((data ?? []) as EmployerJobRow[]).map((row) =>
+    mapEmployerJob(row, applicantCounts.get(row.id) ?? 0),
+  );
+}
+
+export async function fetchEmployerJobById(id: string) {
+  if (!isSupabaseConfigured || !supabase) return undefined;
+
+  const { data, error } = await supabase.from("jobs").select("*").eq("id", id).single();
+  if (error) return undefined;
+  return mapEmployerJob(data as EmployerJobRow);
+}
+
+export function findEmployerJob(_id: string) {
+  return undefined;
+}
+
+export function findCandidate(_id: string) {
+  return undefined;
 }
 
 export function valuesFromJob(job?: EmployerJob): EmployerJobFormValues {
@@ -271,4 +249,42 @@ export function valuesFromJob(job?: EmployerJob): EmployerJobFormValues {
     requirements: job.requirements.join("\n"),
     benefits: job.benefits.join("\n"),
   };
+}
+
+export async function createEmployerJob(values: EmployerJobFormValues) {
+  if (!isSupabaseConfigured || !supabase) throw new Error("Supabase is not configured for jobs.");
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) throw new Error("Please sign in as an employer before posting a job.");
+
+  const { error } = await supabase.from("jobs").insert({
+    employer_id: user.id,
+    ...jobPayload(values),
+  });
+
+  if (error) throw new Error(error.message);
+}
+
+export async function updateEmployerJob(id: string, values: EmployerJobFormValues) {
+  if (!isSupabaseConfigured || !supabase) throw new Error("Supabase is not configured for jobs.");
+
+  const { error } = await supabase.from("jobs").update(jobPayload(values)).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function archiveEmployerJob(id: string) {
+  if (!isSupabaseConfigured || !supabase) throw new Error("Supabase is not configured for jobs.");
+
+  const { error } = await supabase.from("jobs").update({ status: "archived" }).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteEmployerJob(id: string) {
+  if (!isSupabaseConfigured || !supabase) throw new Error("Supabase is not configured for jobs.");
+
+  const { error } = await supabase.from("jobs").delete().eq("id", id);
+  if (error) throw new Error(error.message);
 }

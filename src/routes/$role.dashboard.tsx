@@ -3,7 +3,7 @@ import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/$role/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — NexaRise" }] }),
-  component: PlaceholderDashboard,
+  component: RoleDashboard,
 });
 
 const roleMeta: Record<string, { title: string; tagline: string; accent: string }> = {
@@ -30,11 +30,11 @@ const roleMeta: Record<string, { title: string; tagline: string; accent: string 
   },
 };
 
-function PlaceholderDashboard() {
+function RoleDashboard() {
   const { role } = Route.useParams();
   const meta = roleMeta[role] ?? {
     title: "Dashboard",
-    tagline: "This experience is coming soon.",
+    tagline: "This experience requires additional backend configuration.",
     accent: "from-primary to-secondary",
   };
 
@@ -59,7 +59,7 @@ function PlaceholderDashboard() {
           🚀
         </div>
         <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-muted-foreground">
-          Coming in Sprint 2
+          Backend configuration required
         </span>
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-secondary sm:text-5xl">
           {meta.title}

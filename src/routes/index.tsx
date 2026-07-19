@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
-import { DemoDataNotice } from "@/components/DemoDataNotice";
 import heroImg from "@/assets/hero-illustration.jpg";
 
 export const Route = createFileRoute("/")({
@@ -8,18 +7,17 @@ export const Route = createFileRoute("/")({
 });
 
 const stats = [
-  { label: "Job Seeker Demo", value: "0" },
-  { label: "Workforce Demo", value: "0" },
-  { label: "Employer Demo", value: "0" },
-  { label: "Mentor Demo", value: "0" },
+  { label: "Career Platform", value: "Jobs" },
+  { label: "Workforce Solutions", value: "Teams" },
+  { label: "Employer Portal", value: "Hiring" },
+  { label: "Mentorship", value: "Growth" },
 ];
 
 const companies = [
-  // "Strategic Partnership Opportunities",
-  "Coming Soon",
+  "Strategic Partnership Opportunities",
+  "Become a NexaRise Partner",
   "Workforce Partners",
   "Training Partners",
-  "Become a NexaRise Partner",
   "Employer Partners",
   "Mentor Network",
   "Community Partners",
@@ -27,29 +25,25 @@ const companies = [
 
 const stories = [
   {
-    name: "Demo Job Seeker",
-    role: "Career pathway example",
-    quote:
-      "This example shows how a job seeker could discover roles, receive mentorship and track applications.",
+    name: "Job Seeker",
+    role: "Career pathway",
+    quote: "Discover roles, build a profile, upload a CV and track applications.",
   },
   {
-    name: "Demo Workforce Member",
-    role: "Workforce pathway example",
-    quote:
-      "This example shows how workforce members could manage verification, availability and assignments.",
+    name: "Workforce Member",
+    role: "Verified workforce pathway",
+    quote: "Manage verification, availability and assignments for workforce opportunities.",
   },
   {
-    name: "Demo Employer",
-    role: "Employer workflow example",
-    quote:
-      "This example shows how employers could post jobs, review applicants and request workforce support.",
+    name: "Employer",
+    role: "Hiring workflow",
+    quote: "Post jobs, review applications and manage hiring workflows from one portal.",
   },
 ];
 
 const partners = [
   "Strategic Partnership Opportunities",
   "Become a NexaRise Partner",
-  "Coming Soon",
   "Training Providers",
   "Employer Networks",
   "Community Organizations",
@@ -67,7 +61,7 @@ function LandingPage() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-secondary">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Demo build · Sierra Leone market concept
+              Sierra Leone employment and workforce platform
             </span>
             <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-secondary sm:text-5xl lg:text-6xl">
               Connecting <span className="text-gradient-primary">Talent</span>
@@ -78,9 +72,8 @@ function LandingPage() {
               <strong className="text-foreground">Employers</strong>,{" "}
               <strong className="text-foreground">Mentors</strong> and{" "}
               <strong className="text-foreground">Verified Workforce Members</strong> together on
-              one platform concept — built for Sierra Leone's economy.
+              one platform built for Sierra Leone's economy.
             </p>
-            <DemoDataNotice className="mt-6 max-w-xl" />
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
@@ -109,7 +102,7 @@ function LandingPage() {
                   <div key={i} className={`h-8 w-8 rounded-full border-2 border-background ${c}`} />
                 ))}
               </div>
-              <span>Demo data shown for product review and stakeholder walkthroughs</span>
+              <span>Secure accounts, real profiles and database-backed workflows</span>
             </div>
           </div>
 
@@ -214,10 +207,10 @@ function LandingPage() {
       <section id="stories" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-secondary sm:text-4xl">
-            Testimonials & Success Stories
+            Platform pathways
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Illustrative flows only. These are not verified testimonials.
+            Core workflows for job seekers, employers and workforce members.
           </p>
         </div>
         <div className="mt-14 grid gap-6 md:grid-cols-3">

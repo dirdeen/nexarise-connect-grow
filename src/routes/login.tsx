@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
-import { DemoDataNotice } from "@/components/DemoDataNotice";
-import { login } from "@/lib/auth";
+import { getPostLoginRoute, login, sendPasswordReset } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Sign in — NexaRise" }] }),
@@ -15,20 +14,37 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setStatus(null);
     if (!email || !password) {
       setError("Please enter your email and password.");
       return;
     }
-    const res = login(email);
+    setSubmitting(true);
+    const res = await login(email, password);
+    setSubmitting(false);
     if (!res.ok) {
       setError(res.error ?? "Login failed.");
       return;
     }
-    navigate({ to: "/choose-path" });
+    const route = await getPostLoginRoute();
+    navigate({ to: route });
+  }
+
+  async function onPasswordReset() {
+    setError(null);
+    setStatus(null);
+    const result = await sendPasswordReset(email);
+    if (!result.ok) {
+      setError(result.error ?? "Unable to send password reset email.");
+      return;
+    }
+    setStatus("Password reset instructions have been sent to your email.");
   }
 
   return (
@@ -70,9 +86,10 @@ function LoginPage() {
           </label>
           <button
             type="button"
+            onClick={onPasswordReset}
             className="font-medium text-primary hover:underline"
-            aria-label="Password reset coming soon"
-            title="Password reset coming soon"
+            aria-label="Password reset"
+            title="Password reset"
           >
             Forgot password?
           </button>
@@ -86,12 +103,21 @@ function LoginPage() {
             {error}
           </div>
         )}
+        {status && (
+          <div
+            role="status"
+            className="rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-medium text-primary"
+          >
+            {status}
+          </div>
+        )}
 
         <button
           type="submit"
+          disabled={submitting}
           className="w-full rounded-lg bg-gradient-primary px-4 py-3 text-sm font-semibold text-white shadow-glow transition-transform hover:scale-[1.01]"
         >
-          Sign in
+          {submitting ? "Signing in..." : "Sign in"}
         </button>
 
         <p className="text-center text-sm text-muted-foreground">
@@ -99,11 +125,6 @@ function LoginPage() {
           <Link to="/register" className="font-semibold text-primary hover:underline">
             Create an account
           </Link>
-        </p>
-
-        <p className="rounded-lg bg-accent px-3 py-2 text-center text-xs text-secondary">
-          Demo: use <code className="font-mono font-semibold">demo@nexarise.sl</code> with any
-          password.
         </p>
       </form>
     </AuthShell>
@@ -130,14 +151,15 @@ export function AuthShell({
         </div>
         <div className="relative">
           <p className="font-display text-3xl font-bold leading-tight text-white">
-            "Demo career journeys, mentorship activity and platform metrics are shown for review."
+            "Build your profile, apply for roles, connect with mentors and manage opportunities from
+            one trusted platform."
           </p>
-          <p className="mt-4 text-sm text-white/70">Demo user story · Not a verified claim</p>
+          <p className="mt-4 text-sm text-white/70">NexaRise account access</p>
         </div>
         <div className="relative flex gap-6 text-white/80">
-          <Stat n="Demo" l="Job Seekers" />
-          <Stat n="Demo" l="Employers" />
-          <Stat n="Demo" l="Mentors" />
+          <Stat n="Jobs" l="Career Platform" />
+          <Stat n="Teams" l="Employer Portal" />
+          <Stat n="Skills" l="Mentorship" />
         </div>
       </div>
 
@@ -149,7 +171,6 @@ export function AuthShell({
           </div>
           <h1 className="font-display text-3xl font-bold text-secondary">{title}</h1>
           <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
-          <DemoDataNotice compact className="mt-4" />
           <div className="mt-8">{children}</div>
         </div>
       </div>

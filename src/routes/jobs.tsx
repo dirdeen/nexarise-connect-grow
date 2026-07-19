@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { JobCard } from "@/components/JobCard";
-import { JOBS } from "@/lib/jobs";
+import { fetchJobs, type Job } from "@/lib/jobs";
 import { Search, SlidersHorizontal } from "lucide-react";
 
 export const Route = createFileRoute("/jobs")({
@@ -35,6 +35,7 @@ const SALARY = [
 const SORTS = ["Most recent", "Highest salary", "Company A-Z"] as const;
 
 function JobSearchPage() {
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [query, setQuery] = useState("");
   const [loc, setLoc] = useState(LOCATIONS[0]);
   const [cat, setCat] = useState(CATEGORIES[0]);
@@ -42,17 +43,31 @@ function JobSearchPage() {
   const [exp, setExp] = useState(EXPERIENCE[0]);
   const [sal, setSal] = useState(SALARY[0].label);
   const [sort, setSort] = useState<(typeof SORTS)[number]>(SORTS[0]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
     setLoading(true);
-    const timeout = window.setTimeout(() => setLoading(false), 220);
-    return () => window.clearTimeout(timeout);
-  }, [query, loc, cat, type, exp, sal, sort]);
+    setError(null);
+    fetchJobs()
+      .then((items) => {
+        if (active) setJobs(items);
+      })
+      .catch((err: unknown) => {
+        if (active) setError(err instanceof Error ? err.message : "Unable to load jobs.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const results = useMemo(() => {
     const salMin = SALARY.find((s) => s.label === sal)?.min ?? 0;
-    const filtered = JOBS.filter((j) => {
+    const filtered = jobs.filter((j) => {
       if (query && !`${j.title} ${j.company}`.toLowerCase().includes(query.toLowerCase()))
         return false;
       if (loc !== LOCATIONS[0] && j.location !== loc) return false;
@@ -68,7 +83,7 @@ function JobSearchPage() {
       if (sort === "Company A-Z") return a.company.localeCompare(b.company);
       return a.postedDays - b.postedDays;
     });
-  }, [query, loc, cat, type, exp, sal, sort]);
+  }, [jobs, query, loc, cat, type, exp, sal, sort]);
 
   function clearFilters() {
     setQuery("");
@@ -88,7 +103,7 @@ function JobSearchPage() {
             Find your next role in Sierra Leone
           </h1>
           <p className="mt-2 max-w-xl text-white/80">
-            {JOBS.length}+ live openings from Sierra Leone's sample employers.
+            {jobs.length}+ live openings from Sierra Leone employers.
           </p>
           <label className="mt-6 flex items-center gap-2 rounded-2xl bg-white p-2 shadow-glow">
             <span className="sr-only">Search jobs</span>
@@ -101,6 +116,7 @@ function JobSearchPage() {
             />
             <button
               type="button"
+              onClick={() => setQuery(query.trim())}
               className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow"
             >
               Search
@@ -153,6 +169,14 @@ function JobSearchPage() {
             </div>
 
             <div className="grid gap-4">
+              {error && (
+                <div
+                  role="alert"
+                  className="rounded-2xl border border-destructive/30 bg-destructive/10 p-5 text-sm font-medium text-destructive"
+                >
+                  {error}
+                </div>
+              )}
               {loading &&
                 Array.from({ length: 3 }).map((_, i) => (
                   <div
@@ -170,7 +194,7 @@ function JobSearchPage() {
                   </div>
                 ))}
               {!loading && results.map((job) => <JobCard key={job.id} job={job} />)}
-              {!loading && results.length === 0 && (
+              {!loading && !error && results.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
                   <div className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-accent text-secondary">
                     <Search className="h-5 w-5" />

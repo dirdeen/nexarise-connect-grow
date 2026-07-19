@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Bell,
   FileText,
@@ -6,23 +6,80 @@ import {
   ListChecks,
   LogOut,
   ShieldCheck,
-  UserPlus,
-  Users,
+  UserRound,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
-import { DemoDataNotice } from "@/components/DemoDataNotice";
 import { Logo } from "@/components/Logo";
+import { logout } from "@/lib/auth";
+import {
+  fetchCurrentUserNotifications,
+  getCurrentProfile,
+  getProfileInitials,
+  type Profile,
+} from "@/lib/production";
 
 const workforceNav = [
   { label: "Dashboard", to: "/workforce/dashboard" as const, icon: LayoutDashboard, exact: true },
-  { label: "Register", to: "/workforce/register" as const, icon: UserPlus },
+  { label: "Profile", to: "/workforce/profile" as const, icon: UserRound },
+  { label: "Assignments", to: "/workforce/assignments" as const, icon: ListChecks },
+  { label: "Documents", to: "/workforce/documents" as const, icon: FileText },
   { label: "Categories", to: "/workforce/categories" as const, icon: ListChecks },
-  { label: "Workers", to: "/workforce/workers" as const, icon: Users },
-  { label: "Documents", to: "/workforce/dashboard" as const, icon: FileText },
 ];
 
 export function WorkforceShell({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [authorized, setAuthorized] = useState(false);
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkAccess() {
+      try {
+        const currentProfile = await getCurrentProfile();
+        if (!active) return;
+        if (!currentProfile) {
+          navigate({ to: "/login" });
+          return;
+        }
+        if (currentProfile.role !== "workforce") {
+          navigate({ to: "/choose-path" });
+          return;
+        }
+        setProfile(currentProfile);
+        setAuthorized(true);
+        const notifications = await fetchCurrentUserNotifications().catch(() => []);
+        if (active) setUnread(notifications.filter((notification) => !notification.isRead).length);
+      } catch {
+        if (active) navigate({ to: "/login" });
+      }
+    }
+
+    void checkAccess();
+    window.addEventListener("nexarise-profile-updated", checkAccess);
+    return () => {
+      active = false;
+      window.removeEventListener("nexarise-profile-updated", checkAccess);
+    };
+  }, [navigate]);
+
+  async function signOut() {
+    await logout();
+    navigate({ to: "/login" });
+  }
+
+  if (!authorized) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-gradient-subtle px-4">
+        <div role="status" className="text-sm font-semibold text-muted-foreground">
+          Checking workforce access...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md">
@@ -42,23 +99,39 @@ export function WorkforceShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <button
-              type="button"
-              className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-              aria-label="Workforce notifications"
+            <Link
+              to="/notifications"
+              className="relative grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              aria-label={`${unread} unread workforce notifications`}
             >
               <Bell className="h-4 w-4" />
-            </button>
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow">
-              SK
-            </div>
+              {unread > 0 && (
+                <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-primary" />
+              )}
+            </Link>
             <Link
-              to="/choose-path"
+              to="/workforce/profile"
+              className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-gradient-primary text-sm font-semibold text-white shadow-glow"
+              aria-label={`${profile?.full_name ?? "Workforce member"} profile`}
+            >
+              {profile?.profile_photo_url ? (
+                <img
+                  src={profile.profile_photo_url}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                getProfileInitials(profile, "WF")
+              )}
+            </Link>
+            <button
+              type="button"
+              onClick={signOut}
               className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground"
               aria-label="Exit workforce program"
             >
               <LogOut className="h-4 w-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
@@ -67,18 +140,27 @@ export function WorkforceShell({ children }: { children: ReactNode }) {
         <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-64 shrink-0 self-start rounded-2xl border border-border bg-card p-4 shadow-card lg:block">
           <div className="rounded-xl bg-accent p-4">
             <div className="flex items-center gap-3">
-              <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-primary text-sm font-bold text-white shadow-glow">
-                SK
+              <div className="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-gradient-primary text-sm font-bold text-white shadow-glow">
+                {profile?.profile_photo_url ? (
+                  <img
+                    src={profile.profile_photo_url}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  getProfileInitials(profile, "WF")
+                )}
               </div>
               <div>
                 <div className="font-display text-sm font-semibold text-secondary">
-                  Sorie Kamara
+                  {profile?.full_name ?? "Workforce Member"}
                 </div>
-                <div className="text-xs text-muted-foreground">Verified Driver · Freetown</div>
+                <div className="text-xs text-muted-foreground">
+                  Workforce · {profile?.location ?? "Location not set"}
+                </div>
               </div>
             </div>
           </div>
-          <DemoDataNotice compact className="mt-4" />
           <nav className="mt-4 space-y-1" aria-label="Workforce navigation">
             {workforceNav.map((item) => (
               <Link

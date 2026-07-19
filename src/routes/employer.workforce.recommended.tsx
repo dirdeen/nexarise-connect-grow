@@ -1,14 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Users } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { EmployerShell } from "@/components/EmployerShell";
 import { WorkerCard } from "@/components/WorkerCard";
-import { WORKFORCE_CATEGORIES, recommendedWorkers, type WorkerCategory } from "@/lib/workforce";
+import {
+  fetchRecommendedWorkers,
+  WORKFORCE_CATEGORIES,
+  type Worker,
+  type WorkerCategory,
+} from "@/lib/workforce";
 
 export const Route = createFileRoute("/employer/workforce/recommended")({
   validateSearch: (search: Record<string, unknown>) => ({
     category: parseCategory(search.category),
+    requestId: typeof search.requestId === "string" ? search.requestId : "",
   }),
   head: () => ({ meta: [{ title: "Recommended Workers - NexaRise" }] }),
   component: RecommendedWorkersPage,
@@ -21,11 +27,32 @@ function parseCategory(value: unknown): WorkerCategory {
 
 function RecommendedWorkersPage() {
   const navigate = useNavigate();
-  const { category } = Route.useSearch();
-  const workers = recommendedWorkers(category);
-  const [selected, setSelected] = useState<string[]>(
-    workers.slice(0, 2).map((worker) => worker.id),
-  );
+  const { category, requestId } = Route.useSearch();
+  const [workers, setWorkers] = useState<Worker[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setError("");
+    fetchRecommendedWorkers(category)
+      .then((rows) => {
+        if (!active) return;
+        setWorkers(rows);
+        setSelected(rows.slice(0, 2).map((worker) => worker.id));
+      })
+      .catch((err) => {
+        if (active) setError(err instanceof Error ? err.message : "Unable to load workers.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [category]);
 
   function toggle(workerId: string) {
     setSelected((current) =>
@@ -36,7 +63,7 @@ function RecommendedWorkersPage() {
   function continueToConfirm() {
     navigate({
       to: "/employer/workforce/confirm",
-      search: { category, workers: selected.join(",") },
+      search: { category, workers: selected.join(","), requestId },
     });
   }
 
@@ -75,16 +102,36 @@ function RecommendedWorkersPage() {
           </button>
         </div>
 
+        {error && (
+          <div
+            role="alert"
+            className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+          >
+            {error}
+          </div>
+        )}
+
         <section className="mt-6 grid gap-4 xl:grid-cols-2">
-          {workers.map((worker) => (
-            <WorkerCard
-              key={worker.id}
-              worker={worker}
-              selectable
-              selected={selected.includes(worker.id)}
-              onSelect={() => toggle(worker.id)}
-            />
-          ))}
+          {loading ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="h-64 animate-pulse rounded-2xl bg-card shadow-card" />
+            ))
+          ) : workers.length ? (
+            workers.map((worker) => (
+              <WorkerCard
+                key={worker.id}
+                worker={worker}
+                profileContext="employer"
+                selectable
+                selected={selected.includes(worker.id)}
+                onSelect={() => toggle(worker.id)}
+              />
+            ))
+          ) : (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground xl:col-span-2">
+              No verified workers are available for this category yet.
+            </div>
+          )}
         </section>
       </div>
     </EmployerShell>

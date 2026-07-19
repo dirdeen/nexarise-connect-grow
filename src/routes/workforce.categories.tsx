@@ -76,14 +76,7 @@ function WorkforceCategories() {
                     search={{ category: category.name }}
                     className="rounded-xl bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground"
                   >
-                    Register
-                  </Link>
-                  <Link
-                    to="/employer/workforce/request"
-                    search={{ category: category.name }}
-                    className="rounded-xl border border-border px-4 py-2 text-sm font-semibold text-secondary hover:border-primary/40"
-                  >
-                    Request workers
+                    Use this category
                   </Link>
                 </div>
               </article>
