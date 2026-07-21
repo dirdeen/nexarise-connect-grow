@@ -2,13 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Bookmark,
+  Bot,
   Briefcase,
   CalendarCheck,
   CheckCircle2,
   Code2,
+  FileText,
   Lightbulb,
   LineChart,
+  Mail,
   Megaphone,
+  MessageCircleQuestion,
   Search,
   ShieldCheck,
   Sparkles,
@@ -29,6 +33,10 @@ const categoryIcons = [Code2, LineChart, Megaphone, ShieldCheck];
 
 const quickActions = [
   { label: "Search Jobs", icon: Search, to: "/jobs" as const },
+  { label: "AI Job Matching", icon: Bot, to: "/job-seeker/ai-matching" as const },
+  { label: "AI CV Builder", icon: FileText, to: "/job-seeker/cv-builder" as const },
+  { label: "AI Cover Letters", icon: Mail, to: "/job-seeker/cover-letters" as const },
+  { label: "Interview Prep", icon: MessageCircleQuestion, to: "/job-seeker/interview" as const },
   { label: "Upload CV", icon: Upload, to: "/jobs" as const },
   { label: "Career Profile", icon: UserRound, to: "/job-seeker/profile" as const },
   { label: "Career Tips", icon: Lightbulb, to: "/job-seeker/dashboard" as const },

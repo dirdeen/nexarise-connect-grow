@@ -1,6 +1,18 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
-import { Bell, Briefcase, Home, LogOut, Search, Settings, UserRound } from "lucide-react";
+import {
+  Bell,
+  Bot,
+  Briefcase,
+  FileText,
+  Home,
+  LogOut,
+  Mail,
+  MessageCircleQuestion,
+  Search,
+  Settings,
+  UserRound,
+} from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { logout } from "@/lib/auth";
@@ -9,6 +21,10 @@ import { getCurrentProfile, getProfileInitials, type Profile } from "@/lib/produ
 const navItems = [
   { label: "Dashboard", to: "/job-seeker/dashboard" as const, icon: Home, exact: true },
   { label: "Search Jobs", to: "/jobs" as const, icon: Search },
+  { label: "AI Matching", to: "/job-seeker/ai-matching" as const, icon: Bot },
+  { label: "CV Builder", to: "/job-seeker/cv-builder" as const, icon: FileText },
+  { label: "Cover Letters", to: "/job-seeker/cover-letters" as const, icon: Mail },
+  { label: "Interview", to: "/job-seeker/interview" as const, icon: MessageCircleQuestion },
   { label: "Applications", to: "/application-submitted" as const, icon: Briefcase },
   { label: "Profile", to: "/job-seeker/profile" as const, icon: UserRound },
 ];
@@ -53,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
           <Logo />
           <nav className="ml-6 hidden items-center gap-6 md:flex">
-            {navItems.slice(0, 3).map((item) => (
+            {navItems.slice(0, 4).map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
@@ -162,19 +178,25 @@ function MobileBottomNav() {
       className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 px-2 py-2 shadow-elegant backdrop-blur md:hidden"
       aria-label="Mobile job seeker navigation"
     >
-      <div className="mx-auto grid max-w-md grid-cols-4 gap-1">
-        {navItems.map((item) => (
-          <Link
-            key={item.label}
-            to={item.to}
-            className="flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-semibold text-muted-foreground hover:bg-accent hover:text-secondary"
-            activeProps={{ className: "bg-accent text-secondary" }}
-            activeOptions={{ exact: item.exact }}
-          >
-            <item.icon className="h-4 w-4" />
-            <span>{item.label.split(" ")[0]}</span>
-          </Link>
-        ))}
+      <div className="mx-auto grid max-w-md grid-cols-5 gap-1">
+        {navItems
+          .filter((item) =>
+            ["Dashboard", "Search Jobs", "AI Matching", "CV Builder", "Profile"].includes(
+              item.label,
+            ),
+          )
+          .map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              className="flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-semibold text-muted-foreground hover:bg-accent hover:text-secondary"
+              activeProps={{ className: "bg-accent text-secondary" }}
+              activeOptions={{ exact: item.exact }}
+            >
+              <item.icon className="h-4 w-4" />
+              <span>{item.label.split(" ")[0]}</span>
+            </Link>
+          ))}
       </div>
     </nav>
   );

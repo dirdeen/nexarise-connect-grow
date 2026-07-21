@@ -60,18 +60,35 @@ In Supabase Auth settings:
 3. Add local development redirect URL, usually `http://localhost:3000`.
 4. Add the deployed redirect URL, usually `https://your-domain.com`.
 
-## 5. Deploy Edge Function
+## 5. Deploy Edge Functions
 
 The function at `supabase/functions/application-submitted/index.ts` creates notifications after a job application is submitted.
 
-This is optional for the frontend to run. If you deploy this Edge Function later, set the service-role key as a Supabase function secret only, not in `.env`:
+The function at `supabase/functions/job-seeker-ai/index.ts` powers the job-seeker AI tools:
 
-Deploy it with:
+- AI Job Matching
+- AI CV Builder
+- AI Cover Letters
+- AI Interview & Mentorship preparation
+
+Set backend secrets as Supabase function secrets only, not in frontend `.env` files:
+
+Deploy them with:
 
 ```bash
 supabase functions deploy application-submitted
+supabase functions deploy job-seeker-ai
 supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+supabase secrets set GEMINI_API_KEY=your-new-gemini-api-key
 ```
+
+Optional:
+
+```bash
+supabase secrets set GEMINI_MODEL=gemini-1.5-flash
+```
+
+Do not prefix these server-side secrets with `VITE_`.
 
 ## 6. Storage Buckets
 
@@ -91,7 +108,7 @@ pnpm install
 pnpm run dev
 ```
 
-Once `.env.local` is configured, login, registration, job search, job applications and employer job management use Supabase.
+Once `.env.local` is configured, login, registration, job search, job applications, employer job management and job-seeker AI frontend calls use Supabase.
 
 ## 8. Manual Verification Checklist
 
@@ -100,10 +117,13 @@ Once `.env.local` is configured, login, registration, job search, job applicatio
 - Sign in as an employer and create a job.
 - Confirm public users can view only jobs with `status = active`.
 - Sign in as a job seeker, upload a CV and submit an application.
+- Sign in as a job seeker and run AI Job Matching from `/job-seeker/ai-matching`.
+- Generate an AI CV and confirm a new row is created in `cv_documents`.
+- Generate a cover letter and interview preparation plan.
 - Confirm the applicant can see only their own application rows.
 - Confirm the employer can view applications submitted to their jobs.
 - Confirm non-admin users cannot read administrative data outside their own records.
 
 ## 9. Current Backend Boundary
 
-This foundation intentionally does not implement OpenAI/AI matching features yet. The `job_matches` table is ready for a later server-side matching workflow.
+AI career tools are implemented through Supabase Edge Functions. The browser never receives the Gemini API key. `job_matches` stores calculated match records and `cv_documents` stores generated CV content for the signed-in job seeker.

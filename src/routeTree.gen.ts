@@ -34,7 +34,11 @@ import { Route as MentorshipDashboardRouteImport } from './routes/mentorship.das
 import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
 import { Route as JobSeekerProfileRouteImport } from './routes/job-seeker.profile'
 import { Route as JobSeekerNotificationsRouteImport } from './routes/job-seeker.notifications'
+import { Route as JobSeekerInterviewRouteImport } from './routes/job-seeker.interview'
 import { Route as JobSeekerDashboardRouteImport } from './routes/job-seeker.dashboard'
+import { Route as JobSeekerCvBuilderRouteImport } from './routes/job-seeker.cv-builder'
+import { Route as JobSeekerCoverLettersRouteImport } from './routes/job-seeker.cover-letters'
+import { Route as JobSeekerAiMatchingRouteImport } from './routes/job-seeker.ai-matching'
 import { Route as EmployerSettingsRouteImport } from './routes/employer.settings'
 import { Route as EmployerProfileRouteImport } from './routes/employer.profile'
 import { Route as EmployerPendingApprovalRouteImport } from './routes/employer.pending-approval'
@@ -188,9 +192,29 @@ const JobSeekerNotificationsRoute = JobSeekerNotificationsRouteImport.update({
   path: '/job-seeker/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobSeekerInterviewRoute = JobSeekerInterviewRouteImport.update({
+  id: '/job-seeker/interview',
+  path: '/job-seeker/interview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JobSeekerDashboardRoute = JobSeekerDashboardRouteImport.update({
   id: '/job-seeker/dashboard',
   path: '/job-seeker/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobSeekerCvBuilderRoute = JobSeekerCvBuilderRouteImport.update({
+  id: '/job-seeker/cv-builder',
+  path: '/job-seeker/cv-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobSeekerCoverLettersRoute = JobSeekerCoverLettersRouteImport.update({
+  id: '/job-seeker/cover-letters',
+  path: '/job-seeker/cover-letters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobSeekerAiMatchingRoute = JobSeekerAiMatchingRouteImport.update({
+  id: '/job-seeker/ai-matching',
+  path: '/job-seeker/ai-matching',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmployerSettingsRoute = EmployerSettingsRouteImport.update({
@@ -361,7 +385,11 @@ export interface FileRoutesByFullPath {
   '/employer/pending-approval': typeof EmployerPendingApprovalRoute
   '/employer/profile': typeof EmployerProfileRoute
   '/employer/settings': typeof EmployerSettingsRoute
+  '/job-seeker/ai-matching': typeof JobSeekerAiMatchingRoute
+  '/job-seeker/cover-letters': typeof JobSeekerCoverLettersRoute
+  '/job-seeker/cv-builder': typeof JobSeekerCvBuilderRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/job-seeker/interview': typeof JobSeekerInterviewRoute
   '/job-seeker/notifications': typeof JobSeekerNotificationsRoute
   '/job-seeker/profile': typeof JobSeekerProfileRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
@@ -416,7 +444,11 @@ export interface FileRoutesByTo {
   '/employer/pending-approval': typeof EmployerPendingApprovalRoute
   '/employer/profile': typeof EmployerProfileRoute
   '/employer/settings': typeof EmployerSettingsRoute
+  '/job-seeker/ai-matching': typeof JobSeekerAiMatchingRoute
+  '/job-seeker/cover-letters': typeof JobSeekerCoverLettersRoute
+  '/job-seeker/cv-builder': typeof JobSeekerCvBuilderRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/job-seeker/interview': typeof JobSeekerInterviewRoute
   '/job-seeker/notifications': typeof JobSeekerNotificationsRoute
   '/job-seeker/profile': typeof JobSeekerProfileRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
@@ -472,7 +504,11 @@ export interface FileRoutesById {
   '/employer/pending-approval': typeof EmployerPendingApprovalRoute
   '/employer/profile': typeof EmployerProfileRoute
   '/employer/settings': typeof EmployerSettingsRoute
+  '/job-seeker/ai-matching': typeof JobSeekerAiMatchingRoute
+  '/job-seeker/cover-letters': typeof JobSeekerCoverLettersRoute
+  '/job-seeker/cv-builder': typeof JobSeekerCvBuilderRoute
   '/job-seeker/dashboard': typeof JobSeekerDashboardRoute
+  '/job-seeker/interview': typeof JobSeekerInterviewRoute
   '/job-seeker/notifications': typeof JobSeekerNotificationsRoute
   '/job-seeker/profile': typeof JobSeekerProfileRoute
   '/jobs/$jobId': typeof JobsJobIdRouteWithChildren
@@ -529,7 +565,11 @@ export interface FileRouteTypes {
     | '/employer/pending-approval'
     | '/employer/profile'
     | '/employer/settings'
+    | '/job-seeker/ai-matching'
+    | '/job-seeker/cover-letters'
+    | '/job-seeker/cv-builder'
     | '/job-seeker/dashboard'
+    | '/job-seeker/interview'
     | '/job-seeker/notifications'
     | '/job-seeker/profile'
     | '/jobs/$jobId'
@@ -584,7 +624,11 @@ export interface FileRouteTypes {
     | '/employer/pending-approval'
     | '/employer/profile'
     | '/employer/settings'
+    | '/job-seeker/ai-matching'
+    | '/job-seeker/cover-letters'
+    | '/job-seeker/cv-builder'
     | '/job-seeker/dashboard'
+    | '/job-seeker/interview'
     | '/job-seeker/notifications'
     | '/job-seeker/profile'
     | '/jobs/$jobId'
@@ -639,7 +683,11 @@ export interface FileRouteTypes {
     | '/employer/pending-approval'
     | '/employer/profile'
     | '/employer/settings'
+    | '/job-seeker/ai-matching'
+    | '/job-seeker/cover-letters'
+    | '/job-seeker/cv-builder'
     | '/job-seeker/dashboard'
+    | '/job-seeker/interview'
     | '/job-seeker/notifications'
     | '/job-seeker/profile'
     | '/jobs/$jobId'
@@ -695,7 +743,11 @@ export interface RootRouteChildren {
   EmployerPendingApprovalRoute: typeof EmployerPendingApprovalRoute
   EmployerProfileRoute: typeof EmployerProfileRoute
   EmployerSettingsRoute: typeof EmployerSettingsRoute
+  JobSeekerAiMatchingRoute: typeof JobSeekerAiMatchingRoute
+  JobSeekerCoverLettersRoute: typeof JobSeekerCoverLettersRoute
+  JobSeekerCvBuilderRoute: typeof JobSeekerCvBuilderRoute
   JobSeekerDashboardRoute: typeof JobSeekerDashboardRoute
+  JobSeekerInterviewRoute: typeof JobSeekerInterviewRoute
   JobSeekerNotificationsRoute: typeof JobSeekerNotificationsRoute
   JobSeekerProfileRoute: typeof JobSeekerProfileRoute
   MentorshipDashboardRoute: typeof MentorshipDashboardRoute
@@ -897,11 +949,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JobSeekerNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/job-seeker/interview': {
+      id: '/job-seeker/interview'
+      path: '/job-seeker/interview'
+      fullPath: '/job-seeker/interview'
+      preLoaderRoute: typeof JobSeekerInterviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/job-seeker/dashboard': {
       id: '/job-seeker/dashboard'
       path: '/job-seeker/dashboard'
       fullPath: '/job-seeker/dashboard'
       preLoaderRoute: typeof JobSeekerDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/job-seeker/cv-builder': {
+      id: '/job-seeker/cv-builder'
+      path: '/job-seeker/cv-builder'
+      fullPath: '/job-seeker/cv-builder'
+      preLoaderRoute: typeof JobSeekerCvBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/job-seeker/cover-letters': {
+      id: '/job-seeker/cover-letters'
+      path: '/job-seeker/cover-letters'
+      fullPath: '/job-seeker/cover-letters'
+      preLoaderRoute: typeof JobSeekerCoverLettersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/job-seeker/ai-matching': {
+      id: '/job-seeker/ai-matching'
+      path: '/job-seeker/ai-matching'
+      fullPath: '/job-seeker/ai-matching'
+      preLoaderRoute: typeof JobSeekerAiMatchingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/employer/settings': {
@@ -1199,7 +1279,11 @@ const rootRouteChildren: RootRouteChildren = {
   EmployerPendingApprovalRoute: EmployerPendingApprovalRoute,
   EmployerProfileRoute: EmployerProfileRoute,
   EmployerSettingsRoute: EmployerSettingsRoute,
+  JobSeekerAiMatchingRoute: JobSeekerAiMatchingRoute,
+  JobSeekerCoverLettersRoute: JobSeekerCoverLettersRoute,
+  JobSeekerCvBuilderRoute: JobSeekerCvBuilderRoute,
   JobSeekerDashboardRoute: JobSeekerDashboardRoute,
+  JobSeekerInterviewRoute: JobSeekerInterviewRoute,
   JobSeekerNotificationsRoute: JobSeekerNotificationsRoute,
   JobSeekerProfileRoute: JobSeekerProfileRoute,
   MentorshipDashboardRoute: MentorshipDashboardRoute,
