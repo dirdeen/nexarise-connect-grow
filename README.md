@@ -1,5 +1,4 @@
 ![NexaRise preview](docs/assets/github-preview.png)
-
 # NexaRise
 
 > **An open-source employment, mentorship, career development, and verified workforce platform for Sierra Leone.**
