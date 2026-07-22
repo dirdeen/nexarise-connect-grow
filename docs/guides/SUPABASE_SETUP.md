@@ -85,7 +85,7 @@ supabase secrets set GEMINI_API_KEY=your-new-gemini-api-key
 Optional:
 
 ```bash
-supabase secrets set GEMINI_MODEL=gemini-1.5-flash
+supabase secrets set GEMINI_MODEL=gemini-3.5-flash
 ```
 
 Do not prefix these server-side secrets with `VITE_`.
