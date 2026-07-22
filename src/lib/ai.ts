@@ -34,7 +34,21 @@ export async function runJobSeekerAiTool(
     body: { action, ...payload },
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    let message = error.message;
+    const context = (error as { context?: Response }).context;
+
+    if (context) {
+      try {
+        const details = (await context.clone().json()) as { error?: string; warning?: string };
+        message = details.error ?? details.warning ?? message;
+      } catch {
+        // Keep the Supabase client error if the response body is not JSON.
+      }
+    }
+
+    throw new Error(message);
+  }
   if (data?.error) throw new Error(data.error);
 
   return data as AiCareerResponse;
