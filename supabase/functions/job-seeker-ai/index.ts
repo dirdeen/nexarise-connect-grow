@@ -343,7 +343,7 @@ async function generateWithGemini(prompt: string) {
   const apiKey = Deno.env.get("GEMINI_API_KEY");
   if (!apiKey) return "";
 
-  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash";
+  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-3.6-flash";
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
@@ -351,7 +351,6 @@ async function generateWithGemini(prompt: string) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.35, topP: 0.9 },
       }),
     },
   );
