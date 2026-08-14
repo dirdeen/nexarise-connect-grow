@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Eye, EyeOff } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
 import { getPostLoginRoute, login, sendPasswordReset } from "@/lib/auth";
@@ -64,13 +65,11 @@ function LoginPage() {
           />
         </Field>
         <Field label="Password">
-          <input
-            type="password"
-            autoComplete="current-password"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            autoComplete="current-password"
           />
         </Field>
 
@@ -193,5 +192,41 @@ export function Field({ label, children }: { label: string; children: React.Reac
       <span className="mb-1.5 block text-sm font-medium text-secondary">{label}</span>
       {children}
     </label>
+  );
+}
+
+export function PasswordInput({
+  value,
+  onChange,
+  placeholder,
+  autoComplete,
+}: {
+  value: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  placeholder?: string;
+  autoComplete?: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className="relative">
+      <input
+        type={visible ? "text" : "password"}
+        autoComplete={autoComplete}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full rounded-lg border border-input bg-background px-4 py-3 pr-12 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((current) => !current)}
+        className="absolute inset-y-0 right-0 grid w-12 place-items-center text-muted-foreground transition hover:text-secondary"
+        aria-label={visible ? "Hide password" : "Show password"}
+        title={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
   );
 }

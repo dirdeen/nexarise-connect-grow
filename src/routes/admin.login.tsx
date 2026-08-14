@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
-import { AuthShell, Field } from "./login";
+import { AuthShell, Field, PasswordInput } from "./login";
 import { loginSuperAdmin } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/login")({
@@ -64,13 +64,11 @@ function AdminLoginPage() {
         </Field>
 
         <Field label="Password">
-          <input
-            type="password"
-            autoComplete="current-password"
+          <PasswordInput
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Enter super admin password"
-            className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            autoComplete="current-password"
           />
         </Field>
 

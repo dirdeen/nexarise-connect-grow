@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { AuthShell, Field } from "./login";
+import { AuthShell, Field, PasswordInput } from "./login";
 import { register, type ProfileRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/register")({
@@ -128,22 +128,20 @@ function RegisterPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Password">
-            <input
-              type="password"
+            <PasswordInput
               value={form.password}
               onChange={(e) => set("password", e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              autoComplete="new-password"
             />
             {errors.password && <Err msg={errors.password} />}
           </Field>
           <Field label="Confirm password">
-            <input
-              type="password"
+            <PasswordInput
               value={form.confirm}
               onChange={(e) => set("confirm", e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              autoComplete="new-password"
             />
             {errors.confirm && <Err msg={errors.confirm} />}
           </Field>
