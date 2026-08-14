@@ -47,7 +47,10 @@ type WorkExperienceRow = {
 type SkillRow = {
   id: string;
   proficiency_level: string | null;
-  skills: { name: string; category: string | null } | null;
+  skills:
+    | { name: string; category: string | null }
+    | Array<{ name: string; category: string | null }>
+    | null;
 };
 
 type ProfileForm = {
@@ -62,6 +65,10 @@ type ProfileForm = {
   preferredLocation: string;
   availabilityStatus: string;
 };
+
+function firstRelation<T>(value: T | T[] | null | undefined) {
+  return Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
+}
 
 const EMPTY_FORM: ProfileForm = {
   fullName: "",
@@ -149,7 +156,7 @@ function JobSeekerProfilePage() {
           });
           setEducation((educationResult.data ?? []) as EducationRow[]);
           setExperience((experienceResult.data ?? []) as WorkExperienceRow[]);
-          setSkills((skillsResult.data ?? []) as SkillRow[]);
+          setSkills((skillsResult.data ?? []) as unknown as SkillRow[]);
         }
       } catch (err) {
         if (active) setError(err instanceof Error ? err.message : "Unable to load profile.");
@@ -451,7 +458,8 @@ function JobSeekerProfilePage() {
                   key={skill.id}
                   className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
                 >
-                  {skill.skills?.name ?? "Skill"} · {skill.proficiency_level ?? "Not rated"}
+                  {firstRelation(skill.skills)?.name ?? "Skill"} ·{" "}
+                  {skill.proficiency_level ?? "Not rated"}
                 </span>
               ))}
               {!loading && skills.length === 0 && (

@@ -102,7 +102,7 @@ type JobSeekerApplicationRow = {
   cover_letter: string | null;
   application_status: string;
   applied_at: string;
-  jobs: ApplicationJobSummary | null;
+  jobs: ApplicationJobSummary | ApplicationJobSummary[] | null;
 };
 
 type EmployerApplicationRow = {
@@ -112,7 +112,7 @@ type EmployerApplicationRow = {
   cover_letter: string | null;
   application_status: string;
   applied_at: string;
-  jobs: ApplicationJobSummary | null;
+  jobs: ApplicationJobSummary | ApplicationJobSummary[] | null;
 };
 
 type ProfileContactRow = {
@@ -185,6 +185,10 @@ function applicationStatusLabel(status: string | null | undefined): Candidate["s
   if (status === "interview") return "Interview";
   if (status === "rejected") return "Rejected";
   return "New";
+}
+
+function firstRelation<T>(value: T | T[] | null | undefined) {
+  return Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
 }
 
 function relativeDate(value: string | null | undefined) {
@@ -272,32 +276,32 @@ export async function fetchJobSeekerDashboard(): Promise<JobSeekerDashboardData>
   ].filter(Boolean).length;
   const profileCompletion = Math.round((complete / 8) * 100);
 
-  const applications = ((applicationsResult.data ?? []) as JobSeekerApplicationRow[]).map(
-    (application) => {
-      const job = application.jobs;
-      return {
-        id: application.id,
-        name: profile.full_name,
-        role: job?.title ?? "Application",
-        location: profile.location ?? "Location not set",
-        email: profile.email,
-        phone: profile.phone ?? "Phone not set",
-        portfolio: "",
-        cvFile: application.cv_url ?? "No CV uploaded",
-        experience: seekerProfile.data?.years_of_experience
-          ? `${seekerProfile.data.years_of_experience} years`
-          : "Experience not set",
-        education: seekerProfile.data?.highest_qualification ?? "Education not set",
-        skills: [],
-        certifications: [],
-        workHistory: [],
-        appliedFor: job?.title ?? "Application",
-        appliedDate: relativeDate(application.applied_at),
-        status: applicationStatusLabel(application.application_status),
-        summary: application.cover_letter || "Application submitted through NexaRise.",
-      };
-    },
-  );
+  const applications = (
+    (applicationsResult.data ?? []) as unknown as JobSeekerApplicationRow[]
+  ).map((application) => {
+    const job = firstRelation(application.jobs);
+    return {
+      id: application.id,
+      name: profile.full_name,
+      role: job?.title ?? "Application",
+      location: profile.location ?? "Location not set",
+      email: profile.email,
+      phone: profile.phone ?? "Phone not set",
+      portfolio: "",
+      cvFile: application.cv_url ?? "No CV uploaded",
+      experience: seekerProfile.data?.years_of_experience
+        ? `${seekerProfile.data.years_of_experience} years`
+        : "Experience not set",
+      education: seekerProfile.data?.highest_qualification ?? "Education not set",
+      skills: [],
+      certifications: [],
+      workHistory: [],
+      appliedFor: job?.title ?? "Application",
+      appliedDate: relativeDate(application.applied_at),
+      status: applicationStatusLabel(application.application_status),
+      summary: application.cover_letter || "Application submitted through NexaRise.",
+    };
+  });
 
   const categories = Object.entries(
     recommendedJobs.reduce<Record<string, number>>((acc, job) => {
@@ -409,7 +413,7 @@ export async function fetchEmployerApplications(): Promise<Candidate[]> {
 
   if (error) throw new Error(error.message);
 
-  const applicationRows = (rows ?? []) as EmployerApplicationRow[];
+  const applicationRows = (rows ?? []) as unknown as EmployerApplicationRow[];
   const applicantIds = Array.from(new Set(applicationRows.map((row) => row.applicant_id)));
   const { data: profiles, error: profilesError } = applicantIds.length
     ? await client
@@ -426,10 +430,11 @@ export async function fetchEmployerApplications(): Promise<Candidate[]> {
   return applicationRows.map((application) => {
     const profile = profileByUser.get(application.applicant_id);
     const name = profile?.full_name ?? "Applicant";
+    const job = firstRelation(application.jobs);
     return {
       id: application.id,
       name,
-      role: application.jobs?.title ?? "Applicant",
+      role: job?.title ?? "Applicant",
       location: profile?.location ?? "Location not set",
       email: profile?.email ?? "Email protected",
       phone: profile?.phone ?? "Phone not set",
@@ -440,7 +445,7 @@ export async function fetchEmployerApplications(): Promise<Candidate[]> {
       skills: [],
       certifications: [],
       workHistory: [],
-      appliedFor: application.jobs?.title ?? "Application",
+      appliedFor: job?.title ?? "Application",
       appliedDate: relativeDate(application.applied_at),
       status: applicationStatusLabel(application.application_status),
       summary: application.cover_letter || "Application submitted through NexaRise.",

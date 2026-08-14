@@ -10,12 +10,15 @@ export const Route = createFileRoute("/mentorship/sessions/$sessionId")({
     if (!session) throw notFound();
     return session;
   },
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData.topic} - NexaRise Session` }] }),
+  head: ({ loaderData }) => ({
+    meta: [{ title: `${loaderData?.topic ?? "Session Details"} - NexaRise Session` }],
+  }),
   component: SessionDetails,
 });
 
 function SessionDetails() {
   const session = Route.useLoaderData();
+  if (!session) return null;
 
   return (
     <MentorshipShell>

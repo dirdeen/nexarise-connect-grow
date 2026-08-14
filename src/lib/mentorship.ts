@@ -283,13 +283,13 @@ export async function createMentorshipProgram(values: MentorshipProgramInput) {
 }
 
 export function findMentor(_id: string) {
-  return undefined;
+  return MENTORS.find((mentor) => mentor.id === _id);
 }
 
 export function findSession(_id: string) {
-  return undefined;
+  return SESSIONS.find((session) => session.id === _id);
 }
 
 export function findConversation(_id: string) {
-  return undefined;
+  return CONVERSATIONS.find((conversation) => conversation.id === _id);
 }

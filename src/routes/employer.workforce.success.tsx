@@ -44,6 +44,7 @@ function AssignmentSuccessPage() {
             </Link>
             <Link
               to="/employer/workforce/request"
+              search={{ category: "Drivers" }}
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-semibold text-secondary hover:border-primary/40"
             >
               <Users className="h-4 w-4" />

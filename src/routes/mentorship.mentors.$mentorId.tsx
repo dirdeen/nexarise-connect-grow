@@ -10,12 +10,15 @@ export const Route = createFileRoute("/mentorship/mentors/$mentorId")({
     if (!mentor) throw notFound();
     return mentor;
   },
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData.name} - NexaRise Mentor` }] }),
+  head: ({ loaderData }) => ({
+    meta: [{ title: `${loaderData?.name ?? "Mentor Profile"} - NexaRise Mentor` }],
+  }),
   component: MentorProfile,
 });
 
 function MentorProfile() {
   const mentor = Route.useLoaderData();
+  if (!mentor) return null;
 
   return (
     <MentorshipShell>
