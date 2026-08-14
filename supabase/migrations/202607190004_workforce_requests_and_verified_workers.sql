@@ -20,7 +20,8 @@ create table if not exists public.workforce_requests (
   updated_at timestamptz not null default now()
 );
 
-create or replace view public.verified_workers as
+create or replace view public.verified_workers
+with (security_invoker = true) as
 select
   id,
   user_id,
